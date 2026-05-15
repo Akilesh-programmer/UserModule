@@ -1,0 +1,66 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const Permission = require("../models/Permission");
+
+const login = async (req, res) => {
+  const { username, password } = req.body;
+
+  const user = await User.findOne({ username }).populate("userTypeId");
+  if (!user) {
+    return res.status(401).json({ message: "Invalid username or password" });
+  }
+
+  if (!user.isActive) {
+    return res.status(403).json({
+      message: "Your account is inactive. Please contact the administrator.",
+    });
+  }
+
+  const isMatch = await bcrypt.compare(password, user.passwordHash);
+  if (!isMatch) {
+    return res.status(401).json({ message: "Invalid username or password" });
+  }
+
+  const isAdmin = user.userTypeId?.name === "Admin";
+
+  let permissions;
+  if (isAdmin) {
+    permissions = {
+      dashboard: true,
+      master: true,
+      userType: true,
+      userCreation: true,
+      userPermission: true,
+    };
+  } else {
+    const permDoc = await Permission.findOne({ userId: user._id });
+    permissions = permDoc?.permissions || {
+      dashboard: false,
+      master: false,
+      userType: false,
+      userCreation: false,
+      userPermission: false,
+    };
+  }
+
+  const token = jwt.sign(
+    { id: user._id, username: user.username },
+    process.env.JWT_SECRET,
+    { expiresIn: "8h" },
+  );
+
+  res.json({
+    token,
+    user: {
+      id: user._id,
+      username: user.username,
+      userType: user.userTypeId?.name,
+      isActive: user.isActive,
+      isAdmin,
+    },
+    permissions,
+  });
+};
+
+module.exports = { login };

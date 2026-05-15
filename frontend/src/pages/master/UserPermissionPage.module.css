@@ -1,0 +1,59 @@
+.card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.selectSection {
+  margin-bottom: 24px;
+}
+
+.permHeading {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px;
+}
+
+.permList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.permRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.permRow:hover {
+  background: var(--bg-hover);
+}
+
+.permLabel {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.saveSection {
+  display: flex;
+  justify-content: flex-end;
+}
