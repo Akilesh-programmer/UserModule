@@ -8,6 +8,7 @@ const {
   deleteUserType,
 } = require("../controllers/userTypeController");
 const { authenticateToken } = require("../middleware/auth");
+const { checkPermission } = require("../middleware/permission");
 const { validate } = require("../middleware/validate");
 
 const router = express.Router();
@@ -18,10 +19,30 @@ const userTypeValidation = [
 
 router.use(authenticateToken);
 
-router.get("/", getAllUserTypes);
-router.get("/:id", getUserTypeById);
-router.post("/", userTypeValidation, validate, createUserType);
-router.put("/:id", userTypeValidation, validate, updateUserType);
-router.delete("/:id", deleteUserType);
+// Skip read permission for activeOnly=true (used for dropdown population in other forms)
+router.get(
+  "/",
+  (req, res, next) => {
+    if (req.query.activeOnly === "true") return next();
+    checkPermission("userType", "read")(req, res, next);
+  },
+  getAllUserTypes,
+);
+router.get("/:id", checkPermission("userType", "read"), getUserTypeById);
+router.post(
+  "/",
+  checkPermission("userType", "create"),
+  userTypeValidation,
+  validate,
+  createUserType,
+);
+router.put(
+  "/:id",
+  checkPermission("userType", "update"),
+  userTypeValidation,
+  validate,
+  updateUserType,
+);
+router.delete("/:id", checkPermission("userType", "delete"), deleteUserType);
 
 module.exports = router;

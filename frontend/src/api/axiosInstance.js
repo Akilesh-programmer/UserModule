@@ -16,12 +16,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const isAuthRoute = error.config?.url?.includes("/auth/login");
-    if (
-      !isAuthRoute &&
-      (error.response?.status === 401 || error.response?.status === 403)
-    ) {
+    // Only redirect to login on 401 (token expired/missing)
+    // 403 (permission denied) is passed through so pages can handle it with toast
+    if (!isAuthRoute && error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("permissions");
       window.location.href = "/login";
     }
     return Promise.reject(error);

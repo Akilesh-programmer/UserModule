@@ -6,14 +6,18 @@ const getPermissionByUser = async (req, res) => {
     userId: req.params.userId,
   }).populate("userId", "username");
   if (!permission) {
+    const allFalse = {
+      create: false,
+      read: false,
+      update: false,
+      delete: false,
+    };
     return res.json({
       userId: req.params.userId,
       permissions: {
-        dashboard: false,
-        master: false,
-        userType: false,
-        userCreation: false,
-        userPermission: false,
+        userType: { ...allFalse },
+        userCreation: { ...allFalse },
+        userPermission: { ...allFalse },
       },
     });
   }

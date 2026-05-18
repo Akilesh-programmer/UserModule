@@ -8,6 +8,7 @@ const {
   deleteUser,
 } = require("../controllers/userController");
 const { authenticateToken } = require("../middleware/auth");
+const { checkPermission } = require("../middleware/permission");
 const { validate } = require("../middleware/validate");
 
 const router = express.Router();
@@ -48,10 +49,31 @@ const updateUserValidation = [
 
 router.use(authenticateToken);
 
-router.get("/", getAllUsers);
-router.get("/:id", getUserById);
-router.post("/", createUserValidation, validate, createUser);
-router.put("/:id", updateUserValidation, validate, updateUser);
-router.delete("/:id", deleteUser);
+// permissionsView=true is used by UserPermissionPage which only needs userPermission.read
+router.get(
+  "/",
+  (req, res, next) => {
+    const permModule =
+      req.query.permissionsView === "true" ? "userPermission" : "userCreation";
+    checkPermission(permModule, "read")(req, res, next);
+  },
+  getAllUsers,
+);
+router.get("/:id", checkPermission("userCreation", "read"), getUserById);
+router.post(
+  "/",
+  checkPermission("userCreation", "create"),
+  createUserValidation,
+  validate,
+  createUser,
+);
+router.put(
+  "/:id",
+  checkPermission("userCreation", "update"),
+  updateUserValidation,
+  validate,
+  updateUser,
+);
+router.delete("/:id", checkPermission("userCreation", "delete"), deleteUser);
 
 module.exports = router;

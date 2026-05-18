@@ -24,23 +24,22 @@ const login = async (req, res) => {
 
   const isAdmin = user.userTypeId?.name === "Admin";
 
+  const allTrue = { create: true, read: true, update: true, delete: true };
+  const allFalse = { create: false, read: false, update: false, delete: false };
+
   let permissions;
   if (isAdmin) {
     permissions = {
-      dashboard: true,
-      master: true,
-      userType: true,
-      userCreation: true,
-      userPermission: true,
+      userType: { ...allTrue },
+      userCreation: { ...allTrue },
+      userPermission: { ...allTrue },
     };
   } else {
     const permDoc = await Permission.findOne({ userId: user._id });
     permissions = permDoc?.permissions || {
-      dashboard: false,
-      master: false,
-      userType: false,
-      userCreation: false,
-      userPermission: false,
+      userType: { ...allFalse },
+      userCreation: { ...allFalse },
+      userPermission: { ...allFalse },
     };
   }
 

@@ -6,16 +6,22 @@ const {
   getAllPermissions,
 } = require("../controllers/permissionController");
 const { authenticateToken } = require("../middleware/auth");
+const { checkPermission } = require("../middleware/permission");
 const { validate } = require("../middleware/validate");
 
 const router = express.Router();
 
 router.use(authenticateToken);
 
-router.get("/", getAllPermissions);
-router.get("/:userId", getPermissionByUser);
+router.get("/", checkPermission("userPermission", "read"), getAllPermissions);
+router.get(
+  "/:userId",
+  checkPermission("userPermission", "read"),
+  getPermissionByUser,
+);
 router.post(
   "/",
+  checkPermission("userPermission", "update"),
   [body("userId").notEmpty().withMessage("User ID is required")],
   validate,
   savePermission,

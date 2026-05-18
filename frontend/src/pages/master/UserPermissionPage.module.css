@@ -3,7 +3,7 @@
   border-radius: 12px;
   border: 1px solid var(--border);
   padding: 24px;
-  max-width: 500px;
+  max-width: 560px;
   width: 100%;
 }
 
@@ -23,34 +23,47 @@
 .permList {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   margin-bottom: 24px;
 }
 
-.permRow {
+.permSection {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.permSectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px;
+}
+
+.crudRow {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.crudItem {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-radius: 8px;
+  gap: 6px;
   cursor: pointer;
-  transition: background 0.15s;
+  user-select: none;
 }
 
-.permRow:hover {
-  background: var(--bg-hover);
-}
-
-.permLabel {
-  font-size: 0.9rem;
-  color: var(--text-primary);
-}
-
-.checkbox {
-  width: 18px;
-  height: 18px;
+.crudItem input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
   accent-color: var(--primary);
   cursor: pointer;
+}
+
+.crudItem span {
+  font-size: 0.875rem;
+  color: var(--text-primary);
 }
 
 .saveSection {

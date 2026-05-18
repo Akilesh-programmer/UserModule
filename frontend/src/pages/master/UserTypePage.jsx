@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   fetchUserTypes,
@@ -14,6 +15,7 @@ import styles from "./MasterPage.module.css";
 import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
 
 export default function UserTypePage() {
+  const navigate = useNavigate();
   const [userTypes, setUserTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,12 +27,20 @@ export default function UserTypePage() {
     try {
       const { data } = await fetchUserTypes();
       setUserTypes(data);
-    } catch {
-      toast.error("Failed to load user types");
+    } catch (err) {
+      if (err.response?.status === 403) {
+        toast.error(
+          err.response.data?.message ||
+            "You are not allowed to access this page",
+        );
+        navigate("/");
+      } else {
+        toast.error("Failed to load user types");
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     loadUserTypes();
@@ -52,18 +62,30 @@ export default function UserTypePage() {
   };
 
   const handleSave = async (formData) => {
-    if (editTarget) {
-      const { data } = await updateUserType(editTarget._id, formData);
-      setUserTypes((prev) =>
-        prev.map((ut) => (ut._id === data._id ? data : ut)),
-      );
-      toast.success("User type updated successfully");
-    } else {
-      const { data } = await createUserType(formData);
-      setUserTypes((prev) => [data, ...prev]);
-      toast.success("User type created successfully");
+    try {
+      if (editTarget) {
+        const { data } = await updateUserType(editTarget._id, formData);
+        setUserTypes((prev) =>
+          prev.map((ut) => (ut._id === data._id ? data : ut)),
+        );
+        toast.success("User type updated successfully");
+      } else {
+        const { data } = await createUserType(formData);
+        setUserTypes((prev) => [data, ...prev]);
+        toast.success("User type created successfully");
+      }
+      closeModal();
+    } catch (err) {
+      if (err.response?.status === 403) {
+        toast.error(
+          err.response.data?.message ||
+            "You are not allowed to perform this action",
+        );
+        closeModal();
+      } else {
+        throw err; // Let the form's catch handle validation/duplicate errors
+      }
     }
-    closeModal();
   };
 
   const handleDelete = async () => {

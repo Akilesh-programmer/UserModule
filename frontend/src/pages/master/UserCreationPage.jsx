@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   fetchUsers,
@@ -15,6 +16,7 @@ import styles from "./MasterPage.module.css";
 import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
 
 export default function UserCreationPage() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [userTypes, setUserTypes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,12 +33,20 @@ export default function UserCreationPage() {
       ]);
       setUsers(usersRes.data);
       setUserTypes(typesRes.data.filter((t) => t.name !== "Admin"));
-    } catch {
-      toast.error("Failed to load data");
+    } catch (err) {
+      if (err.response?.status === 403) {
+        toast.error(
+          err.response.data?.message ||
+            "You are not allowed to access this page",
+        );
+        navigate("/");
+      } else {
+        toast.error("Failed to load data");
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     loadData();
@@ -58,25 +68,38 @@ export default function UserCreationPage() {
   };
 
   const handleSave = async (formData) => {
-    if (editTarget) {
-      const { data } = await updateUser(editTarget._id, formData);
-      setUsers((prev) => prev.map((u) => (u._id === data._id ? data : u)));
-      toast.success("User updated successfully");
-    } else {
-      const { data } = await createUser(formData);
-      const typesRes = await fetchActiveUserTypes();
-      setUserTypes(typesRes.data.filter((t) => t.name !== "Admin"));
-      setUsers((prev) => [
-        {
-          ...data,
-          userTypeId:
-            userTypes.find((t) => t._id === data.userTypeId) || data.userTypeId,
-        },
-        ...prev,
-      ]);
-      toast.success("User created successfully");
+    try {
+      if (editTarget) {
+        const { data } = await updateUser(editTarget._id, formData);
+        setUsers((prev) => prev.map((u) => (u._id === data._id ? data : u)));
+        toast.success("User updated successfully");
+      } else {
+        const { data } = await createUser(formData);
+        const typesRes = await fetchActiveUserTypes();
+        setUserTypes(typesRes.data.filter((t) => t.name !== "Admin"));
+        setUsers((prev) => [
+          {
+            ...data,
+            userTypeId:
+              userTypes.find((t) => t._id === data.userTypeId) ||
+              data.userTypeId,
+          },
+          ...prev,
+        ]);
+        toast.success("User created successfully");
+      }
+      closeModal();
+    } catch (err) {
+      if (err.response?.status === 403) {
+        toast.error(
+          err.response.data?.message ||
+            "You are not allowed to perform this action",
+        );
+        closeModal();
+      } else {
+        throw err; // Let the form's catch handle validation/duplicate errors
+      }
     }
-    closeModal();
   };
 
   const handleDelete = async () => {

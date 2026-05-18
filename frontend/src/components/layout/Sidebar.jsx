@@ -8,7 +8,6 @@ import {
 } from "react-icons/md";
 import { FiUsers, FiShield, FiUserCheck } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi";
-import { useAuth } from "../../context/AuthContext";
 import styles from "./Sidebar.module.css";
 
 const NAV_ITEMS = [
@@ -16,30 +15,25 @@ const NAV_ITEMS = [
     label: "Dashboard",
     icon: <MdDashboard />,
     path: "/",
-    permKey: "dashboard",
   },
   {
     label: "Master",
     icon: <HiOutlineUserGroup />,
-    permKey: "master",
     children: [
       {
         label: "User Type",
         icon: <FiUserCheck />,
         path: "/master/user-type",
-        permKey: "userType",
       },
       {
         label: "User Creation",
         icon: <FiUsers />,
         path: "/master/user-creation",
-        permKey: "userCreation",
       },
       {
         label: "User Permission",
         icon: <FiShield />,
         path: "/master/user-permission",
-        permKey: "userPermission",
       },
     ],
   },
@@ -47,32 +41,9 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ isOpen, onClose }) {
   const [expandedGroup, setExpandedGroup] = useState("Master");
-  const { user, permissions } = useAuth();
-
-  const isAdmin = user?.isAdmin === true;
-
-  const canAccess = (permKey) => {
-    if (isAdmin) return true;
-    if (!permissions) return false;
-    return permissions[permKey] === true;
-  };
 
   const toggleGroup = (label) =>
     setExpandedGroup((prev) => (prev === label ? null : label));
-
-  const visibleItems = NAV_ITEMS.reduce((acc, item) => {
-    if (item.children) {
-      const visibleChildren = item.children.filter((child) =>
-        canAccess(child.permKey),
-      );
-      if (visibleChildren.length > 0) {
-        acc.push({ ...item, children: visibleChildren });
-      }
-    } else if (canAccess(item.permKey)) {
-      acc.push(item);
-    }
-    return acc;
-  }, []);
 
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
@@ -82,7 +53,7 @@ export default function Sidebar({ isOpen, onClose }) {
         </button>
       </div>
       <nav className={styles.nav}>
-        {visibleItems.map((item) =>
+        {NAV_ITEMS.map((item) =>
           item.children ? (
             <div key={item.label}>
               <button
