@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const permissionSchema = new mongoose.Schema(
   {
-    userId: {
+    userTypeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "UserType",
       required: true,
       unique: true,
     },
@@ -22,6 +22,18 @@ const permissionSchema = new mongoose.Schema(
         delete: { type: Boolean, default: false },
       },
       userPermission: {
+        create: { type: Boolean, default: false },
+        read: { type: Boolean, default: false },
+        update: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      manager: {
+        create: { type: Boolean, default: false },
+        read: { type: Boolean, default: false },
+        update: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      salesRep: {
         create: { type: Boolean, default: false },
         read: { type: Boolean, default: false },
         update: { type: Boolean, default: false },

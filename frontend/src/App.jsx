@@ -7,6 +7,8 @@ import DashboardHome from "./pages/DashboardHome";
 import UserTypePage from "./pages/master/UserTypePage";
 import UserCreationPage from "./pages/master/UserCreationPage";
 import UserPermissionPage from "./pages/master/UserPermissionPage";
+import ManagerPage from "./pages/staff/ManagerPage";
+import SalesRepPage from "./pages/staff/SalesRepPage";
 
 export default function App() {
   return (
@@ -29,6 +31,8 @@ export default function App() {
               path="master/user-permission"
               element={<UserPermissionPage />}
             />
+            <Route path="staff/manager" element={<ManagerPage />} />
+            <Route path="staff/sales-rep" element={<SalesRepPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

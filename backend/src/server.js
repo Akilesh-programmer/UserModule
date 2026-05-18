@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require("node:path");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -9,6 +10,8 @@ const authRoutes = require("./routes/authRoutes");
 const userTypeRoutes = require("./routes/userTypeRoutes");
 const userRoutes = require("./routes/userRoutes");
 const permissionRoutes = require("./routes/permissionRoutes");
+const managerRoutes = require("./routes/managerRoutes");
+const salesRepRoutes = require("./routes/salesRepRoutes");
 
 const app = express();
 
@@ -23,13 +26,17 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user-types", userTypeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/permissions", permissionRoutes);
+app.use("/api/managers", managerRoutes);
+app.use("/api/sales-reps", salesRepRoutes);
 
 app.use((err, req, res, next) => {
+  if (err.status === 400) return res.status(400).json({ message: err.message });
   console.error(err.stack);
   res.status(500).json({ message: "Internal server error" });
 });

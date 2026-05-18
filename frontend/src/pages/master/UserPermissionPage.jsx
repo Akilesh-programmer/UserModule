@@ -1,8 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { fetchUsersForPermissions } from "../../api/userApi";
-import { fetchPermissionByUser, savePermission } from "../../api/permissionApi";
+import { fetchUserTypes } from "../../api/userTypeApi";
+import {
+  fetchPermissionByUserType,
+  savePermission,
+} from "../../api/permissionApi";
 import { useAuth } from "../../context/AuthContext";
 import SelectField from "../../components/common/SelectField";
 import Button from "../../components/common/Button";
@@ -13,6 +16,8 @@ const FORMS = [
   { key: "userType", label: "User Type" },
   { key: "userCreation", label: "User Creation" },
   { key: "userPermission", label: "User Permission" },
+  { key: "manager", label: "Manager" },
+  { key: "salesRep", label: "Sales Rep" },
 ];
 
 const ACTIONS = ["create", "read", "update", "delete"];
@@ -21,26 +26,27 @@ const buildEmptyPermissions = () => ({
   userType: { create: false, read: false, update: false, delete: false },
   userCreation: { create: false, read: false, update: false, delete: false },
   userPermission: { create: false, read: false, update: false, delete: false },
+  manager: { create: false, read: false, update: false, delete: false },
+  salesRep: { create: false, read: false, update: false, delete: false },
 });
 
 export default function UserPermissionPage() {
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
-  const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState("");
+  const [userTypes, setUserTypes] = useState([]);
+  const [selectedUserTypeId, setSelectedUserTypeId] = useState("");
   const [permissions, setPermissions] = useState(buildEmptyPermissions());
-  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [loadingUserTypes, setLoadingUserTypes] = useState(true);
   const [loadingPerms, setLoadingPerms] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const loadUsers = useCallback(async () => {
+  const loadUserTypes = useCallback(async () => {
     try {
-      const { data } = await fetchUsersForPermissions();
-      setUsers(
+      const { data } = await fetchUserTypes();
+      // Exclude Admin and the current user's own type (can't edit own permissions)
+      setUserTypes(
         data.filter(
-          (u) =>
-            u.userTypeId?.name !== "Admin" &&
-            String(u._id) !== String(currentUser?.id),
+          (ut) => ut.name !== "Admin" && ut.name !== currentUser?.userType,
         ),
       );
     } catch (err) {
@@ -51,26 +57,25 @@ export default function UserPermissionPage() {
         );
         navigate("/");
       } else {
-        toast.error("Failed to load users");
+        toast.error("Failed to load user types");
       }
     } finally {
-      setLoadingUsers(false);
+      setLoadingUserTypes(false);
     }
-  }, [currentUser?.id, navigate]);
+  }, [navigate, currentUser?.userType]);
 
   useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
+    loadUserTypes();
+  }, [loadUserTypes]);
 
-  const handleUserChange = async (e) => {
-    const userId = e.target.value;
-    setSelectedUserId(userId);
+  const handleUserTypeChange = async (e) => {
+    const userTypeId = e.target.value;
+    setSelectedUserTypeId(userTypeId);
     setPermissions(buildEmptyPermissions());
-    if (!userId) return;
+    if (!userTypeId) return;
     setLoadingPerms(true);
     try {
-      const { data } = await fetchPermissionByUser(userId);
-      // Merge fetched permissions with empty defaults to ensure all keys exist
+      const { data } = await fetchPermissionByUserType(userTypeId);
       const merged = buildEmptyPermissions();
       for (const form of FORMS) {
         for (const action of ACTIONS) {
@@ -103,13 +108,13 @@ export default function UserPermissionPage() {
   };
 
   const handleSave = async () => {
-    if (!selectedUserId) {
-      toast.error("Please select a user");
+    if (!selectedUserTypeId) {
+      toast.error("Please select a user type");
       return;
     }
     setSaving(true);
     try {
-      await savePermission({ userId: selectedUserId, permissions });
+      await savePermission({ userTypeId: selectedUserTypeId, permissions });
       toast.success("Permissions saved successfully");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to save permissions");
@@ -118,7 +123,10 @@ export default function UserPermissionPage() {
     }
   };
 
-  const userOptions = users.map((u) => ({ value: u._id, label: u.username }));
+  const userTypeOptions = userTypes.map((ut) => ({
+    value: ut._id,
+    label: ut.name,
+  }));
 
   return (
     <div className={styles.page}>
@@ -126,7 +134,8 @@ export default function UserPermissionPage() {
         <div>
           <h2 className={styles.pageTitle}>User Permission</h2>
           <p className={styles.pageSubtitle}>
-            Assign CRUD access per module to users
+            Assign CRUD access per module to user types (you cannot edit your
+            own type's permissions)
           </p>
         </div>
       </div>
@@ -134,16 +143,20 @@ export default function UserPermissionPage() {
       <div className={permStyles.card}>
         <div className={permStyles.selectSection}>
           <SelectField
-            label="Select User"
-            options={userOptions}
-            value={selectedUserId}
-            onChange={handleUserChange}
-            placeholder={loadingUsers ? "Loading users..." : "Select a user..."}
-            disabled={loadingUsers}
+            label="Select User Type"
+            options={userTypeOptions}
+            value={selectedUserTypeId}
+            onChange={handleUserTypeChange}
+            placeholder={
+              loadingUserTypes
+                ? "Loading user types..."
+                : "Select a user type..."
+            }
+            disabled={loadingUserTypes}
           />
         </div>
 
-        {selectedUserId && (
+        {selectedUserTypeId && (
           <>
             {loadingPerms ? (
               <div className={styles.loader}>Loading permissions...</div>
