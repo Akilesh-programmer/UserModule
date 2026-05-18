@@ -20,7 +20,6 @@ export default function UserCreationForm({
     username: initialData?.username || "",
     password: "",
     confirmPassword: "",
-    description: initialData?.description || "",
     isActive: initialData ? String(initialData.isActive) : "true",
   });
   const [errors, setErrors] = useState({});
@@ -74,6 +73,9 @@ export default function UserCreationForm({
     }
   };
 
+  const isStaffRecord =
+    initialData?._type === "manager" || initialData?._type === "salesRep";
+
   const userTypeOptions = userTypes.map((ut) => ({
     value: ut._id,
     label: ut.name,
@@ -89,6 +91,7 @@ export default function UserCreationForm({
         onChange={handleChange}
         placeholder="Select user type"
         error={errors.userTypeId}
+        disabled={isStaffRecord}
       />
       <InputField
         label="Username"
@@ -132,13 +135,6 @@ export default function UserCreationForm({
         value={form.isActive}
         onChange={handleChange}
         placeholder=""
-      />
-      <InputField
-        label="Description"
-        name="description"
-        placeholder="Enter description (optional)"
-        value={form.description}
-        onChange={handleChange}
       />
       <div className={styles.actions}>
         <Button

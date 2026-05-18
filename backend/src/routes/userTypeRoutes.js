@@ -19,12 +19,14 @@ const userTypeValidation = [
 
 router.use(authenticateToken);
 
-// Skip read permission for activeOnly=true (used for dropdown population in other forms)
 router.get(
   "/",
   (req, res, next) => {
     if (req.query.activeOnly === "true") return next();
-    checkPermission("userType", "read")(req, res, next);
+    checkPermission("userType", "read", [
+      ["userPermission", "read"],
+      ["userPermission", "update"],
+    ])(req, res, next);
   },
   getAllUserTypes,
 );

@@ -1,10 +1,10 @@
 const Permission = require("../models/Permission");
-const User = require("../models/User");
+const UserType = require("../models/UserType");
 
-const getPermissionByUser = async (req, res) => {
+const getPermissionByUserType = async (req, res) => {
   const permission = await Permission.findOne({
-    userId: req.params.userId,
-  }).populate("userId", "username");
+    userTypeId: req.params.userTypeId,
+  }).populate("userTypeId", "name");
   if (!permission) {
     const allFalse = {
       create: false,
@@ -13,11 +13,13 @@ const getPermissionByUser = async (req, res) => {
       delete: false,
     };
     return res.json({
-      userId: req.params.userId,
+      userTypeId: req.params.userTypeId,
       permissions: {
         userType: { ...allFalse },
         userCreation: { ...allFalse },
         userPermission: { ...allFalse },
+        manager: { ...allFalse },
+        salesRep: { ...allFalse },
       },
     });
   }
@@ -25,14 +27,15 @@ const getPermissionByUser = async (req, res) => {
 };
 
 const savePermission = async (req, res) => {
-  const { userId, permissions } = req.body;
+  const { userTypeId, permissions } = req.body;
 
-  const user = await User.findById(userId);
-  if (!user) return res.status(404).json({ message: "User not found" });
+  const userType = await UserType.findById(userTypeId);
+  if (!userType)
+    return res.status(404).json({ message: "User type not found" });
 
   const permission = await Permission.findOneAndUpdate(
-    { userId },
-    { userId, permissions },
+    { userTypeId },
+    { userTypeId, permissions },
     { new: true, upsert: true, runValidators: true },
   );
 
@@ -40,8 +43,8 @@ const savePermission = async (req, res) => {
 };
 
 const getAllPermissions = async (req, res) => {
-  const permissions = await Permission.find().populate("userId", "username");
+  const permissions = await Permission.find().populate("userTypeId", "name");
   res.json(permissions);
 };
 
-module.exports = { getPermissionByUser, savePermission, getAllPermissions };
+module.exports = { getPermissionByUserType, savePermission, getAllPermissions };

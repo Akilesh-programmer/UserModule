@@ -1,7 +1,7 @@
 const express = require("express");
 const { body } = require("express-validator");
 const {
-  getPermissionByUser,
+  getPermissionByUserType,
   savePermission,
   getAllPermissions,
 } = require("../controllers/permissionController");
@@ -15,14 +15,14 @@ router.use(authenticateToken);
 
 router.get("/", checkPermission("userPermission", "read"), getAllPermissions);
 router.get(
-  "/:userId",
+  "/:userTypeId",
   checkPermission("userPermission", "read"),
-  getPermissionByUser,
+  getPermissionByUserType,
 );
 router.post(
   "/",
   checkPermission("userPermission", "update"),
-  [body("userId").notEmpty().withMessage("User ID is required")],
+  [body("userTypeId").notEmpty().withMessage("userTypeId is required")],
   validate,
   savePermission,
 );

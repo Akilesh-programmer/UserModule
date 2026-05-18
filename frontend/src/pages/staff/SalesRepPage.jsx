@@ -1,38 +1,33 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { FaUserCircle } from "react-icons/fa";
+import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
 import {
-  fetchUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-} from "../../api/userApi";
-import { fetchActiveUserTypes } from "../../api/userTypeApi";
+  fetchSalesReps,
+  createSalesRep,
+  updateSalesRep,
+  deleteSalesRep,
+} from "../../api/salesRepApi";
 import Button from "../../components/common/Button";
 import Modal from "../../components/common/Modal";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
-import UserCreationForm from "../../components/master/UserCreationForm";
-import styles from "./MasterPage.module.css";
-import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
+import SalesRepForm from "../../components/staff/SalesRepForm";
+import styles from "./StaffPage.module.css";
 
-export default function UserCreationPage() {
+export default function SalesRepPage() {
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
-  const [userTypes, setUserTypes] = useState([]);
+  const [salesReps, setSalesReps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const loadData = useCallback(async () => {
+  const loadSalesReps = useCallback(async () => {
     try {
-      const [usersRes, typesRes] = await Promise.all([
-        fetchUsers(),
-        fetchActiveUserTypes(),
-      ]);
-      setUsers(usersRes.data);
-      setUserTypes(typesRes.data.filter((t) => t.name !== "Admin"));
+      const { data } = await fetchSalesReps();
+      setSalesReps(data);
     } catch (err) {
       if (err.response?.status === 403) {
         toast.error(
@@ -41,7 +36,7 @@ export default function UserCreationPage() {
         );
         navigate("/");
       } else {
-        toast.error("Failed to load data");
+        toast.error("Failed to load sales reps");
       }
     } finally {
       setLoading(false);
@@ -49,16 +44,16 @@ export default function UserCreationPage() {
   }, [navigate]);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    loadSalesReps();
+  }, [loadSalesReps]);
 
   const openCreateModal = () => {
     setEditTarget(null);
     setModalOpen(true);
   };
 
-  const openEditModal = (user) => {
-    setEditTarget(user);
+  const openEditModal = (rep) => {
+    setEditTarget(rep);
     setModalOpen(true);
   };
 
@@ -70,15 +65,15 @@ export default function UserCreationPage() {
   const handleSave = async (formData) => {
     try {
       if (editTarget) {
-        const { data } = await updateUser(editTarget._id, formData);
-        setUsers((prev) => prev.map((u) => (u._id === data._id ? data : u)));
-        toast.success("User updated successfully");
+        const { data } = await updateSalesRep(editTarget._id, formData);
+        setSalesReps((prev) =>
+          prev.map((r) => (r._id === data._id ? data : r)),
+        );
+        toast.success("Sales rep updated successfully");
       } else {
-        const { data } = await createUser(formData);
-        const typesRes = await fetchActiveUserTypes();
-        setUserTypes(typesRes.data.filter((t) => t.name !== "Admin"));
-        setUsers((prev) => [data, ...prev]);
-        toast.success("User created successfully");
+        const { data } = await createSalesRep(formData);
+        setSalesReps((prev) => [data, ...prev]);
+        toast.success("Sales rep created successfully");
       }
       closeModal();
     } catch (err) {
@@ -89,7 +84,7 @@ export default function UserCreationPage() {
         );
         closeModal();
       } else {
-        throw err; // Let the form's catch handle validation/duplicate errors
+        throw err;
       }
     }
   };
@@ -97,9 +92,9 @@ export default function UserCreationPage() {
   const handleDelete = async () => {
     setDeleteLoading(true);
     try {
-      await deleteUser(deleteTarget._id);
-      setUsers((prev) => prev.filter((u) => u._id !== deleteTarget._id));
-      toast.success("User deleted successfully");
+      await deleteSalesRep(deleteTarget._id);
+      setSalesReps((prev) => prev.filter((r) => r._id !== deleteTarget._id));
+      toast.success("Sales rep deleted successfully");
       setDeleteTarget(null);
     } catch (err) {
       toast.error(err.response?.data?.message || "Delete failed");
@@ -112,59 +107,75 @@ export default function UserCreationPage() {
     <div className={styles.page}>
       <div className={styles.pageHeader}>
         <div>
-          <h2 className={styles.pageTitle}>User Creation</h2>
-          <p className={styles.pageSubtitle}>Manage system users</p>
+          <h2 className={styles.pageTitle}>Sales Representatives</h2>
+          <p className={styles.pageSubtitle}>Manage sales representatives</p>
         </div>
         <Button onClick={openCreateModal}>
-          <MdAdd /> Add User
+          <MdAdd /> Add Sales Rep
         </Button>
       </div>
 
       <div className={styles.tableWrapper}>
         {loading ? (
           <div className={styles.loader}>Loading...</div>
-        ) : users.length === 0 ? (
+        ) : salesReps.length === 0 ? (
           <div className={styles.empty}>
-            No users found. Create one to get started.
+            No sales reps found. Add one to get started.
           </div>
         ) : (
           <table className={styles.table}>
             <thead>
               <tr>
                 <th>#</th>
-                <th>Username</th>
-                <th>User Type</th>
-                <th>Name / Description</th>
+                <th>Pic</th>
+                <th>Name</th>
+                <th>Manager</th>
+                <th>Mobile</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((user, index) => (
-                <tr key={user._id}>
-                  <td>{index + 1}</td>
-                  <td>{user.username}</td>
-                  <td>{user.userTypeId?.name || "—"}</td>
-                  <td>{user.name || user.description || "—"}</td>
+              {salesReps.map((r, i) => (
+                <tr key={r._id}>
+                  <td>{i + 1}</td>
+                  <td>
+                    {r.profilePic ? (
+                      <img
+                        src={`/uploads/${r.profilePic}`}
+                        alt={r.name}
+                        className={styles.thumb}
+                      />
+                    ) : (
+                      <FaUserCircle className={styles.thumbIcon} />
+                    )}
+                  </td>
+                  <td>{r.name}</td>
+                  <td>
+                    {r.managerId
+                      ? `${r.managerId.name} (${r.managerId.area})`
+                      : "—"}
+                  </td>
+                  <td>{r.mobile}</td>
                   <td>
                     <span
-                      className={`${styles.badge} ${user.isActive ? styles.active : styles.inactive}`}
+                      className={`${styles.badge} ${r.isActive ? styles.active : styles.inactive}`}
                     >
-                      {user.isActive ? "Active" : "Inactive"}
+                      {r.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td>
                     <div className={styles.actions}>
                       <button
                         className={styles.iconBtn}
-                        onClick={() => openEditModal(user)}
+                        onClick={() => openEditModal(r)}
                         title="Edit"
                       >
                         <MdEdit />
                       </button>
                       <button
                         className={`${styles.iconBtn} ${styles.danger}`}
-                        onClick={() => setDeleteTarget(user)}
+                        onClick={() => setDeleteTarget(r)}
                         title="Delete"
                       >
                         <MdDelete />
@@ -180,12 +191,12 @@ export default function UserCreationPage() {
 
       {modalOpen && (
         <Modal
-          title={editTarget ? "Edit User" : "Add User"}
+          title={editTarget ? "Edit Sales Rep" : "Add Sales Rep"}
           onClose={closeModal}
+          wide
         >
-          <UserCreationForm
+          <SalesRepForm
             initialData={editTarget}
-            userTypes={userTypes}
             onSave={handleSave}
             onCancel={closeModal}
           />
@@ -194,7 +205,8 @@ export default function UserCreationPage() {
 
       {deleteTarget && (
         <ConfirmDialog
-          message={`Are you sure you want to delete user "${deleteTarget.username}"?`}
+          title="Delete Sales Rep"
+          message={`Are you sure you want to delete "${deleteTarget.name}"?`}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
           loading={deleteLoading}

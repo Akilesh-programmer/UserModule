@@ -1,34 +1,60 @@
 const User = require("../models/User");
+const Manager = require("../models/Manager");
+const SalesRep = require("../models/SalesRep");
 const Permission = require("../models/Permission");
 
-const ACTION_MESSAGES = {
-  read: "You are not allowed to access this page",
-  create: "You are not allowed to create records",
-  update: "You are not allowed to update records",
-  delete: "You are not allowed to delete records",
+const MODULE_LABELS = {
+  userType: "User Types",
+  userCreation: "User Creation",
+  userPermission: "User Permission",
+  manager: "Managers",
+  salesRep: "Sales Reps",
 };
 
-const checkPermission = (module, action) => async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user.id).populate("userTypeId").lean();
-    if (!user) return res.status(401).json({ message: "User not found" });
+const ACTION_LABELS = {
+  read: "view",
+  create: "create",
+  update: "update",
+  delete: "delete",
+};
 
-    if (user.userTypeId?.name === "Admin") return next();
+const resolveUser = (id, source) => {
+  if (source === "manager")
+    return Manager.findById(id).populate("userTypeId").lean();
+  if (source === "salesRep")
+    return SalesRep.findById(id).populate("userTypeId").lean();
+  return User.findById(id).populate("userTypeId").lean();
+};
 
-    const permDoc = await Permission.findOne({ userId: req.user.id }).lean();
-    const allowed = permDoc?.permissions?.[module]?.[action] === true;
+const checkPermission =
+  (module, action, alternatives = []) =>
+  async (req, res, next) => {
+    try {
+      const userRecord = await resolveUser(req.user.id, req.user.source);
+      if (!userRecord)
+        return res.status(401).json({ message: "User not found" });
 
-    if (!allowed) {
-      return res.status(403).json({
-        message:
-          ACTION_MESSAGES[action] ||
-          "You are not allowed to perform this action",
-      });
+      if (userRecord.userTypeId?.name === "Admin") return next();
+
+      const permDoc = await Permission.findOne({
+        userTypeId: userRecord.userTypeId?._id,
+      }).lean();
+
+      const allowed =
+        permDoc?.permissions?.[module]?.[action] === true ||
+        alternatives.some(([m, a]) => permDoc?.permissions?.[m]?.[a] === true);
+
+      if (!allowed) {
+        const moduleLabel = MODULE_LABELS[module] || module;
+        const actionLabel = ACTION_LABELS[action] || action;
+        return res.status(403).json({
+          message: `You don't have permission to ${actionLabel} ${moduleLabel}`,
+        });
+      }
+      next();
+    } catch (err) {
+      next(err);
     }
-    next();
-  } catch (err) {
-    next(err);
-  }
-};
+  };
 
 module.exports = { checkPermission };

@@ -1,38 +1,33 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { FaUserCircle } from "react-icons/fa";
+import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
 import {
-  fetchUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-} from "../../api/userApi";
-import { fetchActiveUserTypes } from "../../api/userTypeApi";
+  fetchManagers,
+  createManager,
+  updateManager,
+  deleteManager,
+} from "../../api/managerApi";
 import Button from "../../components/common/Button";
 import Modal from "../../components/common/Modal";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
-import UserCreationForm from "../../components/master/UserCreationForm";
-import styles from "./MasterPage.module.css";
-import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
+import ManagerForm from "../../components/staff/ManagerForm";
+import styles from "./StaffPage.module.css";
 
-export default function UserCreationPage() {
+export default function ManagerPage() {
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
-  const [userTypes, setUserTypes] = useState([]);
+  const [managers, setManagers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const loadData = useCallback(async () => {
+  const loadManagers = useCallback(async () => {
     try {
-      const [usersRes, typesRes] = await Promise.all([
-        fetchUsers(),
-        fetchActiveUserTypes(),
-      ]);
-      setUsers(usersRes.data);
-      setUserTypes(typesRes.data.filter((t) => t.name !== "Admin"));
+      const { data } = await fetchManagers();
+      setManagers(data);
     } catch (err) {
       if (err.response?.status === 403) {
         toast.error(
@@ -41,7 +36,7 @@ export default function UserCreationPage() {
         );
         navigate("/");
       } else {
-        toast.error("Failed to load data");
+        toast.error("Failed to load managers");
       }
     } finally {
       setLoading(false);
@@ -49,16 +44,16 @@ export default function UserCreationPage() {
   }, [navigate]);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    loadManagers();
+  }, [loadManagers]);
 
   const openCreateModal = () => {
     setEditTarget(null);
     setModalOpen(true);
   };
 
-  const openEditModal = (user) => {
-    setEditTarget(user);
+  const openEditModal = (manager) => {
+    setEditTarget(manager);
     setModalOpen(true);
   };
 
@@ -70,15 +65,13 @@ export default function UserCreationPage() {
   const handleSave = async (formData) => {
     try {
       if (editTarget) {
-        const { data } = await updateUser(editTarget._id, formData);
-        setUsers((prev) => prev.map((u) => (u._id === data._id ? data : u)));
-        toast.success("User updated successfully");
+        const { data } = await updateManager(editTarget._id, formData);
+        setManagers((prev) => prev.map((m) => (m._id === data._id ? data : m)));
+        toast.success("Manager updated successfully");
       } else {
-        const { data } = await createUser(formData);
-        const typesRes = await fetchActiveUserTypes();
-        setUserTypes(typesRes.data.filter((t) => t.name !== "Admin"));
-        setUsers((prev) => [data, ...prev]);
-        toast.success("User created successfully");
+        const { data } = await createManager(formData);
+        setManagers((prev) => [data, ...prev]);
+        toast.success("Manager created successfully");
       }
       closeModal();
     } catch (err) {
@@ -89,7 +82,7 @@ export default function UserCreationPage() {
         );
         closeModal();
       } else {
-        throw err; // Let the form's catch handle validation/duplicate errors
+        throw err;
       }
     }
   };
@@ -97,9 +90,9 @@ export default function UserCreationPage() {
   const handleDelete = async () => {
     setDeleteLoading(true);
     try {
-      await deleteUser(deleteTarget._id);
-      setUsers((prev) => prev.filter((u) => u._id !== deleteTarget._id));
-      toast.success("User deleted successfully");
+      await deleteManager(deleteTarget._id);
+      setManagers((prev) => prev.filter((m) => m._id !== deleteTarget._id));
+      toast.success("Manager deleted successfully");
       setDeleteTarget(null);
     } catch (err) {
       toast.error(err.response?.data?.message || "Delete failed");
@@ -112,59 +105,71 @@ export default function UserCreationPage() {
     <div className={styles.page}>
       <div className={styles.pageHeader}>
         <div>
-          <h2 className={styles.pageTitle}>User Creation</h2>
-          <p className={styles.pageSubtitle}>Manage system users</p>
+          <h2 className={styles.pageTitle}>Managers</h2>
+          <p className={styles.pageSubtitle}>Manage field area managers</p>
         </div>
         <Button onClick={openCreateModal}>
-          <MdAdd /> Add User
+          <MdAdd /> Add Manager
         </Button>
       </div>
 
       <div className={styles.tableWrapper}>
         {loading ? (
           <div className={styles.loader}>Loading...</div>
-        ) : users.length === 0 ? (
+        ) : managers.length === 0 ? (
           <div className={styles.empty}>
-            No users found. Create one to get started.
+            No managers found. Add one to get started.
           </div>
         ) : (
           <table className={styles.table}>
             <thead>
               <tr>
                 <th>#</th>
-                <th>Username</th>
-                <th>User Type</th>
-                <th>Name / Description</th>
+                <th>Pic</th>
+                <th>Name</th>
+                <th>Area</th>
+                <th>Mobile</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((user, index) => (
-                <tr key={user._id}>
-                  <td>{index + 1}</td>
-                  <td>{user.username}</td>
-                  <td>{user.userTypeId?.name || "—"}</td>
-                  <td>{user.name || user.description || "—"}</td>
+              {managers.map((m, i) => (
+                <tr key={m._id}>
+                  <td>{i + 1}</td>
+                  <td>
+                    {m.profilePic ? (
+                      <img
+                        src={`/uploads/${m.profilePic}`}
+                        alt={m.name}
+                        className={styles.thumb}
+                      />
+                    ) : (
+                      <FaUserCircle className={styles.thumbIcon} />
+                    )}
+                  </td>
+                  <td>{m.name}</td>
+                  <td>{m.area}</td>
+                  <td>{m.mobile}</td>
                   <td>
                     <span
-                      className={`${styles.badge} ${user.isActive ? styles.active : styles.inactive}`}
+                      className={`${styles.badge} ${m.isActive ? styles.active : styles.inactive}`}
                     >
-                      {user.isActive ? "Active" : "Inactive"}
+                      {m.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td>
                     <div className={styles.actions}>
                       <button
                         className={styles.iconBtn}
-                        onClick={() => openEditModal(user)}
+                        onClick={() => openEditModal(m)}
                         title="Edit"
                       >
                         <MdEdit />
                       </button>
                       <button
                         className={`${styles.iconBtn} ${styles.danger}`}
-                        onClick={() => setDeleteTarget(user)}
+                        onClick={() => setDeleteTarget(m)}
                         title="Delete"
                       >
                         <MdDelete />
@@ -180,12 +185,12 @@ export default function UserCreationPage() {
 
       {modalOpen && (
         <Modal
-          title={editTarget ? "Edit User" : "Add User"}
+          title={editTarget ? "Edit Manager" : "Add Manager"}
           onClose={closeModal}
+          wide
         >
-          <UserCreationForm
+          <ManagerForm
             initialData={editTarget}
-            userTypes={userTypes}
             onSave={handleSave}
             onCancel={closeModal}
           />
@@ -194,7 +199,8 @@ export default function UserCreationPage() {
 
       {deleteTarget && (
         <ConfirmDialog
-          message={`Are you sure you want to delete user "${deleteTarget.username}"?`}
+          title="Delete Manager"
+          message={`Are you sure you want to delete "${deleteTarget.name}"?`}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
           loading={deleteLoading}

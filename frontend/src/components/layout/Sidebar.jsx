@@ -5,8 +5,9 @@ import {
   MdExpandMore,
   MdExpandLess,
   MdClose,
+  MdSupervisedUserCircle,
 } from "react-icons/md";
-import { FiUsers, FiShield, FiUserCheck } from "react-icons/fi";
+import { FiUsers, FiShield, FiUserCheck, FiUserPlus } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import styles from "./Sidebar.module.css";
 
@@ -37,13 +38,39 @@ const NAV_ITEMS = [
       },
     ],
   },
+  {
+    label: "Staff",
+    icon: <MdSupervisedUserCircle />,
+    children: [
+      {
+        label: "Manager",
+        icon: <FiUserCheck />,
+        path: "/staff/manager",
+      },
+      {
+        label: "Sales Rep",
+        icon: <FiUserPlus />,
+        path: "/staff/sales-rep",
+      },
+    ],
+  },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
-  const [expandedGroup, setExpandedGroup] = useState("Master");
+  const [expandedGroups, setExpandedGroups] = useState(
+    () => new Set(["Master"]),
+  );
 
   const toggleGroup = (label) =>
-    setExpandedGroup((prev) => (prev === label ? null : label));
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) {
+        next.delete(label);
+      } else {
+        next.add(label);
+      }
+      return next;
+    });
 
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
@@ -63,14 +90,14 @@ export default function Sidebar({ isOpen, onClose }) {
                 <span className={styles.icon}>{item.icon}</span>
                 <span className={styles.label}>{item.label}</span>
                 <span className={styles.chevron}>
-                  {expandedGroup === item.label ? (
+                  {expandedGroups.has(item.label) ? (
                     <MdExpandLess />
                   ) : (
                     <MdExpandMore />
                   )}
                 </span>
               </button>
-              {expandedGroup === item.label && (
+              {expandedGroups.has(item.label) && (
                 <div className={styles.subNav}>
                   {item.children.map((child) => (
                     <NavLink
