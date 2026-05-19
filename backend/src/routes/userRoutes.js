@@ -49,16 +49,7 @@ const updateUserValidation = [
 
 router.use(authenticateToken);
 
-// permissionsView=true is used by UserPermissionPage which only needs userPermission.read
-router.get(
-  "/",
-  (req, res, next) => {
-    const permModule =
-      req.query.permissionsView === "true" ? "userPermission" : "userCreation";
-    checkPermission(permModule, "read")(req, res, next);
-  },
-  getAllUsers,
-);
+router.get("/", checkPermission("userCreation", "read"), getAllUsers);
 router.get("/:id", checkPermission("userCreation", "read"), getUserById);
 router.post(
   "/",

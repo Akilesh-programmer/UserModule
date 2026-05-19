@@ -19,15 +19,13 @@ const userTypeValidation = [
 
 router.use(authenticateToken);
 
+// the bypassIfActiveOnly is used for listing out the dropdown options for
+// any user, for example userTypes dropdowns will be needed to shown to all 
+// users regardless of their permission, so we bypass the permission rules.
+// With the dropdown they are not going to do anything.
 router.get(
   "/",
-  (req, res, next) => {
-    if (req.query.activeOnly === "true") return next();
-    checkPermission("userType", "read", [
-      ["userPermission", "read"],
-      ["userPermission", "update"],
-    ])(req, res, next);
-  },
+  checkPermission("userType", "read", { bypassIfActiveOnly: true }),
   getAllUserTypes,
 );
 router.get("/:id", checkPermission("userType", "read"), getUserTypeById);
