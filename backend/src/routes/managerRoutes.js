@@ -49,10 +49,7 @@ router.use(authenticateToken);
 
 router.get(
   "/",
-  (req, res, next) => {
-    if (req.query.activeOnly === "true") return next();
-    checkPermission("manager", "read")(req, res, next);
-  },
+  checkPermission("manager", "read", { bypassIfActiveOnly: true }),
   getAllManagers,
 );
 router.get("/:id", checkPermission("manager", "read"), getManagerById);

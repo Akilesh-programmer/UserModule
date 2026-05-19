@@ -27,9 +27,11 @@ const resolveUser = (id, source) => {
 };
 
 const checkPermission =
-  (module, action, alternatives = []) =>
+  (module, action, { bypassIfActiveOnly = false } = {}) =>
   async (req, res, next) => {
     try {
+      if (bypassIfActiveOnly && req.query.activeOnly === "true") return next();
+
       const userRecord = await resolveUser(req.user.id, req.user.source);
       if (!userRecord)
         return res.status(401).json({ message: "User not found" });
@@ -40,9 +42,7 @@ const checkPermission =
         userTypeId: userRecord.userTypeId?._id,
       }).lean();
 
-      const allowed =
-        permDoc?.permissions?.[module]?.[action] === true ||
-        alternatives.some(([m, a]) => permDoc?.permissions?.[m]?.[a] === true);
+      const allowed = permDoc?.permissions?.[module]?.[action] === true;
 
       if (!allowed) {
         const moduleLabel = MODULE_LABELS[module] || module;
