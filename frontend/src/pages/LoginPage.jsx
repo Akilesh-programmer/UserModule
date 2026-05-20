@@ -41,11 +41,7 @@ export default function LoginPage() {
       navigate("/");
     } catch (err) {
       const message = err.response?.data?.message || "Login failed";
-      if (err.response?.status === 403) {
-        toast.error(message);
-      } else {
-        toast.error(message);
-      }
+      toast.error(message);
     } finally {
       setLoading(false);
     }

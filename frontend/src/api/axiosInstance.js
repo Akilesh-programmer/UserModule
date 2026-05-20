@@ -1,15 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api/v1",
+  withCredentials: true,
 });
 
 api.interceptors.response.use(
@@ -19,10 +12,9 @@ api.interceptors.response.use(
     // Only redirect to login on 401 (token expired/missing)
     // 403 (permission denied) is passed through so pages can handle it with toast
     if (!isAuthRoute && error.response?.status === 401) {
-      localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("permissions");
-      window.location.href = "/login";
+      globalThis.location.href = "/login";
     }
     return Promise.reject(error);
   },

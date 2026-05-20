@@ -1,35 +1,31 @@
 const UserType = require("../models/UserType");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
+const factory = require("../utils/handlerFactory");
 
-const getAllUserTypes = async (req, res) => {
+const getAllUserTypes = catchAsync(async (req, res, next) => {
   const filter = req.query.activeOnly === "true" ? { isActive: true } : {};
   const userTypes = await UserType.find(filter).sort({ createdAt: -1 });
-  res.json(userTypes);
-};
+  res.status(200).json({ status: "success", data: { data: userTypes } });
+});
 
-const getUserTypeById = async (req, res) => {
-  const userType = await UserType.findById(req.params.id);
-  if (!userType)
-    return res.status(404).json({ message: "User type not found" });
-  res.json(userType);
-};
+const getUserTypeById = factory.getOne(UserType);
 
-const createUserType = async (req, res) => {
+const createUserType = catchAsync(async (req, res, next) => {
   const { name, description, isActive } = req.body;
 
   const existing = await UserType.findOne({
     name: { $regex: `^${name}$`, $options: "i" },
   });
   if (existing) {
-    return res
-      .status(409)
-      .json({ message: "User type with this name already exists" });
+    return next(new AppError("User type with this name already exists.", 409));
   }
 
   const userType = await UserType.create({ name, description, isActive });
-  res.status(201).json(userType);
-};
+  res.status(201).json({ status: "success", data: { data: userType } });
+});
 
-const updateUserType = async (req, res) => {
+const updateUserType = catchAsync(async (req, res, next) => {
   const { name, description, isActive } = req.body;
 
   const existing = await UserType.findOne({
@@ -37,9 +33,7 @@ const updateUserType = async (req, res) => {
     _id: { $ne: req.params.id },
   });
   if (existing) {
-    return res
-      .status(409)
-      .json({ message: "User type with this name already exists" });
+    return next(new AppError("User type with this name already exists.", 409));
   }
 
   const userType = await UserType.findByIdAndUpdate(
@@ -47,17 +41,15 @@ const updateUserType = async (req, res) => {
     { name, description, isActive },
     { new: true, runValidators: true },
   );
-  if (!userType)
-    return res.status(404).json({ message: "User type not found" });
-  res.json(userType);
-};
+  if (!userType) return next(new AppError("User type not found.", 404));
+  res.status(200).json({ status: "success", data: { data: userType } });
+});
 
-const deleteUserType = async (req, res) => {
+const deleteUserType = catchAsync(async (req, res, next) => {
   const userType = await UserType.findByIdAndDelete(req.params.id);
-  if (!userType)
-    return res.status(404).json({ message: "User type not found" });
-  res.json({ message: "User type deleted successfully" });
-};
+  if (!userType) return next(new AppError("User type not found.", 404));
+  res.status(204).json({ status: "success", data: null });
+});
 
 module.exports = {
   getAllUserTypes,

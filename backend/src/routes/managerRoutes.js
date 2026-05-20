@@ -18,15 +18,15 @@ const managerValidation = [
   body("name").trim().notEmpty().withMessage("Name is required"),
   body("mobile")
     .trim()
-    .matches(/^[0-9]{10}$/)
+    .matches(/^\d{10}$/)
     .withMessage("Mobile must be 10 digits"),
   body("aadhaarNo")
     .trim()
-    .matches(/^[0-9]{12}$/)
+    .matches(/^\d{12}$/)
     .withMessage("Aadhaar must be 12 digits"),
   body("panCardNo")
     .trim()
-    .matches(/^[A-Z]{5}[0-9]{4}[A-Z]$/)
+    .matches(/^[A-Z]{5}\d{4}[A-Z]$/)
     .withMessage("Invalid PAN card format"),
   body("area").trim().notEmpty().withMessage("Area is required"),
 ];
@@ -41,7 +41,7 @@ const createManagerValidation = [
     .withMessage("Password must be at least 8 characters")
     .matches(/[A-Z]/)
     .withMessage("Password must contain at least one uppercase letter")
-    .matches(/[0-9]/)
+    .matches(/\d/)
     .withMessage("Password must contain at least one number"),
 ];
 
