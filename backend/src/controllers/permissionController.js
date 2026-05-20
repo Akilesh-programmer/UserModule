@@ -1,10 +1,13 @@
 const Permission = require("../models/Permission");
 const UserType = require("../models/UserType");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
-const getPermissionByUserType = async (req, res) => {
+const getPermissionByUserType = catchAsync(async (req, res, next) => {
   const permission = await Permission.findOne({
     userTypeId: req.params.userTypeId,
   }).populate("userTypeId", "name");
+
   if (!permission) {
     const allFalse = {
       create: false,
@@ -12,26 +15,31 @@ const getPermissionByUserType = async (req, res) => {
       update: false,
       delete: false,
     };
-    return res.json({
-      userTypeId: req.params.userTypeId,
-      permissions: {
-        userType: { ...allFalse },
-        userCreation: { ...allFalse },
-        userPermission: { ...allFalse },
-        manager: { ...allFalse },
-        salesRep: { ...allFalse },
+    return res.status(200).json({
+      status: "success",
+      data: {
+        data: {
+          userTypeId: req.params.userTypeId,
+          permissions: {
+            userType: { ...allFalse },
+            userCreation: { ...allFalse },
+            userPermission: { ...allFalse },
+            manager: { ...allFalse },
+            salesRep: { ...allFalse },
+          },
+        },
       },
     });
   }
-  res.json(permission);
-};
 
-const savePermission = async (req, res) => {
+  res.status(200).json({ status: "success", data: { data: permission } });
+});
+
+const savePermission = catchAsync(async (req, res, next) => {
   const { userTypeId, permissions } = req.body;
 
   const userType = await UserType.findById(userTypeId);
-  if (!userType)
-    return res.status(404).json({ message: "User type not found" });
+  if (!userType) return next(new AppError("User type not found.", 404));
 
   const permission = await Permission.findOneAndUpdate(
     { userTypeId },
@@ -39,12 +47,12 @@ const savePermission = async (req, res) => {
     { new: true, upsert: true, runValidators: true },
   );
 
-  res.json(permission);
-};
+  res.status(200).json({ status: "success", data: { data: permission } });
+});
 
-const getAllPermissions = async (req, res) => {
+const getAllPermissions = catchAsync(async (req, res, next) => {
   const permissions = await Permission.find().populate("userTypeId", "name");
-  res.json(permissions);
-};
+  res.status(200).json({ status: "success", data: { data: permissions } });
+});
 
 module.exports = { getPermissionByUserType, savePermission, getAllPermissions };

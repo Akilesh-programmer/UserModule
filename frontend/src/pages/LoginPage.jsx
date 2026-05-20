@@ -1,15 +1,13 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import InputField from "../components/common/InputField";
 import Button from "../components/common/Button";
-import styles from "./LoginPage.module.css";
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-
   const [form, setForm] = useState({ username: "", password: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -40,54 +38,51 @@ export default function LoginPage() {
       toast.success("Login successful");
       navigate("/");
     } catch (err) {
-      const message = err.response?.data?.message || "Login failed";
-      if (err.response?.status === 403) {
-        toast.error(message);
-      } else {
-        toast.error(message);
-      }
+      toast.error(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.card}>
-        <div className={styles.brandSection}>
-          <h1 className={styles.brand}>UserModule</h1>
-          <p className={styles.tagline}>Sign in to your account</p>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900">UserModule</h1>
+          <p className="mt-2 text-sm text-gray-500">Sign in to your account</p>
         </div>
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          <InputField
-            label="Username"
-            type="text"
-            name="username"
-            placeholder="Enter username"
-            value={form.username}
-            onChange={handleChange}
-            error={errors.username}
-            autoComplete="username"
-          />
-          <InputField
-            label="Password"
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            value={form.password}
-            onChange={handleChange}
-            error={errors.password}
-            autoComplete="current-password"
-          />
-          <Button
-            type="submit"
-            size="lg"
-            loading={loading}
-            style={{ width: "100%", marginTop: "4px" }}
-          >
-            Sign In
-          </Button>
-        </form>
+        <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            <InputField
+              label="Username"
+              type="text"
+              name="username"
+              placeholder="Enter username"
+              value={form.username}
+              onChange={handleChange}
+              error={errors.username}
+              autoComplete="username"
+            />
+            <InputField
+              label="Password"
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              value={form.password}
+              onChange={handleChange}
+              error={errors.password}
+              autoComplete="current-password"
+            />
+            <Button
+              type="submit"
+              size="lg"
+              loading={loading}
+              className="mt-2 w-full"
+            >
+              Sign In
+            </Button>
+          </form>
+        </div>
       </div>
     </div>
   );

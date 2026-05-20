@@ -1,7 +1,8 @@
-const User = require("../models/User");
+﻿const User = require("../models/User");
 const Manager = require("../models/Manager");
 const SalesRep = require("../models/SalesRep");
 const Permission = require("../models/Permission");
+const AppError = require("../utils/appError");
 
 const MODULE_LABELS = {
   userType: "User Types",
@@ -33,8 +34,7 @@ const checkPermission =
       if (bypassIfActiveOnly && req.query.activeOnly === "true") return next();
 
       const userRecord = await resolveUser(req.user.id, req.user.source);
-      if (!userRecord)
-        return res.status(401).json({ message: "User not found" });
+      if (!userRecord) return next(new AppError("User not found.", 401));
 
       if (userRecord.userTypeId?.name === "Admin") return next();
 
@@ -47,9 +47,12 @@ const checkPermission =
       if (!allowed) {
         const moduleLabel = MODULE_LABELS[module] || module;
         const actionLabel = ACTION_LABELS[action] || action;
-        return res.status(403).json({
-          message: `You don't have permission to ${actionLabel} ${moduleLabel}`,
-        });
+        return next(
+          new AppError(
+            `You don't have permission to ${actionLabel} ${moduleLabel}.`,
+            403,
+          ),
+        );
       }
       next();
     } catch (err) {

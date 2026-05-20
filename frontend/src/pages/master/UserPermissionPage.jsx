@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+﻿import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { fetchUserTypes } from "../../api/userTypeApi";
@@ -9,8 +9,9 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import SelectField from "../../components/common/SelectField";
 import Button from "../../components/common/Button";
-import styles from "./MasterPage.module.css";
-import permStyles from "./UserPermissionPage.module.css";
+import Spinner from "../../components/common/Spinner";
+import PageHeader from "../../components/common/PageHeader";
+import PermissionMatrix from "./PermissionMatrix";
 
 const FORMS = [
   { key: "userType", label: "User Type" },
@@ -43,7 +44,6 @@ export default function UserPermissionPage() {
   const loadUserTypes = useCallback(async () => {
     try {
       const { data } = await fetchUserTypes();
-      // Exclude Admin and the current user's own type (can't edit own permissions)
       setUserTypes(
         data.filter(
           (ut) => ut.name !== "Admin" && ut.name !== currentUser?.userType,
@@ -129,28 +129,21 @@ export default function UserPermissionPage() {
   }));
 
   return (
-    <div className={styles.page}>
-      <div className={styles.pageHeader}>
-        <div>
-          <h2 className={styles.pageTitle}>User Permission</h2>
-          <p className={styles.pageSubtitle}>
-            Assign CRUD access per module to user types (you cannot edit your
-            own type's permissions)
-          </p>
-        </div>
-      </div>
+    <div>
+      <PageHeader
+        title="User Permission"
+        subtitle="Assign CRUD access per module to user types"
+      />
 
-      <div className={permStyles.card}>
-        <div className={permStyles.selectSection}>
+      <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+        <div className="max-w-xs">
           <SelectField
             label="Select User Type"
             options={userTypeOptions}
             value={selectedUserTypeId}
             onChange={handleUserTypeChange}
             placeholder={
-              loadingUserTypes
-                ? "Loading user types..."
-                : "Select a user type..."
+              loadingUserTypes ? "Loading..." : "Select a user type..."
             }
             disabled={loadingUserTypes}
           />
@@ -159,37 +152,24 @@ export default function UserPermissionPage() {
         {selectedUserTypeId && (
           <>
             {loadingPerms ? (
-              <div className={styles.loader}>Loading permissions...</div>
+              <Spinner />
             ) : (
-              <>
-                <div className={permStyles.permList}>
-                  <h4 className={permStyles.permHeading}>Module Permissions</h4>
-                  {FORMS.map(({ key, label }) => (
-                    <div key={key} className={permStyles.permSection}>
-                      <p className={permStyles.permSectionTitle}>{label}</p>
-                      <div className={permStyles.crudRow}>
-                        {ACTIONS.map((action) => (
-                          <label key={action} className={permStyles.crudItem}>
-                            <input
-                              type="checkbox"
-                              checked={permissions[key]?.[action] === true}
-                              onChange={() => togglePermission(key, action)}
-                            />
-                            <span>
-                              {action.charAt(0).toUpperCase() + action.slice(1)}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className={permStyles.saveSection}>
+              <div className="mt-6 space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                  Module Permissions
+                </p>
+
+                <PermissionMatrix
+                  permissions={permissions}
+                  onToggle={togglePermission}
+                />
+
+                <div className="flex justify-end pt-2">
                   <Button onClick={handleSave} loading={saving}>
                     Save Permissions
                   </Button>
                 </div>
-              </>
+              </div>
             )}
           </>
         )}

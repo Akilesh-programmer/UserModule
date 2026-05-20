@@ -2,7 +2,6 @@ import { useState } from "react";
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import Button from "../common/Button";
-import styles from "./MasterForm.module.css";
 
 const STATUS_OPTIONS = [
   { value: "true", label: "Active" },
@@ -39,8 +38,9 @@ export default function UserCreationForm({
         errs.password = "Password must contain at least one number";
       }
     }
-    if (form.password && form.password !== form.confirmPassword)
+    if (form.password && form.password !== form.confirmPassword) {
       errs.confirmPassword = "Passwords do not match";
+    }
     return errs;
   };
 
@@ -66,8 +66,7 @@ export default function UserCreationForm({
       }
       await onSave(payload);
     } catch (err) {
-      const message = err.response?.data?.message || "Failed to save";
-      setErrors({ username: message });
+      setErrors({ username: err.response?.data?.message || "Failed to save" });
     } finally {
       setSaving(false);
     }
@@ -82,7 +81,7 @@ export default function UserCreationForm({
   }));
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
       <SelectField
         label="User Type"
         name="userTypeId"
@@ -136,7 +135,7 @@ export default function UserCreationForm({
         onChange={handleChange}
         placeholder=""
       />
-      <div className={styles.actions}>
+      <div className="flex justify-end gap-3 pt-2">
         <Button
           type="button"
           variant="secondary"

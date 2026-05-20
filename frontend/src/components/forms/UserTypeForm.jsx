@@ -2,7 +2,6 @@ import { useState } from "react";
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import Button from "../common/Button";
-import styles from "./MasterForm.module.css";
 
 const STATUS_OPTIONS = [
   { value: "true", label: "Active" },
@@ -41,15 +40,14 @@ export default function UserTypeForm({ initialData, onSave, onCancel }) {
     try {
       await onSave({ ...form, isActive: form.isActive === "true" });
     } catch (err) {
-      const message = err.response?.data?.message || "Failed to save";
-      setErrors({ name: message });
+      setErrors({ name: err.response?.data?.message || "Failed to save" });
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
       <InputField
         label="Name"
         name="name"
@@ -73,7 +71,7 @@ export default function UserTypeForm({ initialData, onSave, onCancel }) {
         value={form.description}
         onChange={handleChange}
       />
-      <div className={styles.actions}>
+      <div className="flex justify-end gap-3 pt-2">
         <Button
           type="button"
           variant="secondary"

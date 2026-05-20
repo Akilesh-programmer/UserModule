@@ -1,5 +1,11 @@
-import { createContext, useContext, useState, useCallback } from "react";
-import { loginUser } from "../api/authApi";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
+import { loginUser, logoutUser } from "../api/authApi";
 
 const AuthContext = createContext(null);
 
@@ -16,7 +22,6 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (credentials) => {
     const { data } = await loginUser(credentials);
-    localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
     localStorage.setItem("permissions", JSON.stringify(data.permissions));
     setUser(data.user);
@@ -24,19 +29,25 @@ export function AuthProvider({ children }) {
     return data;
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("permissions");
-    setUser(null);
-    setPermissions(null);
+  const logout = useCallback(async () => {
+    try {
+      await logoutUser();
+    } catch {
+      // ignore — clear state regardless
+    } finally {
+      localStorage.removeItem("user");
+      localStorage.removeItem("permissions");
+      setUser(null);
+      setPermissions(null);
+    }
   }, []);
 
-  return (
-    <AuthContext.Provider value={{ user, permissions, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ user, permissions, login, logout }),
+    [user, permissions, login, logout],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
