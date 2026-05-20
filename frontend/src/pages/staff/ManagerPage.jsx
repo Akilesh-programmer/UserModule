@@ -1,187 +1,111 @@
-import { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { FaUserCircle } from "react-icons/fa";
-import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
+﻿import { useCrudPage } from "../../hooks/useCrudPage";
 import {
   fetchManagers,
   createManager,
   updateManager,
   deleteManager,
 } from "../../api/managerApi";
+import { MdAdd } from "react-icons/md";
+import PageHeader from "../../components/common/PageHeader";
 import Button from "../../components/common/Button";
+import Badge from "../../components/common/Badge";
+import DataTable from "../../components/common/DataTable";
+import ActionButtons from "../../components/common/ActionButtons";
+import AvatarCell from "../../components/common/AvatarCell";
 import Modal from "../../components/common/Modal";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
-import ManagerForm from "../../components/staff/ManagerForm";
-import styles from "./StaffPage.module.css";
+import ManagerForm from "../../components/forms/ManagerForm";
 
 export default function ManagerPage() {
-  const navigate = useNavigate();
-  const [managers, setManagers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editTarget, setEditTarget] = useState(null);
-  const [deleteTarget, setDeleteTarget] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  const {
+    items: managers,
+    loading,
+    modalOpen,
+    editTarget,
+    openCreate,
+    openEdit,
+    closeModal,
+    handleSave,
+    deleteTarget,
+    setDeleteTarget,
+    deleteLoading,
+    handleDelete,
+  } = useCrudPage({
+    fetchFn: fetchManagers,
+    createFn: createManager,
+    updateFn: updateManager,
+    deleteFn: deleteManager,
+    entityName: "Manager",
+  });
 
-  const loadManagers = useCallback(async () => {
-    try {
-      const { data } = await fetchManagers();
-      setManagers(data);
-    } catch (err) {
-      if (err.response?.status === 403) {
-        toast.error(
-          err.response.data?.message ||
-            "You are not allowed to access this page",
-        );
-        navigate("/");
-      } else {
-        toast.error("Failed to load managers");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    loadManagers();
-  }, [loadManagers]);
-
-  const openCreateModal = () => {
-    setEditTarget(null);
-    setModalOpen(true);
-  };
-
-  const openEditModal = (manager) => {
-    setEditTarget(manager);
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setEditTarget(null);
-  };
-
-  const handleSave = async (formData) => {
-    try {
-      if (editTarget) {
-        const { data } = await updateManager(editTarget._id, formData);
-        setManagers((prev) => prev.map((m) => (m._id === data._id ? data : m)));
-        toast.success("Manager updated successfully");
-      } else {
-        const { data } = await createManager(formData);
-        setManagers((prev) => [data, ...prev]);
-        toast.success("Manager created successfully");
-      }
-      closeModal();
-    } catch (err) {
-      if (err.response?.status === 403) {
-        toast.error(
-          err.response.data?.message ||
-            "You are not allowed to perform this action",
-        );
-        closeModal();
-      } else {
-        throw err;
-      }
-    }
-  };
-
-  const handleDelete = async () => {
-    setDeleteLoading(true);
-    try {
-      await deleteManager(deleteTarget._id);
-      setManagers((prev) => prev.filter((m) => m._id !== deleteTarget._id));
-      toast.success("Manager deleted successfully");
-      setDeleteTarget(null);
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Delete failed");
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
+  const columns = [
+    {
+      key: "#",
+      header: "#",
+      cellClassName: "w-12 text-sm text-gray-500",
+      render: (_, i) => i + 1,
+    },
+    {
+      key: "photo",
+      header: "Photo",
+      cellClassName: "w-16",
+      render: (mgr) => <AvatarCell src={mgr.profilePic} alt={mgr.name} />,
+    },
+    {
+      key: "name",
+      header: "Name",
+      cellClassName: "text-sm font-medium text-gray-900",
+      render: (mgr) => mgr.name,
+    },
+    {
+      key: "mobile",
+      header: "Mobile",
+      cellClassName: "text-sm text-gray-500 hidden sm:table-cell",
+      headerClassName: "hidden sm:table-cell",
+      render: (mgr) => mgr.mobile,
+    },
+    {
+      key: "area",
+      header: "Area",
+      cellClassName: "text-sm text-gray-500 hidden md:table-cell",
+      headerClassName: "hidden md:table-cell",
+      render: (mgr) => mgr.area || "—",
+    },
+    {
+      key: "status",
+      header: "Status",
+      render: (mgr) => <Badge active={mgr.isActive} />,
+    },
+    {
+      key: "actions",
+      header: "Actions",
+      render: (mgr) => (
+        <ActionButtons
+          onEdit={() => openEdit(mgr)}
+          onDelete={() => setDeleteTarget(mgr)}
+        />
+      ),
+    },
+  ];
 
   return (
-    <div className={styles.page}>
-      <div className={styles.pageHeader}>
-        <div>
-          <h2 className={styles.pageTitle}>Managers</h2>
-          <p className={styles.pageSubtitle}>Manage field area managers</p>
-        </div>
-        <Button onClick={openCreateModal}>
-          <MdAdd /> Add Manager
-        </Button>
-      </div>
+    <div>
+      <PageHeader
+        title="Manager"
+        subtitle="Manage field managers"
+        action={
+          <Button onClick={openCreate}>
+            <MdAdd size={16} /> Add Manager
+          </Button>
+        }
+      />
 
-      <div className={styles.tableWrapper}>
-        {loading ? (
-          <div className={styles.loader}>Loading...</div>
-        ) : managers.length === 0 ? (
-          <div className={styles.empty}>
-            No managers found. Add one to get started.
-          </div>
-        ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Pic</th>
-                <th>Name</th>
-                <th>Area</th>
-                <th>Mobile</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {managers.map((m, i) => (
-                <tr key={m._id}>
-                  <td>{i + 1}</td>
-                  <td>
-                    {m.profilePic ? (
-                      <img
-                        src={`/uploads/${m.profilePic}`}
-                        alt={m.name}
-                        className={styles.thumb}
-                      />
-                    ) : (
-                      <FaUserCircle className={styles.thumbIcon} />
-                    )}
-                  </td>
-                  <td>{m.name}</td>
-                  <td>{m.area}</td>
-                  <td>{m.mobile}</td>
-                  <td>
-                    <span
-                      className={`${styles.badge} ${m.isActive ? styles.active : styles.inactive}`}
-                    >
-                      {m.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-                  <td>
-                    <div className={styles.actions}>
-                      <button
-                        className={styles.iconBtn}
-                        onClick={() => openEditModal(m)}
-                        title="Edit"
-                      >
-                        <MdEdit />
-                      </button>
-                      <button
-                        className={`${styles.iconBtn} ${styles.danger}`}
-                        onClick={() => setDeleteTarget(m)}
-                        title="Delete"
-                      >
-                        <MdDelete />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      <DataTable
+        loading={loading}
+        data={managers}
+        columns={columns}
+        emptyMessage="No managers found."
+      />
 
       {modalOpen && (
         <Modal
@@ -199,8 +123,9 @@ export default function ManagerPage() {
 
       {deleteTarget && (
         <ConfirmDialog
-          title="Delete Manager"
-          message={`Are you sure you want to delete "${deleteTarget.name}"?`}
+          message={
+            "Are you sure you want to delete manager " + deleteTarget.name + "?"
+          }
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
           loading={deleteLoading}

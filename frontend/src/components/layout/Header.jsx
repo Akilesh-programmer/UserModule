@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { MdMenu, MdLogout } from "react-icons/md";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
-import styles from "./Header.module.css";
 
 export default function Header({ onMenuClick }) {
   const { user, logout } = useAuth();
@@ -15,18 +14,24 @@ export default function Header({ onMenuClick }) {
   };
 
   return (
-    <header className={styles.header}>
-      <button className={styles.menuBtn} onClick={onMenuClick}>
-        <MdMenu />
+    <header className="flex h-16 flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 lg:px-6">
+      <button
+        onClick={onMenuClick}
+        className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors lg:hidden"
+      >
+        <MdMenu size={22} />
       </button>
-      <div className={styles.right}>
-        <span className={styles.username}>{user?.username}</span>
+
+      <div className="flex items-center gap-3 ml-auto">
+        <span className="hidden text-sm font-medium text-gray-700 sm:block">
+          {user?.username}
+        </span>
         <button
-          className={styles.logoutBtn}
           onClick={handleLogout}
           title="Logout"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
         >
-          <MdLogout />
+          <MdLogout size={18} />
           <span>Logout</span>
         </button>
       </div>

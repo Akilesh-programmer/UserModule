@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+﻿import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
@@ -8,12 +8,15 @@ import {
   deleteUser,
 } from "../../api/userApi";
 import { fetchActiveUserTypes } from "../../api/userTypeApi";
+import PageHeader from "../../components/common/PageHeader";
 import Button from "../../components/common/Button";
+import Badge from "../../components/common/Badge";
+import DataTable from "../../components/common/DataTable";
+import ActionButtons from "../../components/common/ActionButtons";
 import Modal from "../../components/common/Modal";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
-import UserCreationForm from "../../components/master/UserCreationForm";
-import styles from "./MasterPage.module.css";
-import { MdEdit, MdDelete, MdAdd } from "react-icons/md";
+import UserCreationForm from "../../components/forms/UserCreationForm";
+import { MdAdd } from "react-icons/md";
 
 export default function UserCreationPage() {
   const navigate = useNavigate();
@@ -52,16 +55,14 @@ export default function UserCreationPage() {
     loadData();
   }, [loadData]);
 
-  const openCreateModal = () => {
+  const openCreate = () => {
     setEditTarget(null);
     setModalOpen(true);
   };
-
-  const openEditModal = (user) => {
+  const openEdit = (user) => {
     setEditTarget(user);
     setModalOpen(true);
   };
-
   const closeModal = () => {
     setModalOpen(false);
     setEditTarget(null);
@@ -75,8 +76,6 @@ export default function UserCreationPage() {
         toast.success("User updated successfully");
       } else {
         const { data } = await createUser(formData);
-        const typesRes = await fetchActiveUserTypes();
-        setUserTypes(typesRes.data.filter((t) => t.name !== "Admin"));
         setUsers((prev) => [data, ...prev]);
         toast.success("User created successfully");
       }
@@ -89,7 +88,7 @@ export default function UserCreationPage() {
         );
         closeModal();
       } else {
-        throw err; // Let the form's catch handle validation/duplicate errors
+        throw err;
       }
     }
   };
@@ -109,74 +108,64 @@ export default function UserCreationPage() {
   };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.pageHeader}>
-        <div>
-          <h2 className={styles.pageTitle}>User Creation</h2>
-          <p className={styles.pageSubtitle}>Manage system users</p>
-        </div>
-        <Button onClick={openCreateModal}>
-          <MdAdd /> Add User
-        </Button>
-      </div>
+    <div>
+      <PageHeader
+        title="User Creation"
+        subtitle="Manage system users"
+        action={
+          <Button onClick={openCreate}>
+            <MdAdd size={16} /> Add User
+          </Button>
+        }
+      />
 
-      <div className={styles.tableWrapper}>
-        {loading ? (
-          <div className={styles.loader}>Loading...</div>
-        ) : users.length === 0 ? (
-          <div className={styles.empty}>
-            No users found. Create one to get started.
-          </div>
-        ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Username</th>
-                <th>User Type</th>
-                <th>Name / Description</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user, index) => (
-                <tr key={user._id}>
-                  <td>{index + 1}</td>
-                  <td>{user.username}</td>
-                  <td>{user.userTypeId?.name || "—"}</td>
-                  <td>{user.name || user.description || "—"}</td>
-                  <td>
-                    <span
-                      className={`${styles.badge} ${user.isActive ? styles.active : styles.inactive}`}
-                    >
-                      {user.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-                  <td>
-                    <div className={styles.actions}>
-                      <button
-                        className={styles.iconBtn}
-                        onClick={() => openEditModal(user)}
-                        title="Edit"
-                      >
-                        <MdEdit />
-                      </button>
-                      <button
-                        className={`${styles.iconBtn} ${styles.danger}`}
-                        onClick={() => setDeleteTarget(user)}
-                        title="Delete"
-                      >
-                        <MdDelete />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      <DataTable
+        loading={loading}
+        data={users}
+        columns={[
+          {
+            key: "#",
+            header: "#",
+            cellClassName: "w-12 text-sm text-gray-500",
+            render: (_, i) => i + 1,
+          },
+          {
+            key: "username",
+            header: "Username",
+            cellClassName: "text-sm font-medium text-gray-900",
+            render: (u) => u.username,
+          },
+          {
+            key: "userType",
+            header: "User Type",
+            cellClassName: "text-sm text-gray-500",
+            render: (u) => u.userTypeId?.name || "—",
+          },
+          {
+            key: "name",
+            header: "Name",
+            cellClassName: "text-sm text-gray-500 hidden sm:table-cell",
+            headerClassName: "hidden sm:table-cell",
+            render: (u) => u.name || "—",
+          },
+          {
+            key: "status",
+            header: "Status",
+            render: (u) => <Badge active={u.isActive} />,
+          },
+          {
+            key: "actions",
+            header: "Actions",
+            render: (u) => (
+              <ActionButtons
+                onEdit={() => openEdit(u)}
+                onDelete={() => setDeleteTarget(u)}
+              />
+            ),
+          },
+        ]}
+        emptyMessage="No users found."
+      />
 
       {modalOpen && (
         <Modal
@@ -194,7 +183,11 @@ export default function UserCreationPage() {
 
       {deleteTarget && (
         <ConfirmDialog
-          message={`Are you sure you want to delete user "${deleteTarget.username}"?`}
+          message={
+            "Are you sure you want to delete user " +
+            deleteTarget.username +
+            "?"
+          }
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
           loading={deleteLoading}

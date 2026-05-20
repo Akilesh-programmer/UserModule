@@ -1,4 +1,4 @@
-import styles from "./SelectField.module.css";
+import { cn } from "../../lib/cn";
 
 export default function SelectField({
   label,
@@ -8,10 +8,18 @@ export default function SelectField({
   ...props
 }) {
   return (
-    <div className={styles.group}>
-      {label && <label className={styles.label}>{label}</label>}
+    <div className="flex flex-col gap-1">
+      {label && (
+        <label className="text-sm font-medium text-gray-700">{label}</label>
+      )}
       <select
-        className={`${styles.select} ${error ? styles.hasError : ""}`}
+        className={cn(
+          "w-full rounded-lg border bg-white px-3 py-2 text-sm text-gray-900",
+          "focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors",
+          error
+            ? "border-red-400 focus:border-red-400 focus:ring-red-200"
+            : "border-gray-300 focus:border-primary focus:ring-primary/20",
+        )}
         {...props}
       >
         {placeholder && <option value="">{placeholder}</option>}
@@ -21,7 +29,7 @@ export default function SelectField({
           </option>
         ))}
       </select>
-      {error && <span className={styles.error}>{error}</span>}
+      {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
   );
 }
