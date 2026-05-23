@@ -71,7 +71,7 @@ export default function UserTypeForm({ initialData, onSave, onCancel }) {
         value={form.description}
         onChange={handleChange}
       />
-      <div className="flex justify-end gap-3 pt-2">
+      <div className="flex justify-between pt-4">
         <Button
           type="button"
           variant="secondary"

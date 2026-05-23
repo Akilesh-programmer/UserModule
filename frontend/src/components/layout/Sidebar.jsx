@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   MdDashboard,
@@ -6,9 +6,11 @@ import {
   MdExpandLess,
   MdClose,
   MdSupervisedUserCircle,
+  MdInventory,
 } from "react-icons/md";
-import { FiUsers, FiShield, FiUserCheck, FiUserPlus } from "react-icons/fi";
+import { FiUsers, FiShield, FiUserCheck, FiUserPlus, FiPackage, FiLayers, FiGrid, FiBox } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi";
+import { TbRulerMeasure, TbReceipt2 } from "react-icons/tb";
 import { cn } from "../../lib/cn";
 
 const NAV_ITEMS = [
@@ -18,39 +20,75 @@ const NAV_ITEMS = [
     path: "/",
   },
   {
-    label: "Master",
+    label: "Admin",
     icon: <HiOutlineUserGroup size={18} />,
     children: [
       {
         label: "User Type",
         icon: <FiUserCheck size={16} />,
-        path: "/master/user-type",
+        path: "/admin/user-type",
       },
       {
         label: "User Creation",
         icon: <FiUsers size={16} />,
-        path: "/master/user-creation",
+        path: "/admin/user-creation",
       },
       {
         label: "User Permission",
         icon: <FiShield size={16} />,
-        path: "/master/user-permission",
+        path: "/admin/user-permission",
       },
     ],
   },
   {
-    label: "Staff",
+    label: "Master",
     icon: <MdSupervisedUserCircle size={18} />,
     children: [
       {
         label: "Manager",
         icon: <FiUserCheck size={16} />,
-        path: "/staff/manager",
+        path: "/master/manager",
       },
       {
         label: "Sales Rep",
         icon: <FiUserPlus size={16} />,
-        path: "/staff/sales-rep",
+        path: "/master/sales-rep",
+      },
+    ],
+  },
+  {
+    label: "Item Category",
+    icon: <MdInventory size={18} />,
+    children: [
+      {
+        label: "Categories",
+        icon: <FiLayers size={16} />,
+        path: "/item-category/category",
+      },
+      {
+        label: "Groups",
+        icon: <FiGrid size={16} />,
+        path: "/item-category/group",
+      },
+      {
+        label: "Tax",
+        icon: <TbReceipt2 size={16} />,
+        path: "/item-category/tax",
+      },
+      {
+        label: "Unit of Measure",
+        icon: <TbRulerMeasure size={16} />,
+        path: "/item-category/unit-of-measure",
+      },
+      {
+        label: "Packing Type",
+        icon: <FiPackage size={16} />,
+        path: "/item-category/packing-type",
+      },
+      {
+        label: "Items",
+        icon: <FiBox size={16} />,
+        path: "/item-category/item",
       },
     ],
   },

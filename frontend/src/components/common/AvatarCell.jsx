@@ -1,13 +1,28 @@
+import { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import ImagePreviewModal from "./ImagePreviewModal";
 
 export default function AvatarCell({ src, alt }) {
-  if (src) {
+  const [preview, setPreview] = useState(false);
+  const imgUrl = src ? `/uploads/${src}` : null;
+
+  if (imgUrl) {
     return (
-      <img
-        src={`/uploads/${src}`}
-        alt={alt}
-        className="h-8 w-8 rounded-full object-cover"
-      />
+      <>
+        <img
+          src={imgUrl}
+          alt={alt}
+          className="h-8 w-8 rounded-full object-cover cursor-pointer hover:ring-2 hover:ring-primary/40 transition-all"
+          onClick={() => setPreview(true)}
+        />
+        {preview && (
+          <ImagePreviewModal
+            src={imgUrl}
+            alt={alt}
+            onClose={() => setPreview(false)}
+          />
+        )}
+      </>
     );
   }
   return (

@@ -1,4 +1,4 @@
-﻿import { useCrudPage } from "../../hooks/useCrudPage";
+import { useCrudPage } from "../../hooks/useCrudPage";
 import {
   fetchSalesReps,
   createSalesRep,
@@ -46,12 +46,6 @@ export default function SalesRepPage() {
       render: (_, i) => i + 1,
     },
     {
-      key: "photo",
-      header: "Photo",
-      cellClassName: "w-16",
-      render: (rep) => <AvatarCell src={rep.profilePic} alt={rep.name} />,
-    },
-    {
       key: "name",
       header: "Name",
       cellClassName: "text-sm font-medium text-gray-900",
@@ -75,6 +69,12 @@ export default function SalesRepPage() {
       key: "status",
       header: "Status",
       render: (rep) => <Badge active={rep.isActive} />,
+    },
+    {
+      key: "photo",
+      header: "Photo",
+      cellClassName: "w-16",
+      render: (rep) => <AvatarCell src={rep.profilePic} alt={rep.name} />,
     },
     {
       key: "actions",
@@ -111,7 +111,7 @@ export default function SalesRepPage() {
         <Modal
           title={editTarget ? "Edit Sales Rep" : "Add Sales Rep"}
           onClose={closeModal}
-          wide
+          extraWide
         >
           <SalesRepForm
             initialData={editTarget}

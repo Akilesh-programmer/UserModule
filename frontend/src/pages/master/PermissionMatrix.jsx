@@ -6,6 +6,12 @@ const FORMS = [
   { key: "userPermission", label: "User Permission" },
   { key: "manager", label: "Manager" },
   { key: "salesRep", label: "Sales Rep" },
+  { key: "category", label: "Categories" },
+  { key: "group", label: "Groups" },
+  { key: "tax", label: "Taxes" },
+  { key: "unitOfMeasure", label: "Units of Measure" },
+  { key: "packingType", label: "Packing Types" },
+  { key: "item", label: "Items" },
 ];
 
 const ACTIONS = ["create", "read", "update", "delete"];

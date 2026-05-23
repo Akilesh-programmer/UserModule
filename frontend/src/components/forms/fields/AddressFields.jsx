@@ -2,14 +2,14 @@ import InputField from "../../common/InputField";
 
 export default function AddressFields({ form, onChange }) {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       <InputField
         label="Street"
         name="street"
         value={form.street}
         onChange={onChange}
         placeholder="Street / Door No"
-        wrapperClassName="sm:col-span-2"
+        wrapperClassName="sm:col-span-3"
       />
       <InputField
         label="City"
