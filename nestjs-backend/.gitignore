@@ -5,3 +5,4 @@ uploads/
 *.js.map
 *.d.ts
 !nest-cli.json
+*.env.example
