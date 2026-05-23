@@ -2,9 +2,10 @@ import InputField from "../../common/InputField";
 
 export default function DocumentFields({ form, errors, onChange }) {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       <InputField
-        label="Aadhaar No *"
+        label="Aadhaar No"
+        required
         name="aadhaarNo"
         value={form.aadhaarNo}
         onChange={onChange}
@@ -14,13 +15,16 @@ export default function DocumentFields({ form, errors, onChange }) {
       />
       <InputField
         label="Driving License No"
+        required
         name="drivingLicenseNo"
         value={form.drivingLicenseNo}
         onChange={onChange}
-        placeholder="DL number (optional)"
+        error={errors.drivingLicenseNo}
+        placeholder="DL number"
       />
       <InputField
-        label="PAN Card No *"
+        label="PAN Card No"
+        required
         name="panCardNo"
         value={form.panCardNo}
         onChange={onChange}

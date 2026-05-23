@@ -3,13 +3,17 @@ import { cn } from "../../lib/cn";
 export default function InputField({
   label,
   error,
+  required,
   wrapperClassName,
   ...props
 }) {
   return (
     <div className={cn("flex flex-col gap-1", wrapperClassName)}>
       {label && (
-        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <label className="text-sm font-medium text-gray-700">
+          {label}
+          {required && <span className="text-red-500 ml-0.5">*</span>}
+        </label>
       )}
       <input
         className={cn(

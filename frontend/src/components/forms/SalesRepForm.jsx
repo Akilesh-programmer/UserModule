@@ -41,6 +41,8 @@ const validate = (form, isEdit) => {
   if (!MOBILE_RE.test(form.mobile)) errs.mobile = "Mobile must be 10 digits";
   if (!AADHAAR_RE.test(form.aadhaarNo))
     errs.aadhaarNo = "Aadhaar must be 12 digits";
+  if (!form.drivingLicenseNo.trim())
+    errs.drivingLicenseNo = "Driving license is required";
   if (!PAN_RE.test(form.panCardNo))
     errs.panCardNo = "Invalid PAN format (e.g. ABCDE1234F)";
   if (!form.managerId) errs.managerId = "Manager is required";
@@ -152,15 +154,16 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-6">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
       <FormSection title="Profile Picture">
         <ProfilePicUpload preview={picPreview} onChange={handlePicChange} />
       </FormSection>
 
       <FormSection title="Personal Info">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <InputField
-            label="Full Name *"
+            label="Full Name"
+            required
             name="name"
             value={form.name}
             onChange={handleChange}
@@ -168,7 +171,8 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
             placeholder="Enter full name"
           />
           <InputField
-            label="Mobile *"
+            label="Mobile"
+            required
             name="mobile"
             value={form.mobile}
             onChange={handleChange}
@@ -188,7 +192,7 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
       </FormSection>
 
       <FormSection title="Assign Manager">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <SelectField
             label="Filter by Area"
             value={areaFilter}
@@ -197,13 +201,15 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
             placeholder="All areas"
           />
           <SelectField
-            label="Manager *"
+            label="Manager"
+            required
             name="managerId"
             value={form.managerId}
             onChange={handleChange}
             options={managerOptions}
             error={errors.managerId}
             placeholder="Select manager"
+            wrapperClassName="sm:col-span-2"
           />
         </div>
       </FormSection>
@@ -232,7 +238,7 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
         </p>
       )}
 
-      <div className="flex justify-end gap-3 pt-2">
+      <div className="flex justify-between pt-4">
         <Button
           type="button"
           variant="secondary"

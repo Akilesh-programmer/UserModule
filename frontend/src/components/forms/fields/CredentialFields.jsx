@@ -2,9 +2,10 @@ import InputField from "../../common/InputField";
 
 export default function CredentialFields({ form, errors, onChange }) {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       <InputField
-        label="Username *"
+        label="Username"
+        required
         name="username"
         value={form.username}
         onChange={onChange}
@@ -13,7 +14,8 @@ export default function CredentialFields({ form, errors, onChange }) {
         autoComplete="off"
       />
       <InputField
-        label="Password *"
+        label="Password"
+        required
         name="password"
         type="password"
         value={form.password}
@@ -23,7 +25,8 @@ export default function CredentialFields({ form, errors, onChange }) {
         autoComplete="new-password"
       />
       <InputField
-        label="Confirm Password *"
+        label="Confirm Password"
+        required
         name="confirmPassword"
         type="password"
         value={form.confirmPassword}

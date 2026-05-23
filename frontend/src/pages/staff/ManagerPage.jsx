@@ -1,4 +1,4 @@
-﻿import { useCrudPage } from "../../hooks/useCrudPage";
+import { useCrudPage } from "../../hooks/useCrudPage";
 import {
   fetchManagers,
   createManager,
@@ -46,12 +46,6 @@ export default function ManagerPage() {
       render: (_, i) => i + 1,
     },
     {
-      key: "photo",
-      header: "Photo",
-      cellClassName: "w-16",
-      render: (mgr) => <AvatarCell src={mgr.profilePic} alt={mgr.name} />,
-    },
-    {
       key: "name",
       header: "Name",
       cellClassName: "text-sm font-medium text-gray-900",
@@ -75,6 +69,12 @@ export default function ManagerPage() {
       key: "status",
       header: "Status",
       render: (mgr) => <Badge active={mgr.isActive} />,
+    },
+    {
+      key: "photo",
+      header: "Photo",
+      cellClassName: "w-16",
+      render: (mgr) => <AvatarCell src={mgr.profilePic} alt={mgr.name} />,
     },
     {
       key: "actions",
@@ -111,7 +111,7 @@ export default function ManagerPage() {
         <Modal
           title={editTarget ? "Edit Manager" : "Add Manager"}
           onClose={closeModal}
-          wide
+          extraWide
         >
           <ManagerForm
             initialData={editTarget}
