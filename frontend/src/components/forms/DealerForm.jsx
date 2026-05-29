@@ -105,18 +105,18 @@ export default function DealerForm({ initialData, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col h-full">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Column 1: Assignments & Info */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <FormSection title="Assignments">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <SelectField label="Market" required name="marketId" value={form.marketId} onChange={handleChange} options={markets.map((m) => ({ value: m._id, label: m.name }))} error={errors.marketId} placeholder="Select market" />
               <SelectField label="Manager" name="managerId" value={form.managerId} onChange={handleChange} options={managers.map((m) => ({ value: m._id, label: m.name }))} placeholder="Select manager (optional)" />
             </div>
           </FormSection>
 
           <FormSection title="Dealer Info">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <InputField label="Dealer Name" required name="dealerName" value={form.dealerName} onChange={handleChange} error={errors.dealerName} placeholder="Enter dealer name" />
               <InputField label="Phone Number" required name="phoneNumber" value={form.phoneNumber} onChange={handleChange} error={errors.phoneNumber} placeholder="Phone number" />
               <InputField label="WhatsApp Number" name="whatsappNumber" value={form.whatsappNumber} onChange={handleChange} placeholder="WhatsApp number" />
@@ -127,9 +127,9 @@ export default function DealerForm({ initialData, onSave, onCancel }) {
         </div>
 
         {/* Column 2: Documents */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <FormSection title="Documents">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <InputField label="PAN No" name="panNo" value={form.panNo} onChange={handleChange} placeholder="PAN number" style={{ textTransform: "uppercase" }} />
               <InputField label="PAN Name" name="panName" value={form.panName} onChange={handleChange} placeholder="Name on PAN" />
               <InputField label="GST No" name="gstNo" value={form.gstNo} onChange={handleChange} placeholder="GST number" />
@@ -141,9 +141,9 @@ export default function DealerForm({ initialData, onSave, onCancel }) {
         </div>
 
         {/* Column 3: Address & Profile Pic */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <FormSection title="Address & Area">
-            <div className="space-y-3 flex flex-col">
+            <div className="space-y-2 flex flex-col">
               <AddressFields form={form} onChange={handleChange} errors={errors} />
             </div>
           </FormSection>
@@ -158,7 +158,7 @@ export default function DealerForm({ initialData, onSave, onCancel }) {
         <p className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600 mt-4">{errors.form}</p>
       )}
 
-      <div className="flex justify-between pt-6 mt-auto">
+      <div className="flex justify-between pt-4 mt-auto">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
         <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>
       </div>

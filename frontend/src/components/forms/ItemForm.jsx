@@ -105,9 +105,9 @@ export default function ItemForm({ initialData, onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-3">
+    <form onSubmit={handleSubmit} noValidate className="space-y-2">
       <h3 className="text-sm font-semibold text-gray-700 border-b pb-1">Classification (Dependencies)</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <SelectField label="Category" required name="categoryId" options={categories.map((c) => ({ value: c._id, label: `${c.name} (${c.code})` }))} value={form.categoryId} onChange={handleChange} error={errors.categoryId} placeholder="Select category" />
         <SelectField label="Group" required name="groupId" options={groups.map((g) => ({ value: g._id, label: `${g.name} (${g.code})` }))} value={form.groupId} onChange={handleChange} error={errors.groupId} placeholder="Select group" />
         <SelectField label="Tax" required name="taxId" options={taxes.map((t) => ({ value: t._id, label: `${t.taxType} (${t.percentage}%)` }))} value={form.taxId} onChange={handleChange} error={errors.taxId} placeholder="Select tax" />
@@ -117,7 +117,7 @@ export default function ItemForm({ initialData, onSave, onCancel }) {
       </div>
 
       <h3 className="text-sm font-semibold text-gray-700 border-b pb-1">Basic Information</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <InputField label="Item Name" required name="itemName" placeholder="Enter item name" value={form.itemName} onChange={handleChange} error={errors.itemName} />
         <InputField label="Item Code" required name="itemCode" placeholder="Enter item code" value={form.itemCode} onChange={handleChange} error={errors.itemCode} />
         <InputField label="HSN Code" name="hsnCode" value={form.hsnCode} onChange={handleChange} placeholder="HSN code (optional)" />
@@ -125,7 +125,7 @@ export default function ItemForm({ initialData, onSave, onCancel }) {
       <InputField label="Description" name="description" placeholder="Description (optional)" value={form.description} onChange={handleChange} />
 
       <h3 className="text-sm font-semibold text-gray-700 border-b pb-1">Pricing & Stock</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <InputField label="Item Price" required name="itemPrice" type="number" min="0" step="0.01" value={form.itemPrice} onChange={handleChange} error={errors.itemPrice} />
         <InputField label="Items Per Box" required name="itemsPerBox" type="number" min="1" value={form.itemsPerBox} onChange={handleChange} error={errors.itemsPerBox} />
         <InputField label="Box Rate" required name="boxRate" type="number" min="0" step="0.01" value={form.boxRate} onChange={handleChange} error={errors.boxRate} />

@@ -120,17 +120,17 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col h-full">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Column 1: Manager & Personal Info & Credentials */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <FormSection title="Assign Manager">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <SelectField label="Manager" required name="managerId" value={form.managerId} onChange={handleChange} options={managerOptions} error={errors.managerId} placeholder="Select manager" />
             </div>
           </FormSection>
 
           <FormSection title="Personal Info">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <InputField label="Sales Rep Name" required name="name" value={form.name} onChange={handleChange} error={errors.name} placeholder="Enter sales rep name" />
               <InputField label="Mobile" required name="mobile" value={form.mobile} onChange={handleChange} error={errors.mobile} placeholder="10-digit number" maxLength={10} />
               <InputField label="Email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email address" />
@@ -140,7 +140,7 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
 
           {!initialData && (
             <FormSection title="Login Credentials">
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <CredentialFields form={form} errors={errors} onChange={handleChange} />
               </div>
             </FormSection>
@@ -148,18 +148,18 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
         </div>
 
         {/* Column 2: Address */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <FormSection title="Address & Area">
-            <div className="space-y-3 flex flex-col">
+            <div className="space-y-2 flex flex-col">
               <AddressFields form={form} onChange={handleChange} errors={errors} />
             </div>
           </FormSection>
         </div>
 
         {/* Column 3: Documents & Profile Pic */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <FormSection title="Documents">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <DocumentFields form={form} errors={errors} onChange={handleChange} />
             </div>
           </FormSection>
@@ -174,7 +174,7 @@ export default function SalesRepForm({ initialData, onSave, onCancel }) {
         <p className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600 mt-4">{errors.form}</p>
       )}
 
-      <div className="flex justify-between pt-6 mt-auto">
+      <div className="flex justify-between pt-4 mt-auto">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
         <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>
       </div>

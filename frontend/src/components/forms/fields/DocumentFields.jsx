@@ -2,7 +2,7 @@ import InputField from "../../common/InputField";
 
 export default function DocumentFields({ form, errors, onChange }) {
   return (
-    <div className="grid grid-cols-1 gap-3">
+    <div className="grid grid-cols-1 gap-2">
       <InputField
         label="Aadhaar No"
         required

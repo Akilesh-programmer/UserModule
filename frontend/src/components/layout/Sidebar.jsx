@@ -120,7 +120,7 @@ export default function Sidebar({ isOpen, onClose }) {
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1 sidebar-scroll">
         {NAV_ITEMS.map((item) =>
           item.children ? (
             <NavGroup key={item.label} item={item} onClose={onClose} />

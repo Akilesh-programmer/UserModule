@@ -60,7 +60,7 @@ export default function AddressFields({ form, onChange, errors = {} }) {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-3">
+    <div className="grid grid-cols-1 gap-2">
       <SelectField
         label="State"
         name="stateId"
