@@ -45,8 +45,8 @@ export default function CategoryForm({ initialData, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField label="Name" name="name" placeholder="Enter category name" value={form.name} onChange={handleChange} error={errors.name} />
-      <InputField label="Code" name="code" placeholder="Enter category code" value={form.code} onChange={handleChange} error={errors.code} />
+      <InputField label="Name" required name="name" placeholder="Enter category name" value={form.name} onChange={handleChange} error={errors.name} />
+      <InputField label="Code" required name="code" placeholder="Enter category code" value={form.code} onChange={handleChange} error={errors.code} />
       <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
       <InputField label="Description" name="description" placeholder="Enter description (optional)" value={form.description} onChange={handleChange} />
       <div className="flex justify-between pt-4">

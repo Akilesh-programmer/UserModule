@@ -1,25 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import Button from "../common/Button";
+import { fetchActiveStates } from "../../api/stateApi";
 
 const STATUS_OPTIONS = [
   { value: "true", label: "Active" },
   { value: "false", label: "Inactive" },
 ];
 
-export default function UnitOfMeasureForm({ initialData, onSave, onCancel }) {
+export default function CityForm({ initialData, onSave, onCancel }) {
   const [form, setForm] = useState({
-    abbreviation: initialData?.abbreviation || "",
-    description: initialData?.description || "",
+    stateId: initialData?.stateId?._id || initialData?.stateId || "",
+    name: initialData?.name || "",
     isActive: initialData ? String(initialData.isActive) : "true",
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
+  const [states, setStates] = useState([]);
+
+  useEffect(() => {
+    fetchActiveStates().then((r) => setStates(r.data || [])).catch(() => {});
+  }, []);
 
   const validate = () => {
     const errs = {};
-    if (!form.abbreviation.trim()) errs.abbreviation = "Abbreviation is required";
+    if (!form.stateId) errs.stateId = "State is required";
+    if (!form.name.trim()) errs.name = "City name is required";
     return errs;
   };
 
@@ -35,17 +42,17 @@ export default function UnitOfMeasureForm({ initialData, onSave, onCancel }) {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setSaving(true);
     try {
-      await onSave({ ...form, abbreviation: form.abbreviation.toUpperCase(), isActive: form.isActive === "true" });
+      await onSave({ ...form, isActive: form.isActive === "true" });
     } catch (err) {
-      setErrors({ abbreviation: err.response?.data?.message || "Failed to save" });
+      setErrors({ name: err.response?.data?.message || "Failed to save" });
     } finally { setSaving(false); }
   };
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField label="Abbreviation" required name="abbreviation" placeholder="Enter abbreviation (e.g. KG)" value={form.abbreviation} onChange={handleChange} error={errors.abbreviation} />
+      <SelectField label="State" required name="stateId" options={states.map((s) => ({ value: s._id, label: s.name }))} value={form.stateId} onChange={handleChange} error={errors.stateId} placeholder="Select state" />
+      <InputField label="City / District Name" required name="name" placeholder="Enter city name" value={form.name} onChange={handleChange} error={errors.name} />
       <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
-      <InputField label="Description" name="description" placeholder="Enter description (optional)" value={form.description} onChange={handleChange} />
       <div className="flex justify-between pt-4">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
         <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>

@@ -3,7 +3,7 @@ import { cn } from "../../lib/cn";
 
 export default function Modal({ title, onClose, children, wide, extraWide }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 lg:pl-[17rem]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div
         className={cn(
           "relative w-full rounded-2xl bg-white shadow-2xl flex flex-col",

@@ -45,8 +45,8 @@ export default function PackingTypeForm({ initialData, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField label="Name" name="name" placeholder="Enter packing type name" value={form.name} onChange={handleChange} error={errors.name} />
-      <InputField label="Units Per Pack" name="unitsPerPack" type="number" min="1" placeholder="Enter units per pack" value={form.unitsPerPack} onChange={handleChange} error={errors.unitsPerPack} />
+      <InputField label="Name" required name="name" placeholder="Enter packing type name" value={form.name} onChange={handleChange} error={errors.name} />
+      <InputField label="Units Per Pack" required name="unitsPerPack" type="number" min="1" placeholder="Enter units per pack" value={form.unitsPerPack} onChange={handleChange} error={errors.unitsPerPack} />
       <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
       <InputField label="Description" name="description" placeholder="Enter description (optional)" value={form.description} onChange={handleChange} />
       <div className="flex justify-between pt-4">

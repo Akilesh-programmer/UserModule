@@ -50,6 +50,7 @@ export default function UserTypeForm({ initialData, onSave, onCancel }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       <InputField
         label="Name"
+        required
         name="name"
         placeholder="Enter user type name"
         value={form.name}

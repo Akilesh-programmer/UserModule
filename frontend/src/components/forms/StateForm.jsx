@@ -8,10 +8,10 @@ const STATUS_OPTIONS = [
   { value: "false", label: "Inactive" },
 ];
 
-export default function UnitOfMeasureForm({ initialData, onSave, onCancel }) {
+export default function StateForm({ initialData, onSave, onCancel }) {
   const [form, setForm] = useState({
-    abbreviation: initialData?.abbreviation || "",
-    description: initialData?.description || "",
+    name: initialData?.name || "",
+    code: initialData?.code || "",
     isActive: initialData ? String(initialData.isActive) : "true",
   });
   const [errors, setErrors] = useState({});
@@ -19,7 +19,7 @@ export default function UnitOfMeasureForm({ initialData, onSave, onCancel }) {
 
   const validate = () => {
     const errs = {};
-    if (!form.abbreviation.trim()) errs.abbreviation = "Abbreviation is required";
+    if (!form.name.trim()) errs.name = "State name is required";
     return errs;
   };
 
@@ -35,17 +35,17 @@ export default function UnitOfMeasureForm({ initialData, onSave, onCancel }) {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setSaving(true);
     try {
-      await onSave({ ...form, abbreviation: form.abbreviation.toUpperCase(), isActive: form.isActive === "true" });
+      await onSave({ ...form, isActive: form.isActive === "true" });
     } catch (err) {
-      setErrors({ abbreviation: err.response?.data?.message || "Failed to save" });
+      setErrors({ name: err.response?.data?.message || "Failed to save" });
     } finally { setSaving(false); }
   };
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField label="Abbreviation" required name="abbreviation" placeholder="Enter abbreviation (e.g. KG)" value={form.abbreviation} onChange={handleChange} error={errors.abbreviation} />
+      <InputField label="State Name" required name="name" placeholder="Enter state name" value={form.name} onChange={handleChange} error={errors.name} />
+      <InputField label="State Code" name="code" placeholder="Enter state code (optional)" value={form.code} onChange={handleChange} />
       <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
-      <InputField label="Description" name="description" placeholder="Enter description (optional)" value={form.description} onChange={handleChange} />
       <div className="flex justify-between pt-4">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
         <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>

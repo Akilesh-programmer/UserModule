@@ -1,8 +1,9 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import InputField from "../components/common/InputField";
+import PasswordInput from "../components/common/PasswordInput";
 import Button from "../components/common/Button";
 
 export default function LoginPage() {
@@ -63,9 +64,8 @@ export default function LoginPage() {
               error={errors.username}
               autoComplete="username"
             />
-            <InputField
+            <PasswordInput
               label="Password"
-              type="password"
               name="password"
               placeholder="Enter password"
               value={form.password}
