@@ -5,17 +5,11 @@ export type TaxDocument = HydratedDocument<Tax>;
 
 @Schema({ timestamps: true })
 export class Tax {
-  @Prop({ required: true, trim: true })
-  name!: string;
-
   @Prop({ required: true, min: 0, max: 100 })
   percentage!: number;
 
   @Prop({ required: true, enum: ['GST', 'IGST', 'CGST', 'SGST', 'VAT', 'CESS', 'OTHER'] })
   taxType!: string;
-
-  @Prop({ default: '', trim: true })
-  hsnCode!: string;
 
   @Prop({ default: '', trim: true })
   description!: string;

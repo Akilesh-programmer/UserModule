@@ -5,9 +5,6 @@ export type UnitOfMeasureDocument = HydratedDocument<UnitOfMeasure>;
 
 @Schema({ timestamps: true })
 export class UnitOfMeasure {
-  @Prop({ required: true, trim: true })
-  name!: string;
-
   @Prop({ required: true, unique: true, trim: true, uppercase: true })
   abbreviation!: string;
 
