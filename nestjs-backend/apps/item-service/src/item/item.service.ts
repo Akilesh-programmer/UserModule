@@ -12,8 +12,8 @@ import { PackingType, PackingTypeDocument } from '../packing-type/schemas/packin
 const POPULATE_REFS = [
   { path: 'categoryId', select: 'name code' },
   { path: 'groupId', select: 'name code' },
-  { path: 'taxId', select: 'name percentage taxType' },
-  { path: 'uomId', select: 'name abbreviation' },
+  { path: 'taxId', select: 'percentage taxType' },
+  { path: 'uomId', select: 'abbreviation' },
   { path: 'packingTypeId', select: 'name unitsPerPack' },
 ];
 
