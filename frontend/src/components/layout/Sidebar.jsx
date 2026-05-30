@@ -7,10 +7,12 @@ import {
   MdClose,
   MdSupervisedUserCircle,
   MdInventory,
+  MdLocationOn,
+  MdStorefront,
 } from "react-icons/md";
-import { FiUsers, FiShield, FiUserCheck, FiUserPlus, FiPackage, FiLayers, FiGrid, FiBox } from "react-icons/fi";
+import { FiUsers, FiShield, FiUserCheck, FiUserPlus, FiPackage, FiLayers, FiGrid, FiBox, FiMap, FiMapPin } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi";
-import { TbRulerMeasure, TbReceipt2 } from "react-icons/tb";
+import { TbRulerMeasure, TbReceipt2, TbBuildingStore } from "react-icons/tb";
 import { cn } from "../../lib/cn";
 
 const NAV_ITEMS = [
@@ -23,73 +25,35 @@ const NAV_ITEMS = [
     label: "Admin",
     icon: <HiOutlineUserGroup size={18} />,
     children: [
-      {
-        label: "User Type",
-        icon: <FiUserCheck size={16} />,
-        path: "/admin/user-type",
-      },
-      {
-        label: "User Creation",
-        icon: <FiUsers size={16} />,
-        path: "/admin/user-creation",
-      },
-      {
-        label: "User Permission",
-        icon: <FiShield size={16} />,
-        path: "/admin/user-permission",
-      },
+      { label: "User Type", icon: <FiUserCheck size={16} />, path: "/admin/user-type" },
+      { label: "User Creation", icon: <FiUsers size={16} />, path: "/admin/user-creation" },
+      { label: "User Permission", icon: <FiShield size={16} />, path: "/admin/user-permission" },
     ],
   },
   {
     label: "Master",
     icon: <MdSupervisedUserCircle size={18} />,
     children: [
-      {
-        label: "Manager",
-        icon: <FiUserCheck size={16} />,
-        path: "/master/manager",
-      },
-      {
-        label: "Sales Rep",
-        icon: <FiUserPlus size={16} />,
-        path: "/master/sales-rep",
-      },
+      { label: "Manager", icon: <FiUserCheck size={16} />, path: "/master/manager" },
+      { label: "Sales Rep", icon: <FiUserPlus size={16} />, path: "/master/sales-rep" },
+      { label: "State", icon: <FiMap size={16} />, path: "/master/state" },
+      { label: "City", icon: <MdLocationOn size={16} />, path: "/master/city" },
+      { label: "Pincode", icon: <FiMapPin size={16} />, path: "/master/pincode" },
+      { label: "Area", icon: <FiMapPin size={16} />, path: "/master/area" },
+      { label: "Market", icon: <MdStorefront size={16} />, path: "/master/market" },
+      { label: "Dealer", icon: <TbBuildingStore size={16} />, path: "/master/dealer" },
     ],
   },
   {
     label: "Item Category",
     icon: <MdInventory size={18} />,
     children: [
-      {
-        label: "Categories",
-        icon: <FiLayers size={16} />,
-        path: "/item-category/category",
-      },
-      {
-        label: "Groups",
-        icon: <FiGrid size={16} />,
-        path: "/item-category/group",
-      },
-      {
-        label: "Tax",
-        icon: <TbReceipt2 size={16} />,
-        path: "/item-category/tax",
-      },
-      {
-        label: "Unit of Measure",
-        icon: <TbRulerMeasure size={16} />,
-        path: "/item-category/unit-of-measure",
-      },
-      {
-        label: "Packing Type",
-        icon: <FiPackage size={16} />,
-        path: "/item-category/packing-type",
-      },
-      {
-        label: "Items",
-        icon: <FiBox size={16} />,
-        path: "/item-category/item",
-      },
+      { label: "Categories", icon: <FiLayers size={16} />, path: "/item-category/category" },
+      { label: "Groups", icon: <FiGrid size={16} />, path: "/item-category/group" },
+      { label: "Tax", icon: <TbReceipt2 size={16} />, path: "/item-category/tax" },
+      { label: "Unit of Measure", icon: <TbRulerMeasure size={16} />, path: "/item-category/unit-of-measure" },
+      { label: "Packing Type", icon: <FiPackage size={16} />, path: "/item-category/packing-type" },
+      { label: "Items", icon: <FiBox size={16} />, path: "/item-category/item" },
     ],
   },
 ];
@@ -156,7 +120,7 @@ export default function Sidebar({ isOpen, onClose }) {
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1 sidebar-scroll">
         {NAV_ITEMS.map((item) =>
           item.children ? (
             <NavGroup key={item.label} item={item} onClose={onClose} />

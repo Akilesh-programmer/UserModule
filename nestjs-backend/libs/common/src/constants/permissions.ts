@@ -1,14 +1,15 @@
-/**
- * Permission module definitions for the RBAC system.
- * Each module has 4 CRUD actions: create, read, update, delete.
- */
-
 export const PERMISSION_MODULES = [
   "userType",
   "userCreation",
   "userPermission",
   "manager",
   "salesRep",
+  "state",
+  "city",
+  "pincode",
+  "area",
+  "market",
+  "dealer",
   "category",
   "group",
   "tax",
@@ -32,13 +33,18 @@ export interface CrudPermissions {
 
 export type PermissionMap = Record<PermissionModule, CrudPermissions>;
 
-/** Human-readable labels for permission modules (used in error messages) */
 export const MODULE_LABELS: Record<PermissionModule, string> = {
   userType: "User Types",
   userCreation: "User Creation",
   userPermission: "User Permission",
   manager: "Managers",
   salesRep: "Sales Reps",
+  state: "States",
+  city: "Cities",
+  pincode: "Pincodes",
+  area: "Areas",
+  market: "Markets",
+  dealer: "Dealers",
   category: "Categories",
   group: "Groups",
   tax: "Taxes",
@@ -47,7 +53,6 @@ export const MODULE_LABELS: Record<PermissionModule, string> = {
   item: "Items",
 };
 
-/** Build a permission map with all flags set to false (default for non-admin users) */
 export function buildEmptyPermissions(): PermissionMap {
   const permissions = {} as Record<string, CrudPermissions>;
   for (const module of PERMISSION_MODULES) {
@@ -61,7 +66,6 @@ export function buildEmptyPermissions(): PermissionMap {
   return permissions as PermissionMap;
 }
 
-/** Build a permission map with all flags set to true (for Admin users) */
 export function buildFullPermissions(): PermissionMap {
   const permissions = {} as Record<string, CrudPermissions>;
   for (const module of PERMISSION_MODULES) {

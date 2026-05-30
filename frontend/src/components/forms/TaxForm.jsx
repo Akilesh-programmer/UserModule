@@ -20,10 +20,8 @@ const TAX_TYPE_OPTIONS = [
 
 export default function TaxForm({ initialData, onSave, onCancel }) {
   const [form, setForm] = useState({
-    name: initialData?.name || "",
     taxType: initialData?.taxType || "",
     percentage: initialData?.percentage ?? "",
-    hsnCode: initialData?.hsnCode || "",
     description: initialData?.description || "",
     isActive: initialData ? String(initialData.isActive) : "true",
   });
@@ -32,7 +30,6 @@ export default function TaxForm({ initialData, onSave, onCancel }) {
 
   const validate = () => {
     const errs = {};
-    if (!form.name.trim()) errs.name = "Name is required";
     if (!form.taxType) errs.taxType = "Tax type is required";
     if (form.percentage === "" || form.percentage === null) errs.percentage = "Percentage is required";
     else if (Number(form.percentage) < 0 || Number(form.percentage) > 100) errs.percentage = "Must be 0-100";
@@ -53,16 +50,14 @@ export default function TaxForm({ initialData, onSave, onCancel }) {
     try {
       await onSave({ ...form, percentage: Number(form.percentage), isActive: form.isActive === "true" });
     } catch (err) {
-      setErrors({ name: err.response?.data?.message || "Failed to save" });
+      setErrors({ taxType: err.response?.data?.message || "Failed to save" });
     } finally { setSaving(false); }
   };
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField label="Name" name="name" placeholder="Enter tax name" value={form.name} onChange={handleChange} error={errors.name} />
-      <SelectField label="Tax Type" name="taxType" options={TAX_TYPE_OPTIONS} value={form.taxType} onChange={handleChange} error={errors.taxType} placeholder="Select tax type" />
-      <InputField label="Percentage (%)" name="percentage" type="number" min="0" max="100" step="0.01" placeholder="Enter percentage" value={form.percentage} onChange={handleChange} error={errors.percentage} />
-      <InputField label="HSN Code" name="hsnCode" placeholder="Enter HSN code (optional)" value={form.hsnCode} onChange={handleChange} />
+      <SelectField label="Tax Type" required name="taxType" options={TAX_TYPE_OPTIONS} value={form.taxType} onChange={handleChange} error={errors.taxType} placeholder="Select tax type" />
+      <InputField label="Percentage (%)" required name="percentage" type="number" min="0" max="100" step="0.01" placeholder="Enter percentage" value={form.percentage} onChange={handleChange} error={errors.percentage} />
       <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
       <InputField label="Description" name="description" placeholder="Enter description (optional)" value={form.description} onChange={handleChange} />
       <div className="flex justify-between pt-4">

@@ -10,7 +10,6 @@ const STATUS_OPTIONS = [
 
 export default function UnitOfMeasureForm({ initialData, onSave, onCancel }) {
   const [form, setForm] = useState({
-    name: initialData?.name || "",
     abbreviation: initialData?.abbreviation || "",
     description: initialData?.description || "",
     isActive: initialData ? String(initialData.isActive) : "true",
@@ -20,7 +19,6 @@ export default function UnitOfMeasureForm({ initialData, onSave, onCancel }) {
 
   const validate = () => {
     const errs = {};
-    if (!form.name.trim()) errs.name = "Name is required";
     if (!form.abbreviation.trim()) errs.abbreviation = "Abbreviation is required";
     return errs;
   };
@@ -39,14 +37,13 @@ export default function UnitOfMeasureForm({ initialData, onSave, onCancel }) {
     try {
       await onSave({ ...form, abbreviation: form.abbreviation.toUpperCase(), isActive: form.isActive === "true" });
     } catch (err) {
-      setErrors({ name: err.response?.data?.message || "Failed to save" });
+      setErrors({ abbreviation: err.response?.data?.message || "Failed to save" });
     } finally { setSaving(false); }
   };
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField label="Name" name="name" placeholder="Enter unit name (e.g. Kilogram)" value={form.name} onChange={handleChange} error={errors.name} />
-      <InputField label="Abbreviation" name="abbreviation" placeholder="Enter abbreviation (e.g. KG)" value={form.abbreviation} onChange={handleChange} error={errors.abbreviation} />
+      <InputField label="Abbreviation" required name="abbreviation" placeholder="Enter abbreviation (e.g. KG)" value={form.abbreviation} onChange={handleChange} error={errors.abbreviation} />
       <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
       <InputField label="Description" name="description" placeholder="Enter description (optional)" value={form.description} onChange={handleChange} />
       <div className="flex justify-between pt-4">

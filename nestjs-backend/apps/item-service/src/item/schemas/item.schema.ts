@@ -38,20 +38,14 @@ export class Item {
   @Prop({ required: true, min: 0 })
   boxRate!: number;
 
-  @Prop({ required: true, min: 0 })
-  pieceRate!: number;
-
-  @Prop({ min: 0, default: 0 })
-  mrp!: number;
-
-  @Prop({ default: '', trim: true })
-  hsnCode!: string;
-
   @Prop({ default: 0, min: 0 })
   minStockLevel!: number;
 
   @Prop({ default: 0, min: 0 })
   maxStockLevel!: number;
+
+  @Prop({ default: '', trim: true })
+  hsnCode!: string;
 
   @Prop({ default: true })
   isActive!: boolean;

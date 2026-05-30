@@ -5,6 +5,13 @@ import { RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcryptjs';
 import { SalesRep, SalesRepDocument } from './schemas/sales-rep.schema';
 
+const ADDRESS_POPULATE = [
+  { path: 'address.stateId', select: 'name' },
+  { path: 'address.cityId', select: 'name' },
+  { path: 'address.pincodeId', select: 'code' },
+  { path: 'address.areaId', select: 'name' },
+];
+
 @Injectable()
 export class SalesRepService {
   constructor(
@@ -12,14 +19,18 @@ export class SalesRepService {
   ) {}
 
   async findAll() {
-    return this.salesRepModel.find().select('-passwordHash').populate('managerId', 'name area').sort({ createdAt: -1 }).lean().exec();
+    return this.salesRepModel.find().select('-passwordHash')
+      .populate('managerId', 'name')
+      .populate(ADDRESS_POPULATE)
+      .sort({ createdAt: -1 }).lean().exec();
   }
 
   async findOne(id: string) {
-    const doc = await this.salesRepModel.findById(id).select('-passwordHash').populate('managerId', 'name area').lean().exec();
-    if (!doc) {
-      throw new RpcException({ statusCode: 404, message: 'Sales rep not found' });
-    }
+    const doc = await this.salesRepModel.findById(id).select('-passwordHash')
+      .populate('managerId', 'name')
+      .populate(ADDRESS_POPULATE)
+      .lean().exec();
+    if (!doc) throw new RpcException({ statusCode: 404, message: 'Sales rep not found' });
     return doc;
   }
 
@@ -28,6 +39,7 @@ export class SalesRepService {
     const repData: any = {
       name: dto.name,
       mobile: dto.mobile || '',
+      email: dto.email || '',
       aadhaarNo: dto.aadhaarNo || '',
       drivingLicenseNo: dto.drivingLicenseNo || '',
       panCardNo: dto.panCardNo || '',
@@ -38,47 +50,37 @@ export class SalesRepService {
       address: dto.address || {},
       isActive: dto.isActive !== undefined ? dto.isActive : true,
     };
-    if (dto.profilePic) {
-      repData.profilePic = dto.profilePic;
-    }
+    if (dto.profilePic) repData.profilePic = dto.profilePic;
 
     const rep = await this.salesRepModel.create(repData);
-    const result = await this.salesRepModel.findById(rep._id).select('-passwordHash').populate('managerId', 'name area').lean().exec();
-    return { ...result, _type: 'salesRep' };
+    return this.salesRepModel.findById(rep._id).select('-passwordHash')
+      .populate('managerId', 'name')
+      .populate(ADDRESS_POPULATE)
+      .lean().exec();
   }
 
   async update(id: string, dto: any): Promise<any> {
     const existing = await this.salesRepModel.findById(id).exec();
-    if (!existing) {
-      throw new RpcException({ statusCode: 404, message: 'Sales rep not found' });
-    }
+    if (!existing) throw new RpcException({ statusCode: 404, message: 'Sales rep not found' });
 
     const oldProfilePic = existing.profilePic;
-
-    if (dto.name !== undefined) existing.name = dto.name;
-    if (dto.mobile !== undefined) existing.mobile = dto.mobile;
-    if (dto.aadhaarNo !== undefined) existing.aadhaarNo = dto.aadhaarNo;
-    if (dto.drivingLicenseNo !== undefined) existing.drivingLicenseNo = dto.drivingLicenseNo;
-    if (dto.panCardNo !== undefined) existing.panCardNo = dto.panCardNo;
-    if (dto.managerId !== undefined) existing.managerId = dto.managerId;
-    if (dto.address !== undefined) existing.address = dto.address;
-    if (dto.isActive !== undefined) existing.isActive = dto.isActive;
+    const updatableFields = ['name', 'mobile', 'email', 'aadhaarNo', 'drivingLicenseNo', 'panCardNo', 'managerId', 'address', 'isActive'];
+    for (const field of updatableFields) {
+      if (dto[field] !== undefined) (existing as any)[field] = dto[field];
+    }
     if (dto.profilePic) existing.profilePic = dto.profilePic;
-
     await existing.save();
 
-    const result = await this.salesRepModel.findById(id).select('-passwordHash').populate('managerId', 'name area').lean().exec();
-    return {
-      data: { ...result, _type: 'salesRep' },
-      oldProfilePic: dto.profilePic ? oldProfilePic : null,
-    };
+    const result = await this.salesRepModel.findById(id).select('-passwordHash')
+      .populate('managerId', 'name')
+      .populate(ADDRESS_POPULATE)
+      .lean().exec();
+    return { data: result, oldProfilePic: dto.profilePic ? oldProfilePic : null };
   }
 
   async delete(id: string) {
     const doc = await this.salesRepModel.findByIdAndDelete(id).exec();
-    if (!doc) {
-      throw new RpcException({ statusCode: 404, message: 'Sales rep not found' });
-    }
+    if (!doc) throw new RpcException({ statusCode: 404, message: 'Sales rep not found' });
     return { message: 'Sales rep deleted successfully', profilePic: doc.profilePic };
   }
 

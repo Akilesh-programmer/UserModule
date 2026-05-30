@@ -1,6 +1,7 @@
 import { useState } from "react";
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
+import PasswordInput from "../common/PasswordInput";
 import Button from "../common/Button";
 
 const STATUS_OPTIONS = [
@@ -84,6 +85,7 @@ export default function UserCreationForm({
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       <SelectField
         label="User Type"
+        required
         name="userTypeId"
         options={userTypeOptions}
         value={form.userTypeId}
@@ -94,6 +96,7 @@ export default function UserCreationForm({
       />
       <InputField
         label="Username"
+        required
         name="username"
         placeholder="Enter username"
         value={form.username}
@@ -101,14 +104,14 @@ export default function UserCreationForm({
         error={errors.username}
         autoComplete="off"
       />
-      <InputField
+      <PasswordInput
         label={
           initialData
             ? "New Password (leave blank to keep current)"
             : "Password"
         }
+        required={!initialData}
         name="password"
-        type="password"
         placeholder={
           initialData ? "Leave blank to keep current" : "Enter password"
         }
@@ -117,10 +120,10 @@ export default function UserCreationForm({
         error={errors.password}
         autoComplete="new-password"
       />
-      <InputField
+      <PasswordInput
         label="Confirm Password"
+        required={!initialData}
         name="confirmPassword"
-        type="password"
         placeholder="Confirm password"
         value={form.confirmPassword}
         onChange={handleChange}

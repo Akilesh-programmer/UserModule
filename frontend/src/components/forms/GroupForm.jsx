@@ -11,9 +11,9 @@ const STATUS_OPTIONS = [
 
 export default function GroupForm({ initialData, onSave, onCancel }) {
   const [form, setForm] = useState({
+    categoryId: initialData?.categoryId?._id || initialData?.categoryId || "",
     name: initialData?.name || "",
     code: initialData?.code || "",
-    categoryId: initialData?.categoryId?._id || initialData?.categoryId || "",
     description: initialData?.description || "",
     isActive: initialData ? String(initialData.isActive) : "true",
   });
@@ -27,9 +27,9 @@ export default function GroupForm({ initialData, onSave, onCancel }) {
 
   const validate = () => {
     const errs = {};
+    if (!form.categoryId) errs.categoryId = "Category is required";
     if (!form.name.trim()) errs.name = "Name is required";
     if (!form.code.trim()) errs.code = "Code is required";
-    if (!form.categoryId) errs.categoryId = "Category is required";
     return errs;
   };
 
@@ -55,9 +55,9 @@ export default function GroupForm({ initialData, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField label="Name" name="name" placeholder="Enter group name" value={form.name} onChange={handleChange} error={errors.name} />
-      <InputField label="Code" name="code" placeholder="Enter group code" value={form.code} onChange={handleChange} error={errors.code} />
-      <SelectField label="Category" name="categoryId" options={categoryOptions} value={form.categoryId} onChange={handleChange} error={errors.categoryId} placeholder="Select a category" />
+      <SelectField label="Category" required name="categoryId" options={categoryOptions} value={form.categoryId} onChange={handleChange} error={errors.categoryId} placeholder="Select a category" />
+      <InputField label="Name" required name="name" placeholder="Enter group name" value={form.name} onChange={handleChange} error={errors.name} />
+      <InputField label="Code" required name="code" placeholder="Enter group code" value={form.code} onChange={handleChange} error={errors.code} />
       <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
       <InputField label="Description" name="description" placeholder="Enter description (optional)" value={form.description} onChange={handleChange} />
       <div className="flex justify-between pt-4">

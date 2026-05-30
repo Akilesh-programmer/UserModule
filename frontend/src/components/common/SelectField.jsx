@@ -9,16 +9,16 @@ export default function SelectField({
   ...props
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-0.5">
       {label && (
-        <label className="text-sm font-medium text-gray-700">
+        <label className="text-xs font-semibold text-gray-700">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       <select
         className={cn(
-          "w-full rounded-lg border bg-white px-3 py-2 text-sm text-gray-900",
+          "w-full rounded-md border bg-white px-2.5 py-1 text-sm text-gray-900",
           "focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors",
           error
             ? "border-red-400 focus:border-red-400 focus:ring-red-200"

@@ -15,7 +15,7 @@ export class UnitOfMeasureService {
   }
 
   async findActive() {
-    return this.model.find({ isActive: true }).sort({ name: 1 }).lean().exec();
+    return this.model.find({ isActive: true }).sort({ abbreviation: 1 }).lean().exec();
   }
 
   async findOne(id: string) {

@@ -37,7 +37,7 @@ export class ManagerController {
   }
 
   @MessagePattern(MANAGER_FIND_ACTIVE)
-  findActive(@Payload() query: any) {
-    return this.managerService.findActive(query);
+  findActive() {
+    return this.managerService.findActive();
   }
 }
