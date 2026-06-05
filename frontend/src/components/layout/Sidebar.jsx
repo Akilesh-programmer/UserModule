@@ -9,6 +9,10 @@ import {
   MdInventory,
   MdLocationOn,
   MdStorefront,
+  MdPublic,
+  MdReceiptLong,
+  MdBusiness,
+  MdStore,
 } from "react-icons/md";
 import { FiUsers, FiShield, FiUserCheck, FiUserPlus, FiPackage, FiLayers, FiGrid, FiBox, FiMap, FiMapPin } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi";
@@ -36,12 +40,16 @@ const NAV_ITEMS = [
     children: [
       { label: "Manager", icon: <FiUserCheck size={16} />, path: "/master/manager" },
       { label: "Sales Rep", icon: <FiUserPlus size={16} />, path: "/master/sales-rep" },
+      { label: "Country", icon: <MdPublic size={16} />, path: "/master/country" },
       { label: "State", icon: <FiMap size={16} />, path: "/master/state" },
       { label: "City", icon: <MdLocationOn size={16} />, path: "/master/city" },
       { label: "Pincode", icon: <FiMapPin size={16} />, path: "/master/pincode" },
       { label: "Area", icon: <FiMapPin size={16} />, path: "/master/area" },
       { label: "Market", icon: <MdStorefront size={16} />, path: "/master/market" },
       { label: "Dealer", icon: <TbBuildingStore size={16} />, path: "/master/dealer" },
+      { label: "Expense Type", icon: <MdReceiptLong size={16} />, path: "/master/expense-type" },
+      { label: "Company", icon: <MdBusiness size={16} />, path: "/master/company" },
+      { label: "Shop Type", icon: <MdStore size={16} />, path: "/master/shop-type" },
     ],
   },
   {

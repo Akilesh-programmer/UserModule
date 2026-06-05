@@ -27,6 +27,7 @@ const buildInitialForm = (data) => ({
   drivingLicenseNo: data?.drivingLicenseNo || "",
   securityChequeNo: data?.securityChequeNo || "",
   isActive: data ? String(data.isActive) : "true",
+  countryId: data?.address?.countryId?._id || data?.address?.countryId || "",
   stateId: data?.address?.stateId?._id || data?.address?.stateId || "",
   cityId: data?.address?.cityId?._id || data?.address?.cityId || "",
   pincodeId: data?.address?.pincodeId?._id || data?.address?.pincodeId || "",
@@ -90,6 +91,7 @@ export default function DealerForm({ initialData, onSave, onCancel }) {
       fd.append("securityChequeNo", form.securityChequeNo.trim());
       fd.append("isActive", form.isActive);
       fd.append("address", JSON.stringify({
+        countryId: form.countryId || null,
         stateId: form.stateId || null,
         cityId: form.cityId || null,
         pincodeId: form.pincodeId || null,
