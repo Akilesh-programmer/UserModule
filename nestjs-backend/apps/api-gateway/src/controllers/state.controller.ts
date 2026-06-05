@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import {
   MASTER_SERVICE,
   STATE_CREATE, STATE_FIND_ALL, STATE_FIND_ONE,
-  STATE_UPDATE, STATE_DELETE, STATE_FIND_ACTIVE,
+  STATE_UPDATE, STATE_DELETE, STATE_FIND_ACTIVE, STATE_FIND_BY_COUNTRY,
 } from '@app/common';
 import { RequirePermission } from '../decorators/require-permission.decorator';
 import { BypassIfActiveOnly } from '../decorators/bypass-active-only.decorator';
@@ -24,6 +24,12 @@ export class StateGatewayController {
   @RequirePermission('state', 'read')
   findActive() {
     return firstValueFrom(this.masterClient.send(STATE_FIND_ACTIVE, {}));
+  }
+
+  @Get('by-country/:countryId')
+  @RequirePermission('state', 'read')
+  findByCountry(@Param('countryId') countryId: string) {
+    return firstValueFrom(this.masterClient.send(STATE_FIND_BY_COUNTRY, { countryId }));
   }
 
   @Get(':id')
