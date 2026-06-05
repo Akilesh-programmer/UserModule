@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   STATE_CREATE, STATE_FIND_ALL, STATE_FIND_ONE,
-  STATE_UPDATE, STATE_DELETE, STATE_FIND_ACTIVE,
+  STATE_UPDATE, STATE_DELETE, STATE_FIND_ACTIVE, STATE_FIND_BY_COUNTRY,
 } from '@app/common';
 import { StateService } from './state.service';
 
@@ -15,6 +15,9 @@ export class StateController {
 
   @MessagePattern(STATE_FIND_ACTIVE)
   findActive() { return this.stateService.findActive(); }
+
+  @MessagePattern(STATE_FIND_BY_COUNTRY)
+  findByCountry(@Payload() data: { countryId: string }) { return this.stateService.findByCountry(data.countryId); }
 
   @MessagePattern(STATE_FIND_ONE)
   findOne(@Payload() data: { id: string }) { return this.stateService.findOne(data.id); }

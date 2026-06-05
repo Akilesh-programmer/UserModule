@@ -11,29 +11,35 @@ export class StateService {
   async findAll(query?: { activeOnly?: string }) {
     const filter: Record<string, any> = {};
     if (query?.activeOnly === 'true') filter.isActive = true;
-    return this.model.find(filter).sort({ name: 1 }).lean().exec();
+    return this.model.find(filter).populate('countryId', 'name').sort({ name: 1 }).lean().exec();
   }
 
   async findActive() {
-    return this.model.find({ isActive: true }).sort({ name: 1 }).lean().exec();
+    return this.model.find({ isActive: true }).populate('countryId', 'name').sort({ name: 1 }).lean().exec();
+  }
+
+  async findByCountry(countryId: string) {
+    return this.model.find({ countryId, isActive: true }).sort({ name: 1 }).lean().exec();
   }
 
   async findOne(id: string) {
-    const doc = await this.model.findById(id).lean().exec();
+    const doc = await this.model.findById(id).populate('countryId', 'name').lean().exec();
     if (!doc) throw new RpcException({ statusCode: 404, message: 'State not found' });
     return doc;
   }
 
-  async create(dto: { name: string; isActive?: boolean }) {
-    const exists = await this.model.findOne({ name: new RegExp(`^${dto.name}$`, 'i') }).exec();
-    if (exists) throw new RpcException({ statusCode: 409, message: `State '${dto.name}' already exists` });
+  async create(dto: { name: string; countryId: string; code?: string; isActive?: boolean }) {
+    const exists = await this.model.findOne({ name: new RegExp(`^${dto.name}$`, 'i'), countryId: dto.countryId }).exec();
+    if (exists) throw new RpcException({ statusCode: 409, message: `State '${dto.name}' already exists in this country` });
     return this.model.create(dto);
   }
 
-  async update(id: string, dto: Partial<{ name: string; isActive: boolean }>) {
+  async update(id: string, dto: Partial<{ name: string; countryId: string; code: string; isActive: boolean }>) {
     if (dto.name) {
-      const exists = await this.model.findOne({ name: new RegExp(`^${dto.name}$`, 'i'), _id: { $ne: id } }).exec();
-      if (exists) throw new RpcException({ statusCode: 409, message: `State '${dto.name}' already exists` });
+      const existing = await this.model.findById(id).exec();
+      const countryId = dto.countryId || existing?.countryId;
+      const exists = await this.model.findOne({ name: new RegExp(`^${dto.name}$`, 'i'), countryId, _id: { $ne: id } }).exec();
+      if (exists) throw new RpcException({ statusCode: 409, message: `State '${dto.name}' already exists in this country` });
     }
     const doc = await this.model.findByIdAndUpdate(id, dto, { new: true, runValidators: true }).lean().exec();
     if (!doc) throw new RpcException({ statusCode: 404, message: 'State not found' });
