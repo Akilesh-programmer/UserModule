@@ -11,12 +11,16 @@ import { UserGatewayController } from './controllers/user.controller';
 import { PermissionGatewayController } from './controllers/permission.controller';
 import { ManagerGatewayController } from './controllers/manager.controller';
 import { SalesRepGatewayController } from './controllers/sales-rep.controller';
+import { CountryGatewayController } from './controllers/country.controller';
 import { StateGatewayController } from './controllers/state.controller';
 import { CityGatewayController } from './controllers/city.controller';
 import { PincodeGatewayController } from './controllers/pincode.controller';
 import { AreaGatewayController } from './controllers/area.controller';
 import { MarketGatewayController } from './controllers/market.controller';
 import { DealerGatewayController } from './controllers/dealer.controller';
+import { ExpenseTypeGatewayController } from './controllers/expense-type.controller';
+import { CompanyGatewayController } from './controllers/company.controller';
+import { ShopTypeGatewayController } from './controllers/shop-type.controller';
 import { CategoryGatewayController } from './controllers/category.controller';
 import { GroupGatewayController } from './controllers/group.controller';
 import { TaxGatewayController } from './controllers/tax.controller';
@@ -89,12 +93,16 @@ import * as path from 'path';
     PermissionGatewayController,
     ManagerGatewayController,
     SalesRepGatewayController,
+    CountryGatewayController,
     StateGatewayController,
     CityGatewayController,
     PincodeGatewayController,
     AreaGatewayController,
     MarketGatewayController,
     DealerGatewayController,
+    ExpenseTypeGatewayController,
+    CompanyGatewayController,
+    ShopTypeGatewayController,
     CategoryGatewayController,
     GroupGatewayController,
     TaxGatewayController,
