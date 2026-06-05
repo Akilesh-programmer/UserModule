@@ -4,6 +4,7 @@ export const STATE_FIND_ONE = 'state.findOne';
 export const STATE_UPDATE = 'state.update';
 export const STATE_DELETE = 'state.delete';
 export const STATE_FIND_ACTIVE = 'state.findActive';
+export const STATE_FIND_BY_COUNTRY = 'state.findByCountry';
 
 export const CITY_CREATE = 'city.create';
 export const CITY_FIND_ALL = 'city.findAll';

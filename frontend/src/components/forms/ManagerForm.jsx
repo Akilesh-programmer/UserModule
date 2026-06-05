@@ -26,6 +26,7 @@ const buildInitialForm = (data) => ({
   username: "",
   password: "",
   confirmPassword: "",
+  countryId: data?.address?.countryId?._id || data?.address?.countryId || "",
   stateId: data?.address?.stateId?._id || data?.address?.stateId || "",
   cityId: data?.address?.cityId?._id || data?.address?.cityId || "",
   pincodeId: data?.address?.pincodeId?._id || data?.address?.pincodeId || "",
@@ -94,6 +95,7 @@ export default function ManagerForm({ initialData, onSave, onCancel }) {
         fd.append("password", form.password);
       }
       fd.append("address", JSON.stringify({
+        countryId: form.countryId || null,
         stateId: form.stateId || null,
         cityId: form.cityId || null,
         pincodeId: form.pincodeId || null,

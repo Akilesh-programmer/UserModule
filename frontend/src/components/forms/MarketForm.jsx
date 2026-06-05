@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import Button from "../common/Button";
-import { fetchActiveStates } from "../../api/stateApi";
+import { fetchActiveCountries } from "../../api/countryApi";
+import { fetchStatesByCountry } from "../../api/stateApi";
 import { fetchCitiesByState } from "../../api/cityApi";
 
 const STATUS_OPTIONS = [
@@ -12,6 +13,7 @@ const STATUS_OPTIONS = [
 
 export default function MarketForm({ initialData, onSave, onCancel }) {
   const [form, setForm] = useState({
+    countryId: initialData?.stateId?.countryId?._id || initialData?.stateId?.countryId || "",
     stateId: initialData?.stateId?._id || initialData?.stateId || "",
     districtId: initialData?.districtId?._id || initialData?.districtId || "",
     name: initialData?.name || "",
@@ -19,12 +21,19 @@ export default function MarketForm({ initialData, onSave, onCancel }) {
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
+  const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
   useEffect(() => {
-    fetchActiveStates().then((r) => setStates(r.data || [])).catch(() => {});
+    fetchActiveCountries().then((r) => setCountries(r.data || [])).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (form.countryId) {
+      fetchStatesByCountry(form.countryId).then((r) => setStates(r.data || [])).catch(() => {});
+    } else { setStates([]); }
+  }, [form.countryId]);
 
   useEffect(() => {
     if (form.stateId) {
@@ -44,6 +53,7 @@ export default function MarketForm({ initialData, onSave, onCancel }) {
     const { name, value } = e.target;
     setForm((prev) => {
       const next = { ...prev, [name]: value };
+      if (name === "countryId") { next.stateId = ""; next.districtId = ""; }
       if (name === "stateId") next.districtId = "";
       return next;
     });
@@ -56,7 +66,7 @@ export default function MarketForm({ initialData, onSave, onCancel }) {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setSaving(true);
     try {
-      await onSave({ ...form, isActive: form.isActive === "true" });
+      await onSave({ stateId: form.stateId, districtId: form.districtId, name: form.name.trim(), isActive: form.isActive === "true" });
     } catch (err) {
       setErrors({ name: err.response?.data?.message || "Failed to save" });
     } finally { setSaving(false); }
@@ -64,6 +74,7 @@ export default function MarketForm({ initialData, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
+      <SelectField label="Country" name="countryId" options={countries.map((c) => ({ value: c._id, label: c.name }))} value={form.countryId} onChange={handleChange} placeholder="Select country" />
       <SelectField label="State" required name="stateId" options={states.map((s) => ({ value: s._id, label: s.name }))} value={form.stateId} onChange={handleChange} error={errors.stateId} placeholder="Select state" />
       <SelectField label="District" required name="districtId" options={cities.map((c) => ({ value: c._id, label: c.name }))} value={form.districtId} onChange={handleChange} error={errors.districtId} placeholder="Select district" />
       <InputField label="Market Name" required name="name" placeholder="Enter market name" value={form.name} onChange={handleChange} error={errors.name} />

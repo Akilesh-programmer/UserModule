@@ -9,12 +9,16 @@ import UserCreationPage from "./pages/master/UserCreationPage";
 import UserPermissionPage from "./pages/master/UserPermissionPage";
 import ManagerPage from "./pages/staff/ManagerPage";
 import SalesRepPage from "./pages/staff/SalesRepPage";
+import CountryPage from "./pages/master/CountryPage";
 import StatePage from "./pages/master/StatePage";
 import CityPage from "./pages/master/CityPage";
 import PincodePage from "./pages/master/PincodePage";
 import AreaPage from "./pages/master/AreaPage";
 import MarketPage from "./pages/master/MarketPage";
 import DealerPage from "./pages/master/DealerPage";
+import ExpenseTypePage from "./pages/master/ExpenseTypePage";
+import CompanyPage from "./pages/master/CompanyPage";
+import ShopTypePage from "./pages/master/ShopTypePage";
 import CategoryPage from "./pages/item-category/CategoryPage";
 import GroupPage from "./pages/item-category/GroupPage";
 import TaxPage from "./pages/item-category/TaxPage";
@@ -44,12 +48,16 @@ export default function App() {
             <Route path="admin/user-permission" element={<UserPermissionPage />} />
             <Route path="master/manager" element={<ManagerPage />} />
             <Route path="master/sales-rep" element={<SalesRepPage />} />
+            <Route path="master/country" element={<CountryPage />} />
             <Route path="master/state" element={<StatePage />} />
             <Route path="master/city" element={<CityPage />} />
             <Route path="master/pincode" element={<PincodePage />} />
             <Route path="master/area" element={<AreaPage />} />
             <Route path="master/market" element={<MarketPage />} />
             <Route path="master/dealer" element={<DealerPage />} />
+            <Route path="master/expense-type" element={<ExpenseTypePage />} />
+            <Route path="master/company" element={<CompanyPage />} />
+            <Route path="master/shop-type" element={<ShopTypePage />} />
             <Route path="item-category/category" element={<CategoryPage />} />
             <Route path="item-category/group" element={<GroupPage />} />
             <Route path="item-category/tax" element={<TaxPage />} />

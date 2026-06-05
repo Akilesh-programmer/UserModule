@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import Button from "../common/Button";
+import { fetchActiveCountries } from "../../api/countryApi";
 
 const STATUS_OPTIONS = [
   { value: "true", label: "Active" },
@@ -10,15 +11,22 @@ const STATUS_OPTIONS = [
 
 export default function StateForm({ initialData, onSave, onCancel }) {
   const [form, setForm] = useState({
+    countryId: initialData?.countryId?._id || initialData?.countryId || "",
     name: initialData?.name || "",
     code: initialData?.code || "",
     isActive: initialData ? String(initialData.isActive) : "true",
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    fetchActiveCountries().then((r) => setCountries(r.data || [])).catch(() => {});
+  }, []);
 
   const validate = () => {
     const errs = {};
+    if (!form.countryId) errs.countryId = "Country is required";
     if (!form.name.trim()) errs.name = "State name is required";
     return errs;
   };
@@ -43,6 +51,7 @@ export default function StateForm({ initialData, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
+      <SelectField label="Country" required name="countryId" options={countries.map((c) => ({ value: c._id, label: c.name }))} value={form.countryId} onChange={handleChange} error={errors.countryId} placeholder="Select country" />
       <InputField label="State Name" required name="name" placeholder="Enter state name" value={form.name} onChange={handleChange} error={errors.name} />
       <InputField label="State Code" name="code" placeholder="Enter state code (optional)" value={form.code} onChange={handleChange} />
       <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />

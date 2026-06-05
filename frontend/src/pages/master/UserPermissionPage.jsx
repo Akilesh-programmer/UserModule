@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { fetchUserTypes } from "../../api/userTypeApi";
@@ -13,23 +13,39 @@ import Spinner from "../../components/common/Spinner";
 import PageHeader from "../../components/common/PageHeader";
 import PermissionMatrix from "./PermissionMatrix";
 
-const FORMS = [
-  { key: "userType", label: "User Type" },
+const PERMISSION_MODULES = [
+  { key: "userType", label: "User Types" },
   { key: "userCreation", label: "User Creation" },
   { key: "userPermission", label: "User Permission" },
-  { key: "manager", label: "Manager" },
-  { key: "salesRep", label: "Sales Rep" },
+  { key: "manager", label: "Managers" },
+  { key: "salesRep", label: "Sales Reps" },
+  { key: "country", label: "Countries" },
+  { key: "state", label: "States" },
+  { key: "city", label: "Cities" },
+  { key: "pincode", label: "Pincodes" },
+  { key: "area", label: "Areas" },
+  { key: "market", label: "Markets" },
+  { key: "dealer", label: "Dealers" },
+  { key: "expenseType", label: "Expense Types" },
+  { key: "company", label: "Companies" },
+  { key: "shopType", label: "Shop Types" },
+  { key: "category", label: "Categories" },
+  { key: "group", label: "Groups" },
+  { key: "tax", label: "Taxes" },
+  { key: "unitOfMeasure", label: "Units of Measure" },
+  { key: "packingType", label: "Packing Types" },
+  { key: "item", label: "Items" },
 ];
 
 const ACTIONS = ["create", "read", "update", "delete"];
 
-const buildEmptyPermissions = () => ({
-  userType: { create: false, read: false, update: false, delete: false },
-  userCreation: { create: false, read: false, update: false, delete: false },
-  userPermission: { create: false, read: false, update: false, delete: false },
-  manager: { create: false, read: false, update: false, delete: false },
-  salesRep: { create: false, read: false, update: false, delete: false },
-});
+const buildEmptyPermissions = () => {
+  const perms = {};
+  for (const mod of PERMISSION_MODULES) {
+    perms[mod.key] = { create: false, read: false, update: false, delete: false };
+  }
+  return perms;
+};
 
 export default function UserPermissionPage() {
   const navigate = useNavigate();
@@ -77,10 +93,10 @@ export default function UserPermissionPage() {
     try {
       const { data } = await fetchPermissionByUserType(userTypeId);
       const merged = buildEmptyPermissions();
-      for (const form of FORMS) {
+      for (const mod of PERMISSION_MODULES) {
         for (const action of ACTIONS) {
-          if (data.permissions?.[form.key]?.[action] === true) {
-            merged[form.key][action] = true;
+          if (data.permissions?.[mod.key]?.[action] === true) {
+            merged[mod.key][action] = true;
           }
         }
       }

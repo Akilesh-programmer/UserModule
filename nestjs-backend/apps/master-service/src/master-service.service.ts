@@ -3,7 +3,7 @@ import { ManagerService } from './manager/manager.service';
 import { SalesRepService } from './sales-rep/sales-rep.service';
 
 @Injectable()
-export class StaffService {
+export class MasterService {
   constructor(
     private readonly managerService: ManagerService,
     private readonly salesRepService: SalesRepService,

@@ -19,6 +19,7 @@ export default function StatePage() {
     { key: "#", header: "#", cellClassName: "w-12 text-sm text-gray-500", render: (_, i) => i + 1 },
     { key: "name", header: "Name", cellClassName: "text-sm font-medium text-gray-900", render: (r) => r.name },
     { key: "code", header: "Code", cellClassName: "text-sm text-gray-700", render: (r) => r.code || "—" },
+    { key: "country", header: "Country", cellClassName: "text-sm text-gray-700", render: (r) => r.countryId?.name || "—" },
     { key: "status", header: "Status", render: (r) => <Badge active={r.isActive} /> },
     { key: "actions", header: "Actions", render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
   ];

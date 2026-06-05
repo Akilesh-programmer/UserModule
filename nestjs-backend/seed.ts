@@ -44,7 +44,7 @@ const PermissionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// === Build full permissions (all 11 modules × 4 CRUD = 44 flags) ===
+// === Build full permissions (all 21 modules × 4 CRUD = 84 flags) ===
 
 function buildFullPermissions() {
   const modules = [
@@ -53,6 +53,16 @@ function buildFullPermissions() {
     "userPermission",
     "manager",
     "salesRep",
+    "country",
+    "state",
+    "city",
+    "pincode",
+    "area",
+    "market",
+    "dealer",
+    "expenseType",
+    "company",
+    "shopType",
     "category",
     "group",
     "tax",
