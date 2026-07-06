@@ -14,7 +14,7 @@ export default function PasswordInput({
   return (
     <div className={cn("flex flex-col gap-0.5", wrapperClassName)}>
       {label && (
-        <label className="text-xs font-semibold text-gray-700">
+        <label className="text-xs font-semibold text-gray-600 tracking-wide">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
@@ -24,8 +24,9 @@ export default function PasswordInput({
           {...props}
           type={visible ? "text" : "password"}
           className={cn(
-            "w-full rounded-md border bg-white px-2.5 py-1 pr-10 text-sm text-gray-900 placeholder:text-gray-400",
-            "focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors",
+            "w-full rounded-md border bg-white px-3 py-[7px] pr-10 text-sm text-gray-900 placeholder:text-gray-400",
+            "focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all duration-150",
+            "hover:border-gray-400",
             error
               ? "border-red-400 focus:border-red-400 focus:ring-red-200"
               : "border-gray-300 focus:border-primary focus:ring-primary/20",
@@ -34,13 +35,13 @@ export default function PasswordInput({
         <button
           type="button"
           onClick={() => setVisible((v) => !v)}
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
           tabIndex={-1}
         >
-          {visible ? <MdVisibilityOff size={18} /> : <MdVisibility size={18} />}
+          {visible ? <MdVisibilityOff size={17} /> : <MdVisibility size={17} />}
         </button>
       </div>
-      {error && <span className="text-xs text-red-500">{error}</span>}
+      {error && <span className="text-xs text-red-500 mt-0.5">{error}</span>}
     </div>
   );
 }

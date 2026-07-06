@@ -5,13 +5,15 @@ import { RpcException } from '@nestjs/microservices';
 import { Dealer, DealerDocument } from './schemas/dealer.schema';
 
 const POPULATE = [
-  { path: 'managerId', select: 'name' },
-  { path: 'salesRepId', select: 'name' },
-  { path: 'marketId', select: 'name' },
-  { path: 'address.stateId', select: 'name' },
-  { path: 'address.cityId', select: 'name' },
+  { path: 'managerId',         select: 'name' },
+  { path: 'salesRepId',        select: 'name' },
+  { path: 'marketId',          select: 'name' },
+  { path: 'shopTypeId',        select: 'name' },
+  { path: 'address.countryId', select: 'name' },
+  { path: 'address.stateId',   select: 'name' },
+  { path: 'address.cityId',    select: 'name' },
   { path: 'address.pincodeId', select: 'code' },
-  { path: 'address.areaId', select: 'name' },
+  { path: 'address.areaId',    select: 'name' },
 ];
 
 @Injectable()

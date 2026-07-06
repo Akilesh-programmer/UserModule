@@ -7,7 +7,7 @@ import * as path from 'path';
 import {
   MASTER_SERVICE, ADMIN_SERVICE,
   SALES_REP_CREATE, SALES_REP_FIND_ALL, SALES_REP_FIND_ONE,
-  SALES_REP_UPDATE, SALES_REP_DELETE,
+  SALES_REP_FIND_ACTIVE, SALES_REP_UPDATE, SALES_REP_DELETE,
   USER_CHECK_USERNAME, STAFF_CHECK_USERNAME, USER_TYPE_FIND_ALL,
 } from '@app/common';
 import { RequirePermission } from '../decorators/require-permission.decorator';
@@ -24,6 +24,12 @@ export class SalesRepGatewayController {
   @RequirePermission('salesRep', 'read')
   findAll() {
     return firstValueFrom(this.masterClient.send(SALES_REP_FIND_ALL, {}));
+  }
+
+  @Get('active')
+  @RequirePermission('salesRep', 'read')
+  findActive() {
+    return firstValueFrom(this.masterClient.send(SALES_REP_FIND_ACTIVE, {}));
   }
 
   @Get(':id')

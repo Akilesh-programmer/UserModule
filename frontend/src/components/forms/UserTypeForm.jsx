@@ -1,7 +1,9 @@
 import { useState } from "react";
 import InputField from "../common/InputField";
-import SelectField from "../common/SelectField";
+import TextAreaField from "../common/TextAreaField";
+import SearchSelect from "../common/SearchSelect";
 import Button from "../common/Button";
+import FormSection from "../common/FormSection";
 
 const STATUS_OPTIONS = [
   { value: "true", label: "Active" },
@@ -32,58 +34,27 @@ export default function UserTypeForm({ initialData, onSave, onCancel }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
-    if (Object.keys(errs).length) {
-      setErrors(errs);
-      return;
-    }
+    if (Object.keys(errs).length) { setErrors(errs); return; }
     setSaving(true);
     try {
       await onSave({ ...form, isActive: form.isActive === "true" });
     } catch (err) {
       setErrors({ name: err.response?.data?.message || "Failed to save" });
-    } finally {
-      setSaving(false);
-    }
+    } finally { setSaving(false); }
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField
-        label="Name"
-        required
-        name="name"
-        placeholder="Enter user type name"
-        value={form.name}
-        onChange={handleChange}
-        error={errors.name}
-      />
-      <SelectField
-        label="Status"
-        name="isActive"
-        options={STATUS_OPTIONS}
-        value={form.isActive}
-        onChange={handleChange}
-        placeholder=""
-      />
-      <InputField
-        label="Description"
-        name="description"
-        placeholder="Enter description (optional)"
-        value={form.description}
-        onChange={handleChange}
-      />
-      <div className="flex justify-between pt-4">
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={onCancel}
-          disabled={saving}
-        >
-          Cancel
-        </Button>
-        <Button type="submit" loading={saving}>
-          {initialData ? "Update" : "Create"}
-        </Button>
+    <form onSubmit={handleSubmit} noValidate>
+      <FormSection title="User Type Details">
+        <div className="grid grid-cols-2 gap-3">
+          <InputField label="User Type Name" required name="name" placeholder="Enter user type name" value={form.name} onChange={handleChange} error={errors.name} />
+          <SearchSelect label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} />
+          <TextAreaField label="Description" name="description" placeholder="Description (optional)" value={form.description} onChange={handleChange} wrapperClassName="col-span-2" />
+        </div>
+      </FormSection>
+      <div className="flex justify-between pt-4 mt-4 border-t border-gray-100">
+        <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
+        <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>
       </div>
     </form>
   );

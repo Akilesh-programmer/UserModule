@@ -16,20 +16,20 @@ export default function GroupPage() {
   });
 
   const columns = [
-    { key: "#", header: "#", cellClassName: "w-12 text-sm text-gray-500", render: (_, i) => i + 1 },
-    { key: "name", header: "Name", cellClassName: "text-sm font-medium text-gray-900", render: (r) => r.name },
-    { key: "code", header: "Code", cellClassName: "text-sm text-gray-700", render: (r) => r.code },
-    { key: "category", header: "Category", cellClassName: "text-sm text-gray-500 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", render: (r) => r.categoryId?.name || "—" },
-    { key: "status", header: "Status", render: (r) => <Badge active={r.isActive} /> },
-    { key: "actions", header: "Actions", render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
+    { key: "#", header: "#", cellClassName: "w-10 text-sm text-gray-500", sortable: false, render: (_, i) => i + 1 },
+    { key: "name", header: "Group Name", cellClassName: "text-sm font-semibold text-gray-900", searchValue: (r) => r.name, render: (r) => r.name },
+    { key: "code", header: "Code", cellClassName: "text-sm font-mono text-gray-600", searchValue: (r) => r.code || "", render: (r) => r.code || "—" },
+    { key: "category", header: "Category", cellClassName: "text-sm text-gray-600 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", searchValue: (r) => r.categoryId?.name || "", render: (r) => r.categoryId?.name || "—" },
+    { key: "status", header: "Status", sortable: false, render: (r) => <Badge active={r.isActive} /> },
+    { key: "actions", header: "Actions", sortable: false, render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
   ];
 
   return (
-    <div>
+    <div className="page-enter">
       <PageHeader title="Groups" subtitle="Manage item groups" action={<Button onClick={openCreate}><MdAdd size={16} /> Add Group</Button>} />
-      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No groups found. Create one to get started." />
-      {modalOpen && <Modal title={editTarget ? "Edit Group" : "Add Group"} onClose={closeModal}><GroupForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
-      {deleteTarget && <ConfirmDialog message={`Are you sure you want to delete "${deleteTarget.name}"?`} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} loading={deleteLoading} />}
+      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No groups found." exportFileName="groups" />
+      {modalOpen && <Modal title={editTarget ? "Edit Group" : "Add Group"} onClose={closeModal} wide><GroupForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
+      {deleteTarget && <ConfirmDialog message={`Delete group "${deleteTarget.name}"?`} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} loading={deleteLoading} />}
     </div>
   );
 }

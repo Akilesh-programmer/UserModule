@@ -40,6 +40,7 @@ export class SalesRep {
 
   @Prop(
     raw({
+      countryId: { type: Types.ObjectId, ref: 'Country', default: null },
       stateId: { type: Types.ObjectId, ref: 'State', default: null },
       cityId: { type: Types.ObjectId, ref: 'City', default: null },
       pincodeId: { type: Types.ObjectId, ref: 'Pincode', default: null },
@@ -48,6 +49,7 @@ export class SalesRep {
     }),
   )
   address!: {
+    countryId: Types.ObjectId | null;
     stateId: Types.ObjectId | null;
     cityId: Types.ObjectId | null;
     pincodeId: Types.ObjectId | null;

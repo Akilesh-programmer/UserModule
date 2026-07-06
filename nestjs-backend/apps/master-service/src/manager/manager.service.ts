@@ -6,6 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { Manager, ManagerDocument } from './schemas/manager.schema';
 
 const ADDRESS_POPULATE = [
+  { path: 'address.countryId', select: 'name' },
   { path: 'address.stateId', select: 'name' },
   { path: 'address.cityId', select: 'name' },
   { path: 'address.pincodeId', select: 'code' },

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import InputField from "../common/InputField";
-import SelectField from "../common/SelectField";
+import SearchSelect from "../common/SearchSelect";
 import Button from "../common/Button";
 import FormSection from "../common/FormSection";
 import ProfilePicUpload from "../common/ProfilePicUpload";
@@ -110,56 +110,47 @@ export default function ManagerForm({ initialData, onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col h-full">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Column 1: Personal & Credentials */}
-        <div className="space-y-3">
-          <FormSection title="Personal Info">
-            <div className="space-y-2">
-              <InputField label="Full Name" required name="name" value={form.name} onChange={handleChange} error={errors.name} placeholder="Enter full name" />
-              <InputField label="Mobile" required name="mobile" value={form.mobile} onChange={handleChange} error={errors.mobile} placeholder="10-digit number" maxLength={10} />
-              <InputField label="Email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email address" />
-              <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
-            </div>
-          </FormSection>
-
-          {!initialData && (
-            <FormSection title="Login Credentials">
-              <div className="space-y-2">
+    <form onSubmit={handleSubmit} noValidate>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {/* Column 1: Personal Info */}
+        <FormSection title="Personal Info">
+          <div className="space-y-1.5">
+            <InputField label="Full Name" required name="name" value={form.name} onChange={handleChange} error={errors.name} placeholder="Enter full name" />
+            <InputField label="Mobile" required name="mobile" value={form.mobile} onChange={handleChange} error={errors.mobile} placeholder="10-digit number" maxLength={10} />
+            <InputField label="Email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email address" />
+            <SearchSelect label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} />
+            {!initialData && (
+              <>
+                <div className="pt-0.5 border-t border-gray-100">
+                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Login Credentials</p>
+                </div>
                 <CredentialFields form={form} errors={errors} onChange={handleChange} />
-              </div>
-            </FormSection>
-          )}
-        </div>
+              </>
+            )}
+          </div>
+        </FormSection>
 
         {/* Column 2: Address */}
-        <div className="space-y-3">
-          <FormSection title="Address & Area">
-            <div className="space-y-2 flex flex-col">
-              <AddressFields form={form} onChange={handleChange} errors={errors} />
-            </div>
-          </FormSection>
-        </div>
+        <FormSection title="Address & Area">
+          <AddressFields form={form} onChange={handleChange} errors={errors} />
+        </FormSection>
 
-        {/* Column 3: Documents & Profile Pic */}
-        <div className="space-y-3">
-          <FormSection title="Documents">
-            <div className="space-y-2">
-              <DocumentFields form={form} errors={errors} onChange={handleChange} />
+        {/* Column 3: Documents & Picture */}
+        <FormSection title="Documents & Photo">
+          <div className="space-y-1.5">
+            <DocumentFields form={form} errors={errors} onChange={handleChange} />
+            <div className="pt-1">
+              <ProfilePicUpload preview={picPreview} onChange={handlePicChange} />
             </div>
-          </FormSection>
-
-          <FormSection title="Profile Picture">
-            <ProfilePicUpload preview={picPreview} onChange={handlePicChange} />
-          </FormSection>
-        </div>
+          </div>
+        </FormSection>
       </div>
 
       {errors.form && (
         <p className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600 mt-4">{errors.form}</p>
       )}
 
-      <div className="flex justify-between pt-4 mt-auto">
+      <div className="flex justify-between pt-3 mt-3 border-t border-gray-100">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
         <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>
       </div>

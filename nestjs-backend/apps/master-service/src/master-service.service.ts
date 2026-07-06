@@ -40,8 +40,18 @@ export class MasterService {
       this.salesRepService.findAll(),
     ]);
 
-    const taggedManagers = managers.map((m: any) => ({ ...m, _type: 'manager' }));
-    const taggedSalesReps = salesReps.map((s: any) => ({ ...s, _type: 'salesRep' }));
+    // userTypeId is a raw ObjectId pointing to the admin DB — cross-DB populate won't work.
+    // Construct a virtual populated { _id, name } so the frontend renders user type correctly.
+    const taggedManagers = managers.map((m: any) => ({
+      ...m,
+      _type: 'manager',
+      userTypeId: m.userTypeId ? { _id: m.userTypeId, name: 'Manager' } : null,
+    }));
+    const taggedSalesReps = salesReps.map((s: any) => ({
+      ...s,
+      _type: 'salesRep',
+      userTypeId: s.userTypeId ? { _id: s.userTypeId, name: 'Sales Rep' } : null,
+    }));
 
     return [...taggedManagers, ...taggedSalesReps];
   }

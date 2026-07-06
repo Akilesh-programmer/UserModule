@@ -16,18 +16,18 @@ export default function CountryPage() {
   });
 
   const columns = [
-    { key: "#", header: "#", cellClassName: "w-12 text-sm text-gray-500", render: (_, i) => i + 1 },
-    { key: "name", header: "Name", cellClassName: "text-sm font-medium text-gray-900", render: (r) => r.name },
-    { key: "code", header: "Code", cellClassName: "text-sm text-gray-700", render: (r) => r.code || "—" },
-    { key: "status", header: "Status", render: (r) => <Badge active={r.isActive} /> },
-    { key: "actions", header: "Actions", render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
+    { key: "#", header: "#", cellClassName: "w-10 text-sm text-gray-500", sortable: false, render: (_, i) => i + 1 },
+    { key: "name", header: "Country Name", cellClassName: "text-sm font-semibold text-gray-900", searchValue: (r) => r.name, render: (r) => r.name },
+    { key: "code", header: "Code", cellClassName: "text-sm font-mono text-gray-600", searchValue: (r) => r.code || "", render: (r) => r.code || "—" },
+    { key: "status", header: "Status", sortable: false, render: (r) => <Badge active={r.isActive} /> },
+    { key: "actions", header: "Actions", sortable: false, render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
   ];
 
   return (
-    <div>
+    <div className="page-enter">
       <PageHeader title="Countries" subtitle="Manage countries" action={<Button onClick={openCreate}><MdAdd size={16} /> Add Country</Button>} />
-      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No countries found." />
-      {modalOpen && <Modal title={editTarget ? "Edit Country" : "Add Country"} onClose={closeModal}><CountryForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
+      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No countries found." exportFileName="countries" />
+      {modalOpen && <Modal title={editTarget ? "Edit Country" : "Add Country"} onClose={closeModal} wide><CountryForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
       {deleteTarget && <ConfirmDialog message={`Delete country "${deleteTarget.name}"?`} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} loading={deleteLoading} />}
     </div>
   );

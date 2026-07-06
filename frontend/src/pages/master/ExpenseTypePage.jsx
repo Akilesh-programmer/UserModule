@@ -16,18 +16,18 @@ export default function ExpenseTypePage() {
   });
 
   const columns = [
-    { key: "#", header: "#", cellClassName: "w-12 text-sm text-gray-500", render: (_, i) => i + 1 },
-    { key: "name", header: "Name", cellClassName: "text-sm font-medium text-gray-900", render: (r) => r.name },
-    { key: "description", header: "Description", cellClassName: "text-sm text-gray-700", render: (r) => r.description || "—" },
-    { key: "status", header: "Status", render: (r) => <Badge active={r.isActive} /> },
-    { key: "actions", header: "Actions", render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
+    { key: "#", header: "#", cellClassName: "w-10 text-sm text-gray-500", sortable: false, render: (_, i) => i + 1 },
+    { key: "name", header: "Expense Type", cellClassName: "text-sm font-semibold text-gray-900", searchValue: (r) => r.name, render: (r) => r.name },
+    { key: "description", header: "Description", cellClassName: "text-sm text-gray-500 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", searchValue: (r) => r.description || "", render: (r) => r.description || "—" },
+    { key: "status", header: "Status", sortable: false, render: (r) => <Badge active={r.isActive} /> },
+    { key: "actions", header: "Actions", sortable: false, render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
   ];
 
   return (
-    <div>
+    <div className="page-enter">
       <PageHeader title="Expense Types" subtitle="Manage expense types" action={<Button onClick={openCreate}><MdAdd size={16} /> Add Expense Type</Button>} />
-      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No expense types found." />
-      {modalOpen && <Modal title={editTarget ? "Edit Expense Type" : "Add Expense Type"} onClose={closeModal}><ExpenseTypeForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
+      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No expense types found." exportFileName="expense-types" />
+      {modalOpen && <Modal title={editTarget ? "Edit Expense Type" : "Add Expense Type"} onClose={closeModal} wide><ExpenseTypeForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
       {deleteTarget && <ConfirmDialog message={`Delete expense type "${deleteTarget.name}"?`} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} loading={deleteLoading} />}
     </div>
   );

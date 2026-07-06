@@ -21,13 +21,11 @@ export class AreaGatewayController {
   }
 
   @Get('active')
-  @RequirePermission('area', 'read')
   findActive(@Query() query: any) {
     return firstValueFrom(this.masterClient.send(AREA_FIND_ACTIVE, query || {}));
   }
 
   @Get('by-pincode/:pincodeId')
-  @RequirePermission('area', 'read')
   findByPincode(@Param('pincodeId') pincodeId: string) {
     return firstValueFrom(this.masterClient.send(AREA_FIND_BY_PINCODE, { pincodeId }));
   }

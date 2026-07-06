@@ -44,3 +44,24 @@ export const ITEM_FIND_ALL = 'item.findAll';
 export const ITEM_FIND_ONE = 'item.findOne';
 export const ITEM_UPDATE = 'item.update';
 export const ITEM_DELETE = 'item.delete';
+
+/** TCP message patterns for Item Service — Scheme */
+export const SCHEME_CREATE = 'scheme.create';
+export const SCHEME_FIND_ALL = 'scheme.findAll';
+export const SCHEME_FIND_ONE = 'scheme.findOne';
+export const SCHEME_UPDATE = 'scheme.update';
+export const SCHEME_DELETE = 'scheme.delete';
+
+/** TCP message patterns for Item Service — SchemePdf */
+export const SCHEME_PDF_CREATE = 'schemePdf.create';
+export const SCHEME_PDF_FIND_ALL = 'schemePdf.findAll';
+export const SCHEME_PDF_FIND_ONE = 'schemePdf.findOne';
+export const SCHEME_PDF_UPDATE = 'schemePdf.update';
+export const SCHEME_PDF_DELETE = 'schemePdf.delete';
+
+/** TCP message patterns for Item Service — ApplicationPdf */
+export const APPLICATION_PDF_CREATE = 'applicationPdf.create';
+export const APPLICATION_PDF_FIND_ALL = 'applicationPdf.findAll';
+export const APPLICATION_PDF_FIND_ONE = 'applicationPdf.findOne';
+export const APPLICATION_PDF_UPDATE = 'applicationPdf.update';
+export const APPLICATION_PDF_DELETE = 'applicationPdf.delete';

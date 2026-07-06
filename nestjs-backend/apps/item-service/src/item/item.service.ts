@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
 import { Item, ItemDocument } from './schemas/item.schema';
+import { Counter, CounterDocument } from './schemas/counter.schema';
 import { Category, CategoryDocument } from '../category/schemas/category.schema';
 import { Group, GroupDocument } from '../group/schemas/group.schema';
 import { Tax, TaxDocument } from '../tax/schemas/tax.schema';
@@ -21,6 +22,7 @@ const POPULATE_REFS = [
 export class ItemService {
   constructor(
     @InjectModel(Item.name) private readonly model: Model<ItemDocument>,
+    @InjectModel(Counter.name) private readonly counterModel: Model<CounterDocument>,
     @InjectModel(Category.name) private readonly catModel: Model<CategoryDocument>,
     @InjectModel(Group.name) private readonly grpModel: Model<GroupDocument>,
     @InjectModel(Tax.name) private readonly taxModel: Model<TaxDocument>,
@@ -53,6 +55,9 @@ export class ItemService {
       dto.itemCode = dto.itemCode.toUpperCase();
     }
 
+    // Auto-generate HSN code using atomic counter
+    dto.hsnCode = await this.generateHsnCode();
+
     const doc = await this.model.create(dto);
     return this.model.findById(doc._id).populate(POPULATE_REFS).lean().exec();
   }
@@ -60,6 +65,9 @@ export class ItemService {
   async update(id: string, dto: any) {
     // Validate changed references
     await this.validateRefs(dto, true);
+
+    // Strip hsnCode from update — it's immutable after creation
+    delete dto.hsnCode;
 
     if (dto.itemCode) {
       const exists = await this.model.findOne({ itemCode: dto.itemCode.toUpperCase(), _id: { $ne: id } }).exec();
@@ -76,6 +84,17 @@ export class ItemService {
     const doc = await this.model.findByIdAndDelete(id).exec();
     if (!doc) throw new RpcException({ statusCode: 404, message: 'Item not found' });
     return { message: 'Item deleted successfully' };
+  }
+
+  /** Auto-increment HSN code using an atomic findOneAndUpdate on the Counter collection */
+  private async generateHsnCode(): Promise<string> {
+    const counter = await this.counterModel.findOneAndUpdate(
+      { key: 'hsnCode' },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true },
+    ).exec();
+    // Format: HSN00001, HSN00002, …
+    return `HSN${String(counter!.seq).padStart(5, '0')}`;
   }
 
   /** Validate all referenced entities exist */

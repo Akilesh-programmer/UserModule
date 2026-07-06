@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import InputField from "../components/common/InputField";
 import PasswordInput from "../components/common/PasswordInput";
 import Button from "../components/common/Button";
+import { MdBolt } from "react-icons/md";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -39,40 +40,56 @@ export default function LoginPage() {
       toast.success("Login successful");
       navigate("/");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">UserModule</h1>
-          <p className="mt-2 text-sm text-gray-500">Sign in to your account</p>
+    <div className="flex min-h-screen items-center justify-center bg-surface-50 px-6">
+      <div className="w-full max-w-sm animate-fade-in">
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-button">
+            <MdBolt size={22} className="text-white" />
+          </div>
+          <span className="text-xl font-bold text-gray-900 tracking-tight">SalesForce</span>
         </div>
-        <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+
+        <div className="mb-7 text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
+          <p className="mt-1.5 text-sm text-gray-500">Sign in to your account to continue</p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-card ring-1 ring-gray-100 p-7">
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
-            <InputField
-              label="Username"
-              type="text"
-              name="username"
-              placeholder="Enter username"
-              value={form.username}
-              onChange={handleChange}
-              error={errors.username}
-              autoComplete="username"
-            />
-            <PasswordInput
-              label="Password"
-              name="password"
-              placeholder="Enter password"
-              value={form.password}
-              onChange={handleChange}
-              error={errors.password}
-              autoComplete="current-password"
-            />
+            <div>
+              <InputField
+                label="Username"
+                type="text"
+                name="username"
+                id="username"
+                placeholder="Enter your username"
+                value={form.username}
+                onChange={handleChange}
+                error={errors.username}
+                autoComplete="username"
+              />
+            </div>
+            <div>
+              <PasswordInput
+                label="Password"
+                name="password"
+                id="password"
+                placeholder="Enter your password"
+                value={form.password}
+                onChange={handleChange}
+                error={errors.password}
+                autoComplete="current-password"
+              />
+            </div>
+
             <Button
               type="submit"
               size="lg"
@@ -87,3 +104,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

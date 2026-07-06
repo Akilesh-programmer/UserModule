@@ -6,6 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { SalesRep, SalesRepDocument } from './schemas/sales-rep.schema';
 
 const ADDRESS_POPULATE = [
+  { path: 'address.countryId', select: 'name' },
   { path: 'address.stateId', select: 'name' },
   { path: 'address.cityId', select: 'name' },
   { path: 'address.pincodeId', select: 'code' },
@@ -23,6 +24,14 @@ export class SalesRepService {
       .populate('managerId', 'name')
       .populate(ADDRESS_POPULATE)
       .sort({ createdAt: -1 }).lean().exec();
+  }
+
+  async findActive(query?: { managerId?: string }) {
+    const filter: Record<string, any> = { isActive: true };
+    if (query?.managerId) filter.managerId = query.managerId;
+    return this.salesRepModel.find(filter).select('-passwordHash')
+      .populate('managerId', 'name')
+      .sort({ name: 1 }).lean().exec();
   }
 
   async findOne(id: string) {

@@ -14,7 +14,7 @@ export class StateController {
   findAll(@Payload() query: any) { return this.stateService.findAll(query); }
 
   @MessagePattern(STATE_FIND_ACTIVE)
-  findActive() { return this.stateService.findActive(); }
+  findActive(@Payload() query: any) { return this.stateService.findActive(query); }
 
   @MessagePattern(STATE_FIND_BY_COUNTRY)
   findByCountry(@Payload() data: { countryId: string }) { return this.stateService.findByCountry(data.countryId); }

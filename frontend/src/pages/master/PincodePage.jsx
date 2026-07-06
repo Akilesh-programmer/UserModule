@@ -16,19 +16,19 @@ export default function PincodePage() {
   });
 
   const columns = [
-    { key: "#", header: "#", cellClassName: "w-12 text-sm text-gray-500", render: (_, i) => i + 1 },
-    { key: "code", header: "Pincode", cellClassName: "text-sm font-medium text-gray-900", render: (r) => r.code },
-    { key: "city", header: "City", cellClassName: "text-sm text-gray-500", render: (r) => r.cityId?.name || "—" },
-    { key: "state", header: "State", cellClassName: "text-sm text-gray-500 hidden md:table-cell", headerClassName: "hidden md:table-cell", render: (r) => r.stateId?.name || "—" },
-    { key: "status", header: "Status", render: (r) => <Badge active={r.isActive} /> },
-    { key: "actions", header: "Actions", render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
+    { key: "#", header: "#", cellClassName: "w-10 text-sm text-gray-500", sortable: false, render: (_, i) => i + 1 },
+    { key: "code", header: "Pincode", cellClassName: "text-sm font-semibold font-mono text-gray-900", searchValue: (r) => r.code, render: (r) => r.code },
+    { key: "city", header: "City / District", cellClassName: "text-sm text-gray-600 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", searchValue: (r) => r.cityId?.name || "", render: (r) => r.cityId?.name || "—" },
+    { key: "state", header: "State", cellClassName: "text-sm text-gray-500 hidden md:table-cell", headerClassName: "hidden md:table-cell", searchValue: (r) => r.stateId?.name || "", render: (r) => r.stateId?.name || "—" },
+    { key: "status", header: "Status", sortable: false, render: (r) => <Badge active={r.isActive} /> },
+    { key: "actions", header: "Actions", sortable: false, render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
   ];
 
   return (
-    <div>
+    <div className="page-enter">
       <PageHeader title="Pincodes" subtitle="Manage pincodes" action={<Button onClick={openCreate}><MdAdd size={16} /> Add Pincode</Button>} />
-      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No pincodes found." />
-      {modalOpen && <Modal title={editTarget ? "Edit Pincode" : "Add Pincode"} onClose={closeModal}><PincodeForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
+      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No pincodes found." exportFileName="pincodes" />
+      {modalOpen && <Modal title={editTarget ? "Edit Pincode" : "Add Pincode"} onClose={closeModal} wide><PincodeForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
       {deleteTarget && <ConfirmDialog message={`Delete pincode "${deleteTarget.code}"?`} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} loading={deleteLoading} />}
     </div>
   );

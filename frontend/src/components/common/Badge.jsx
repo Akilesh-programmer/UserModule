@@ -1,14 +1,13 @@
-import { cn } from "../../lib/cn";
-
 export default function Badge({ active }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        active ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-600",
-      )}
-    >
-      {active ? "Active" : "Inactive"}
+  return active ? (
+    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold bg-success/10 text-success border border-success/20">
+      <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+      Active
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold bg-gray-100 text-gray-500 border border-gray-200">
+      <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+      Inactive
     </span>
   );
 }

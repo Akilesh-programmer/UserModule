@@ -44,7 +44,7 @@ export class Item {
   @Prop({ default: 0, min: 0 })
   maxStockLevel!: number;
 
-  @Prop({ default: '', trim: true })
+  @Prop({ default: '', trim: true, index: true })
   hsnCode!: string;
 
   @Prop({ default: true })

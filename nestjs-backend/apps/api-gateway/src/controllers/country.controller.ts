@@ -21,7 +21,6 @@ export class CountryGatewayController {
   }
 
   @Get('active')
-  @RequirePermission('country', 'read')
   findActive() {
     return firstValueFrom(this.masterClient.send(COUNTRY_FIND_ACTIVE, {}));
   }

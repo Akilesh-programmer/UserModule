@@ -5,7 +5,7 @@ import { RpcException } from '@nestjs/microservices';
 import { Market, MarketDocument } from './schemas/market.schema';
 
 const POPULATE = [
-  { path: 'stateId', select: 'name' },
+  { path: 'stateId', select: 'name countryId', populate: { path: 'countryId', select: 'name' } },
   { path: 'districtId', select: 'name' },
 ];
 

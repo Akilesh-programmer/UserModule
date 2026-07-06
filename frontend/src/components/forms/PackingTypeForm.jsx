@@ -1,7 +1,9 @@
 import { useState } from "react";
 import InputField from "../common/InputField";
-import SelectField from "../common/SelectField";
+import TextAreaField from "../common/TextAreaField";
+import SearchSelect from "../common/SearchSelect";
 import Button from "../common/Button";
+import FormSection from "../common/FormSection";
 
 const STATUS_OPTIONS = [
   { value: "true", label: "Active" },
@@ -44,12 +46,16 @@ export default function PackingTypeForm({ initialData, onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <InputField label="Name" required name="name" placeholder="Enter packing type name" value={form.name} onChange={handleChange} error={errors.name} />
-      <InputField label="Units Per Pack" required name="unitsPerPack" type="number" min="1" placeholder="Enter units per pack" value={form.unitsPerPack} onChange={handleChange} error={errors.unitsPerPack} />
-      <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
-      <InputField label="Description" name="description" placeholder="Enter description (optional)" value={form.description} onChange={handleChange} />
-      <div className="flex justify-between pt-4">
+    <form onSubmit={handleSubmit} noValidate>
+      <FormSection title="Packing Type Details">
+        <div className="grid grid-cols-2 gap-3">
+          <InputField label="Packing Type Name" required name="name" placeholder="Enter packing type name" value={form.name} onChange={handleChange} error={errors.name} />
+          <InputField label="Units Per Pack" required name="unitsPerPack" type="number" min="1" placeholder="e.g. 12" value={form.unitsPerPack} onChange={handleChange} error={errors.unitsPerPack} />
+          <SearchSelect label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} />
+          <TextAreaField label="Description" name="description" placeholder="Description (optional)" value={form.description} onChange={handleChange} />
+        </div>
+      </FormSection>
+      <div className="flex justify-between pt-4 mt-4 border-t border-gray-100">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
         <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>
       </div>

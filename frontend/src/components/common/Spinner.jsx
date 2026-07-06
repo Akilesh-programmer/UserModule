@@ -1,9 +1,14 @@
-import { cn } from "../../lib/cn";
-
-export default function Spinner({ className }) {
+export default function Spinner({ size = "md" }) {
+  const sizes = {
+    sm: "h-5 w-5 border-2",
+    md: "h-8 w-8 border-2",
+    lg: "h-12 w-12 border-[3px]",
+  };
   return (
-    <div className={cn("flex items-center justify-center py-16", className)}>
-      <span className="h-7 w-7 animate-spin rounded-full border-[3px] border-gray-200 border-t-primary" />
+    <div className="flex items-center justify-center p-4">
+      <div
+        className={`${sizes[size]} rounded-full border-primary/20 border-t-primary animate-spin`}
+      />
     </div>
   );
 }

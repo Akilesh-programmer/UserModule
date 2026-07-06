@@ -8,7 +8,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const app = require("./app");
 
-const DB = process.env.MONGO_URI || "mongodb://localhost:27017/usermodule";
+const DB = process.env.MONGO_URI || "mongodb://localhost:27017/salesforce";
 
 mongoose.connect(DB).then(() => console.log("MongoDB connected successfully."));
 

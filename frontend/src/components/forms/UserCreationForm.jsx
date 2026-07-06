@@ -1,8 +1,9 @@
 import { useState } from "react";
 import InputField from "../common/InputField";
-import SelectField from "../common/SelectField";
+import SearchSelect from "../common/SearchSelect";
 import PasswordInput from "../common/PasswordInput";
 import Button from "../common/Button";
+import FormSection from "../common/FormSection";
 
 const STATUS_OPTIONS = [
   { value: "true", label: "Active" },
@@ -16,6 +17,7 @@ export default function UserCreationForm({
   onCancel,
 }) {
   const [form, setForm] = useState({
+    name: initialData?.name || "",
     userTypeId: initialData?.userTypeId?._id || initialData?.userTypeId || "",
     username: initialData?.username || "",
     password: "",
@@ -27,6 +29,7 @@ export default function UserCreationForm({
 
   const validate = () => {
     const errs = {};
+    if (!form.name.trim()) errs.name = "Full name is required";
     if (!form.userTypeId) errs.userTypeId = "User type is required";
     if (!form.username.trim()) errs.username = "Username is required";
     if (!initialData && !form.password) errs.password = "Password is required";
@@ -54,10 +57,7 @@ export default function UserCreationForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
-    if (Object.keys(errs).length) {
-      setErrors(errs);
-      return;
-    }
+    if (Object.keys(errs).length) { setErrors(errs); return; }
     setSaving(true);
     try {
       const payload = { ...form, isActive: form.isActive === "true" };
@@ -68,9 +68,7 @@ export default function UserCreationForm({
       await onSave(payload);
     } catch (err) {
       setErrors({ username: err.response?.data?.message || "Failed to save" });
-    } finally {
-      setSaving(false);
-    }
+    } finally { setSaving(false); }
   };
 
   const isStaffRecord =
@@ -82,74 +80,48 @@ export default function UserCreationForm({
   }));
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <SelectField
-        label="User Type"
-        required
-        name="userTypeId"
-        options={userTypeOptions}
-        value={form.userTypeId}
-        onChange={handleChange}
-        placeholder="Select user type"
-        error={errors.userTypeId}
-        disabled={isStaffRecord}
-      />
-      <InputField
-        label="Username"
-        required
-        name="username"
-        placeholder="Enter username"
-        value={form.username}
-        onChange={handleChange}
-        error={errors.username}
-        autoComplete="off"
-      />
-      <PasswordInput
-        label={
-          initialData
-            ? "New Password (leave blank to keep current)"
-            : "Password"
-        }
-        required={!initialData}
-        name="password"
-        placeholder={
-          initialData ? "Leave blank to keep current" : "Enter password"
-        }
-        value={form.password}
-        onChange={handleChange}
-        error={errors.password}
-        autoComplete="new-password"
-      />
-      <PasswordInput
-        label="Confirm Password"
-        required={!initialData}
-        name="confirmPassword"
-        placeholder="Confirm password"
-        value={form.confirmPassword}
-        onChange={handleChange}
-        error={errors.confirmPassword}
-        autoComplete="new-password"
-      />
-      <SelectField
-        label="Status"
-        name="isActive"
-        options={STATUS_OPTIONS}
-        value={form.isActive}
-        onChange={handleChange}
-        placeholder=""
-      />
-      <div className="flex justify-between pt-4">
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={onCancel}
-          disabled={saving}
-        >
-          Cancel
-        </Button>
-        <Button type="submit" loading={saving}>
-          {initialData ? "Update" : "Create"}
-        </Button>
+    <form onSubmit={handleSubmit} noValidate>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Column 1: Identity */}
+        <FormSection title="User Identity">
+          <div className="space-y-2.5">
+            <InputField label="Full Name" required name="name" placeholder="Enter full name" value={form.name} onChange={handleChange} error={errors.name} autoComplete="off" />
+            <SearchSelect label="User Type" required name="userTypeId" options={userTypeOptions} value={form.userTypeId} onChange={handleChange} placeholder="Select user type" error={errors.userTypeId} disabled={isStaffRecord} />
+            <SearchSelect label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} />
+          </div>
+        </FormSection>
+
+        {/* Column 2: Credentials */}
+        <FormSection title="Login Credentials">
+          <div className="space-y-2.5">
+            <InputField label="Username" required name="username" placeholder="Enter username" value={form.username} onChange={handleChange} error={errors.username} autoComplete="off" />
+            <PasswordInput
+              label={initialData ? "New Password (leave blank to keep current)" : "Password"}
+              required={!initialData}
+              name="password"
+              placeholder={initialData ? "Leave blank to keep current" : "Enter password"}
+              value={form.password}
+              onChange={handleChange}
+              error={errors.password}
+              autoComplete="new-password"
+            />
+            <PasswordInput
+              label="Confirm Password"
+              required={!initialData}
+              name="confirmPassword"
+              placeholder="Confirm password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              error={errors.confirmPassword}
+              autoComplete="new-password"
+            />
+          </div>
+        </FormSection>
+      </div>
+
+      <div className="flex justify-between pt-4 mt-4 border-t border-gray-100">
+        <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
+        <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>
       </div>
     </form>
   );

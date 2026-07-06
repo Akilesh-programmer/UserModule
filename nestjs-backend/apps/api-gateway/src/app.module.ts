@@ -27,6 +27,9 @@ import { TaxGatewayController } from './controllers/tax.controller';
 import { UnitOfMeasureGatewayController } from './controllers/unit-of-measure.controller';
 import { PackingTypeGatewayController } from './controllers/packing-type.controller';
 import { ItemGatewayController } from './controllers/item.controller';
+import { SchemeGatewayController } from './controllers/scheme.controller';
+import { SchemePdfGatewayController } from './controllers/scheme-pdf.controller';
+import { ApplicationPdfGatewayController } from './controllers/application-pdf.controller';
 import * as path from 'path';
 
 @Module({
@@ -109,6 +112,9 @@ import * as path from 'path';
     UnitOfMeasureGatewayController,
     PackingTypeGatewayController,
     ItemGatewayController,
+    SchemeGatewayController,
+    SchemePdfGatewayController,
+    ApplicationPdfGatewayController,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

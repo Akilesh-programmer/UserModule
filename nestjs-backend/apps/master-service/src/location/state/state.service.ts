@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
 import { State, StateDocument } from './schemas/state.schema';
 
@@ -14,12 +14,24 @@ export class StateService {
     return this.model.find(filter).populate('countryId', 'name').sort({ name: 1 }).lean().exec();
   }
 
-  async findActive() {
-    return this.model.find({ isActive: true }).populate('countryId', 'name').sort({ name: 1 }).lean().exec();
+  async findActive(query?: { countryId?: string }) {
+    const filter: Record<string, any> = { isActive: true };
+    if (query?.countryId) {
+      try {
+        filter.countryId = new Types.ObjectId(query.countryId);
+      } catch {
+        filter.countryId = query.countryId;
+      }
+    }
+    return this.model.find(filter).populate('countryId', 'name').sort({ name: 1 }).lean().exec();
   }
 
   async findByCountry(countryId: string) {
-    return this.model.find({ countryId, isActive: true }).sort({ name: 1 }).lean().exec();
+    let cid: any = countryId;
+    try {
+      cid = new Types.ObjectId(countryId);
+    } catch {}
+    return this.model.find({ countryId: cid, isActive: true }).sort({ name: 1 }).lean().exec();
   }
 
   async findOne(id: string) {

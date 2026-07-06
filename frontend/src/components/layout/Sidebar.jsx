@@ -13,8 +13,9 @@ import {
   MdReceiptLong,
   MdBusiness,
   MdStore,
+  MdBolt,
 } from "react-icons/md";
-import { FiUsers, FiShield, FiUserCheck, FiUserPlus, FiPackage, FiLayers, FiGrid, FiBox, FiMap, FiMapPin } from "react-icons/fi";
+import { FiUsers, FiShield, FiUserCheck, FiUserPlus, FiPackage, FiLayers, FiGrid, FiBox, FiMap, FiMapPin, FiTag, FiFileText, FiFile } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { TbRulerMeasure, TbReceipt2, TbBuildingStore } from "react-icons/tb";
 import { cn } from "../../lib/cn";
@@ -29,39 +30,42 @@ const NAV_ITEMS = [
     label: "Admin",
     icon: <HiOutlineUserGroup size={18} />,
     children: [
-      { label: "User Type", icon: <FiUserCheck size={16} />, path: "/admin/user-type" },
-      { label: "User Creation", icon: <FiUsers size={16} />, path: "/admin/user-creation" },
-      { label: "User Permission", icon: <FiShield size={16} />, path: "/admin/user-permission" },
+      { label: "User Type", icon: <FiUserCheck size={15} />, path: "/admin/user-type" },
+      { label: "User Creation", icon: <FiUsers size={15} />, path: "/admin/user-creation" },
+      { label: "User Permission", icon: <FiShield size={15} />, path: "/admin/user-permission" },
     ],
   },
   {
     label: "Master",
     icon: <MdSupervisedUserCircle size={18} />,
     children: [
-      { label: "Manager", icon: <FiUserCheck size={16} />, path: "/master/manager" },
-      { label: "Sales Rep", icon: <FiUserPlus size={16} />, path: "/master/sales-rep" },
-      { label: "Country", icon: <MdPublic size={16} />, path: "/master/country" },
-      { label: "State", icon: <FiMap size={16} />, path: "/master/state" },
-      { label: "City", icon: <MdLocationOn size={16} />, path: "/master/city" },
-      { label: "Pincode", icon: <FiMapPin size={16} />, path: "/master/pincode" },
-      { label: "Area", icon: <FiMapPin size={16} />, path: "/master/area" },
-      { label: "Market", icon: <MdStorefront size={16} />, path: "/master/market" },
-      { label: "Dealer", icon: <TbBuildingStore size={16} />, path: "/master/dealer" },
-      { label: "Expense Type", icon: <MdReceiptLong size={16} />, path: "/master/expense-type" },
-      { label: "Company", icon: <MdBusiness size={16} />, path: "/master/company" },
-      { label: "Shop Type", icon: <MdStore size={16} />, path: "/master/shop-type" },
+      { label: "Company", icon: <MdBusiness size={15} />, path: "/master/company" },
+      { label: "Country", icon: <MdPublic size={15} />, path: "/master/country" },
+      { label: "State", icon: <FiMap size={15} />, path: "/master/state" },
+      { label: "City", icon: <MdLocationOn size={15} />, path: "/master/city" },
+      { label: "Pincode", icon: <FiMapPin size={15} />, path: "/master/pincode" },
+      { label: "Area", icon: <FiMapPin size={15} />, path: "/master/area" },
+      { label: "Manager", icon: <FiUserCheck size={15} />, path: "/master/manager" },
+      { label: "Sales Rep", icon: <FiUserPlus size={15} />, path: "/master/sales-rep" },
+      { label: "Dealer", icon: <TbBuildingStore size={15} />, path: "/master/dealer" },
+      { label: "Market", icon: <MdStorefront size={15} />, path: "/master/market" },
+      { label: "Shop Type", icon: <MdStore size={15} />, path: "/master/shop-type" },
+      { label: "Expense Type", icon: <MdReceiptLong size={15} />, path: "/master/expense-type" },
     ],
   },
   {
     label: "Item Category",
     icon: <MdInventory size={18} />,
     children: [
-      { label: "Categories", icon: <FiLayers size={16} />, path: "/item-category/category" },
-      { label: "Groups", icon: <FiGrid size={16} />, path: "/item-category/group" },
-      { label: "Tax", icon: <TbReceipt2 size={16} />, path: "/item-category/tax" },
-      { label: "Unit of Measure", icon: <TbRulerMeasure size={16} />, path: "/item-category/unit-of-measure" },
-      { label: "Packing Type", icon: <FiPackage size={16} />, path: "/item-category/packing-type" },
-      { label: "Items", icon: <FiBox size={16} />, path: "/item-category/item" },
+      { label: "Categories", icon: <FiLayers size={15} />, path: "/item-category/category" },
+      { label: "Groups", icon: <FiGrid size={15} />, path: "/item-category/group" },
+      { label: "Tax", icon: <TbReceipt2 size={15} />, path: "/item-category/tax" },
+      { label: "Unit of Measure", icon: <TbRulerMeasure size={15} />, path: "/item-category/unit-of-measure" },
+      { label: "Packing Type", icon: <FiPackage size={15} />, path: "/item-category/packing-type" },
+      { label: "Items", icon: <FiBox size={15} />, path: "/item-category/item" },
+      { label: "Schemes", icon: <FiTag size={15} />, path: "/item-category/scheme" },
+      { label: "Scheme PDF", icon: <FiFileText size={15} />, path: "/item-category/scheme-pdf" },
+      { label: "Application PDF", icon: <FiFile size={15} />, path: "/item-category/application-pdf" },
     ],
   },
 ];
@@ -70,20 +74,23 @@ function NavGroup({ item, onClose }) {
   const [open, setOpen] = useState(true);
 
   return (
-    <div>
+    <div className="space-y-0.5">
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+        className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-white/60 hover:bg-white/8 hover:text-white/90 transition-all duration-150"
       >
-        <span className="flex-shrink-0">{item.icon}</span>
-        <span className="flex-1">{item.label}</span>
-        <span className="flex-shrink-0 text-white/50">
-          {open ? <MdExpandLess size={16} /> : <MdExpandMore size={16} />}
+        <span className="flex-shrink-0 text-white/50">{item.icon}</span>
+        <span className="flex-1 text-[13px]">{item.label}</span>
+        <span className="flex-shrink-0 text-white/30 transition-transform duration-200" style={{ transform: open ? "rotate(0)" : "rotate(-90deg)" }}>
+          <MdExpandMore size={16} />
         </span>
       </button>
 
-      {open && (
-        <div className="ml-4 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
+      <div
+        className="overflow-hidden transition-all duration-250"
+        style={{ maxHeight: open ? "600px" : "0", opacity: open ? 1 : 0 }}
+      >
+        <div className="ml-3 pl-3 border-l border-white/8 space-y-0.5 pb-1">
           {item.children.map((child) => (
             <NavLink
               key={child.path}
@@ -91,10 +98,10 @@ function NavGroup({ item, onClose }) {
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors",
+                  "flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-[13px] transition-all duration-150",
                   isActive
-                    ? "bg-primary text-white font-medium"
-                    : "text-white/60 hover:bg-white/10 hover:text-white",
+                    ? "bg-primary text-white font-semibold nav-active-glow"
+                    : "text-white/55 hover:bg-white/8 hover:text-white/90",
                 )
               }
             >
@@ -103,7 +110,7 @@ function NavGroup({ item, onClose }) {
             </NavLink>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -112,23 +119,32 @@ export default function Sidebar({ isOpen, onClose }) {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-sidebar transition-transform duration-300 lg:relative lg:translate-x-0",
+        "fixed inset-y-0 left-0 z-30 flex w-[260px] flex-col transition-transform duration-300 lg:relative lg:translate-x-0",
+        "shadow-sidebar",
         isOpen ? "translate-x-0" : "-translate-x-full",
       )}
+      style={{ background: "linear-gradient(180deg, #0f172a 0%, #111827 100%)" }}
     >
-      <div className="flex h-16 flex-shrink-0 items-center justify-between px-5">
-        <span className="text-lg font-bold tracking-tight text-white">
-          UserModule
-        </span>
+      {/* Brand */}
+      <div className="flex h-16 flex-shrink-0 items-center justify-between px-5 border-b border-white/[0.06]">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-button">
+            <MdBolt size={18} className="text-white" />
+          </div>
+          <span className="text-[15px] font-bold tracking-tight text-white">
+            SalesForce
+          </span>
+        </div>
         <button
           onClick={onClose}
-          className="rounded-lg p-1.5 text-white/50 hover:bg-white/10 hover:text-white transition-colors lg:hidden"
+          className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:bg-white/10 hover:text-white transition-colors"
         >
           <MdClose size={18} />
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1 sidebar-scroll">
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto sidebar-scroll px-3 py-3 space-y-1">
         {NAV_ITEMS.map((item) =>
           item.children ? (
             <NavGroup key={item.label} item={item} onClose={onClose} />
@@ -140,10 +156,10 @@ export default function Sidebar({ isOpen, onClose }) {
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-all duration-150",
                   isActive
-                    ? "bg-primary text-white"
-                    : "text-white/70 hover:bg-white/10 hover:text-white",
+                    ? "bg-primary text-white font-semibold nav-active-glow"
+                    : "text-white/60 hover:bg-white/8 hover:text-white/90",
                 )
               }
             >
@@ -153,6 +169,13 @@ export default function Sidebar({ isOpen, onClose }) {
           ),
         )}
       </nav>
+
+      {/* Footer */}
+      <div className="px-4 py-3 border-t border-white/[0.06]">
+        <p className="text-[10px] text-white/20 text-center tracking-wider uppercase">
+          SalesForce v1.0
+        </p>
+      </div>
     </aside>
   );
 }

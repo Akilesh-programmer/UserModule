@@ -16,7 +16,7 @@ import * as path from 'path';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        uri: config.get<string>('MONGO_URI_ADMIN', 'mongodb://localhost:27017/usermodule_admin'),
+        uri: config.get<string>('MONGO_URI_ADMIN', 'mongodb://localhost:27017/salesforce_admin'),
       }),
     }),
     UserTypeModule,

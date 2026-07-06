@@ -41,6 +41,7 @@ export class UserService {
 
   async create(dto: {
     userTypeId: string;
+    name?: string;
     username: string;
     password: string;
     description?: string;
@@ -62,6 +63,7 @@ export class UserService {
 
     const user = await this.userModel.create({
       userTypeId: dto.userTypeId,
+      name: dto.name || '',
       username: dto.username,
       passwordHash,
       description: dto.description || '',
@@ -80,6 +82,7 @@ export class UserService {
 
   async update(id: string, dto: {
     userTypeId?: string;
+    name?: string;
     username?: string;
     password?: string;
     description?: string;
@@ -87,6 +90,7 @@ export class UserService {
   }): Promise<any> {
     const updateData: Record<string, any> = {};
     if (dto.userTypeId) updateData.userTypeId = dto.userTypeId;
+    if (dto.name !== undefined) updateData.name = dto.name;
     if (dto.username) updateData.username = dto.username;
     if (dto.description !== undefined) updateData.description = dto.description;
     if (dto.isActive !== undefined) updateData.isActive = dto.isActive;

@@ -39,73 +39,19 @@ export default function SalesRepPage() {
   });
 
   const columns = [
-    {
-      key: "#",
-      header: "#",
-      cellClassName: "w-12 text-sm text-gray-500",
-      render: (_, i) => i + 1,
-    },
-    {
-      key: "name",
-      header: "Name",
-      cellClassName: "text-sm font-medium text-gray-900",
-      render: (rep) => rep.name,
-    },
-    {
-      key: "mobile",
-      header: "Mobile",
-      cellClassName: "text-sm text-gray-500 hidden sm:table-cell",
-      headerClassName: "hidden sm:table-cell",
-      render: (rep) => rep.mobile,
-    },
-    {
-      key: "manager",
-      header: "Manager",
-      cellClassName: "text-sm text-gray-500 hidden md:table-cell",
-      headerClassName: "hidden md:table-cell",
-      render: (rep) => rep.managerId?.name || "—",
-    },
-    {
-      key: "status",
-      header: "Status",
-      render: (rep) => <Badge active={rep.isActive} />,
-    },
-    {
-      key: "photo",
-      header: "Photo",
-      cellClassName: "w-16",
-      render: (rep) => <AvatarCell src={rep.profilePic} alt={rep.name} />,
-    },
-    {
-      key: "actions",
-      header: "Actions",
-      render: (rep) => (
-        <ActionButtons
-          onEdit={() => openEdit(rep)}
-          onDelete={() => setDeleteTarget(rep)}
-        />
-      ),
-    },
+    { key: "#", header: "#", cellClassName: "w-10 text-sm text-gray-500", sortable: false, render: (_, i) => i + 1 },
+    { key: "photo", header: "Photo", cellClassName: "w-14", sortable: false, render: (r) => <AvatarCell src={r.profilePic} alt={r.name} /> },
+    { key: "name", header: "Name", cellClassName: "text-sm font-semibold text-gray-900", searchValue: (r) => r.name, render: (r) => r.name },
+    { key: "mobile", header: "Mobile", cellClassName: "text-sm text-gray-600 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", searchValue: (r) => r.mobile, render: (r) => r.mobile },
+    { key: "manager", header: "Manager", cellClassName: "text-sm text-gray-500 hidden md:table-cell", headerClassName: "hidden md:table-cell", searchValue: (r) => r.managerId?.name || "", render: (r) => r.managerId?.name || "—" },
+    { key: "status", header: "Status", sortable: false, render: (r) => <Badge active={r.isActive} /> },
+    { key: "actions", header: "Actions", sortable: false, render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
   ];
 
   return (
-    <div>
-      <PageHeader
-        title="Sales Rep"
-        subtitle="Manage sales representatives"
-        action={
-          <Button onClick={openCreate}>
-            <MdAdd size={16} /> Add Sales Rep
-          </Button>
-        }
-      />
-
-      <DataTable
-        loading={loading}
-        data={salesReps}
-        columns={columns}
-        emptyMessage="No sales reps found."
-      />
+    <div className="page-enter">
+      <PageHeader title="Sales Reps" subtitle="Manage sales representatives" action={<Button onClick={openCreate}><MdAdd size={16} /> Add Sales Rep</Button>} />
+      <DataTable loading={loading} data={salesReps} columns={columns} emptyMessage="No sales reps found." exportFileName="sales-reps" />
 
       {modalOpen && (
         <Modal

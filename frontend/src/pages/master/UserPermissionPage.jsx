@@ -7,7 +7,7 @@ import {
   savePermission,
 } from "../../api/permissionApi";
 import { useAuth } from "../../context/AuthContext";
-import SelectField from "../../components/common/SelectField";
+import SearchSelect from "../../components/common/SearchSelect";
 import Button from "../../components/common/Button";
 import Spinner from "../../components/common/Spinner";
 import PageHeader from "../../components/common/PageHeader";
@@ -67,10 +67,7 @@ export default function UserPermissionPage() {
       );
     } catch (err) {
       if (err.response?.status === 403) {
-        toast.error(
-          err.response.data?.message ||
-            "You are not allowed to access this page",
-        );
+        toast.error(err.response.data?.message || "You are not allowed to access this page");
         navigate("/");
       } else {
         toast.error("Failed to load user types");
@@ -80,9 +77,7 @@ export default function UserPermissionPage() {
     }
   }, [navigate, currentUser?.userType]);
 
-  useEffect(() => {
-    loadUserTypes();
-  }, [loadUserTypes]);
+  useEffect(() => { loadUserTypes(); }, [loadUserTypes]);
 
   const handleUserTypeChange = async (e) => {
     const userTypeId = e.target.value;
@@ -103,10 +98,7 @@ export default function UserPermissionPage() {
       setPermissions(merged);
     } catch (err) {
       if (err.response?.status === 403) {
-        toast.error(
-          err.response.data?.message ||
-            "You are not allowed to access this page",
-        );
+        toast.error(err.response.data?.message || "You are not allowed to access this page");
         navigate("/");
       } else {
         toast.error("Failed to load permissions");
@@ -116,11 +108,36 @@ export default function UserPermissionPage() {
     }
   };
 
-  const togglePermission = (formKey, action) => {
+  const togglePermission = (moduleKey, action) => {
     setPermissions((prev) => ({
       ...prev,
-      [formKey]: { ...prev[formKey], [action]: !prev[formKey][action] },
+      [moduleKey]: { ...prev[moduleKey], [action]: !prev[moduleKey][action] },
     }));
+  };
+
+  // Select All for a specific action across ALL modules
+  const handleSelectAll = (action) => {
+    const allChecked = PERMISSION_MODULES.every(
+      (mod) => permissions[mod.key]?.[action] === true,
+    );
+    setPermissions((prev) => {
+      const next = { ...prev };
+      for (const mod of PERMISSION_MODULES) {
+        next[mod.key] = { ...next[mod.key], [action]: !allChecked };
+      }
+      return next;
+    });
+  };
+
+  // Select All for a group of modules (all actions)
+  const handleSelectGroup = (modules, value) => {
+    setPermissions((prev) => {
+      const next = { ...prev };
+      for (const mod of modules) {
+        next[mod.key] = { create: value, read: value, update: value, delete: value };
+      }
+      return next;
+    });
   };
 
   const handleSave = async () => {
@@ -139,55 +156,89 @@ export default function UserPermissionPage() {
     }
   };
 
-  const userTypeOptions = userTypes.map((ut) => ({
-    value: ut._id,
-    label: ut.name,
-  }));
+  const userTypeOptions = userTypes.map((ut) => ({ value: ut._id, label: ut.name }));
 
   return (
-    <div>
+    <div className="page-enter">
       <PageHeader
         title="User Permission"
         subtitle="Assign CRUD access per module to user types"
       />
 
-      <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-        <div className="max-w-xs">
-          <SelectField
-            label="Select User Type"
-            options={userTypeOptions}
-            value={selectedUserTypeId}
-            onChange={handleUserTypeChange}
-            placeholder={
-              loadingUserTypes ? "Loading..." : "Select a user type..."
-            }
-            disabled={loadingUserTypes}
-          />
+      <div className="flex-1 min-h-0 rounded-xl bg-white p-6 shadow-card ring-1 ring-gray-100 flex flex-col overflow-hidden">
+        {/* User type selector */}
+        <div className="flex items-end gap-4 mb-4 pb-4 border-b border-gray-100 flex-shrink-0">
+          <div className="w-72">
+            <SearchSelect
+              label="Select User Type"
+              name="userTypeId"
+              options={userTypeOptions}
+              value={selectedUserTypeId}
+              onChange={handleUserTypeChange}
+              placeholder={loadingUserTypes ? "Loading..." : "Select a user type..."}
+              disabled={loadingUserTypes}
+            />
+          </div>
+          {selectedUserTypeId && !loadingPerms && (
+            <div className="flex gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => {
+                  const allOn = PERMISSION_MODULES.every((m) =>
+                    ACTIONS.every((a) => permissions[m.key]?.[a])
+                  );
+                  setPermissions(() => {
+                    const next = buildEmptyPermissions();
+                    if (!allOn) {
+                      for (const mod of PERMISSION_MODULES) {
+                        next[mod.key] = { create: true, read: true, update: true, delete: true };
+                      }
+                    }
+                    return next;
+                  });
+                }}
+                className="px-3 py-2 text-xs font-semibold rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shadow-button"
+              >
+                Select All Permissions
+              </button>
+              <button
+                type="button"
+                onClick={() => setPermissions(buildEmptyPermissions())}
+                className="px-3 py-2 text-xs font-semibold rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              >
+                Clear All
+              </button>
+            </div>
+          )}
         </div>
 
         {selectedUserTypeId && (
-          <>
+          <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
             {loadingPerms ? (
               <Spinner />
             ) : (
-              <div className="mt-6 space-y-4">
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+              <div className="flex-1 min-h-0 flex flex-col gap-3 overflow-hidden">
+                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 flex-shrink-0">
                   Module Permissions
                 </p>
 
-                <PermissionMatrix
-                  permissions={permissions}
-                  onToggle={togglePermission}
-                />
+                <div className="flex-1 min-h-0 overflow-y-auto modal-scroll">
+                  <PermissionMatrix
+                    permissions={permissions}
+                    onToggle={togglePermission}
+                    onSelectAll={handleSelectAll}
+                    onSelectGroup={handleSelectGroup}
+                  />
+                </div>
 
-                <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave} loading={saving}>
+                <div className="flex justify-end pt-2 border-t border-gray-100 flex-shrink-0">
+                  <Button onClick={handleSave} loading={saving} size="lg">
                     Save Permissions
                   </Button>
                 </div>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>

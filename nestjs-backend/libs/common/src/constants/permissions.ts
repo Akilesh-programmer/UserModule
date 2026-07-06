@@ -20,6 +20,9 @@ export const PERMISSION_MODULES = [
   "unitOfMeasure",
   "packingType",
   "item",
+  "scheme",
+  "schemePdf",
+  "applicationPdf",
 ] as const;
 
 export type PermissionModule = (typeof PERMISSION_MODULES)[number];
@@ -59,6 +62,9 @@ export const MODULE_LABELS: Record<PermissionModule, string> = {
   unitOfMeasure: "Units of Measure",
   packingType: "Packing Types",
   item: "Items",
+  scheme: "Schemes",
+  schemePdf: "Scheme PDFs",
+  applicationPdf: "Application PDFs",
 };
 
 export function buildEmptyPermissions(): PermissionMap {

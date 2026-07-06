@@ -3,7 +3,7 @@ import PasswordInput from "../../common/PasswordInput";
 
 export default function CredentialFields({ form, errors, onChange }) {
   return (
-    <div className="grid grid-cols-1 gap-2">
+    <div className="grid grid-cols-1 gap-1.5">
       <InputField
         label="Username"
         required

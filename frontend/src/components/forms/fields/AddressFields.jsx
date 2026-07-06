@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import SelectField from "../../common/SelectField";
+import SearchSelect from "../../common/SearchSelect";
 import InputField from "../../common/InputField";
 import { fetchActiveCountries } from "../../../api/countryApi";
-import { fetchStatesByCountry } from "../../../api/stateApi";
-import { fetchCitiesByState } from "../../../api/cityApi";
-import { fetchPincodesByCity } from "../../../api/pincodeApi";
-import { fetchAreasByPincode } from "../../../api/areaApi";
+import { fetchActiveStates } from "../../../api/stateApi";
+import { fetchActiveCities } from "../../../api/cityApi";
+import { fetchActivePincodes } from "../../../api/pincodeApi";
+import { fetchActiveAreas } from "../../../api/areaApi";
 
 export default function AddressFields({ form, onChange, errors = {} }) {
   const [countries, setCountries] = useState([]);
@@ -15,30 +15,30 @@ export default function AddressFields({ form, onChange, errors = {} }) {
   const [areas, setAreas] = useState([]);
 
   useEffect(() => {
-    fetchActiveCountries().then((r) => setCountries(r.data || [])).catch(() => {});
+    fetchActiveCountries().then((r) => setCountries(r.data || [])).catch((err) => console.error("Failed to load countries:", err));
   }, []);
 
   useEffect(() => {
     if (form.countryId) {
-      fetchStatesByCountry(form.countryId).then((r) => setStates(r.data || [])).catch(() => {});
+      fetchActiveStates(form.countryId).then((r) => setStates(r.data || [])).catch((err) => console.error("Failed to load states:", err));
     } else { setStates([]); }
   }, [form.countryId]);
 
   useEffect(() => {
     if (form.stateId) {
-      fetchCitiesByState(form.stateId).then((r) => setCities(r.data || [])).catch(() => {});
+      fetchActiveCities(form.stateId).then((r) => setCities(r.data || [])).catch((err) => console.error("Failed to load cities:", err));
     } else { setCities([]); }
   }, [form.stateId]);
 
   useEffect(() => {
     if (form.cityId) {
-      fetchPincodesByCity(form.cityId).then((r) => setPincodes(r.data || [])).catch(() => {});
+      fetchActivePincodes(form.cityId).then((r) => setPincodes(r.data || [])).catch((err) => console.error("Failed to load pincodes:", err));
     } else { setPincodes([]); }
   }, [form.cityId]);
 
   useEffect(() => {
     if (form.pincodeId) {
-      fetchAreasByPincode(form.pincodeId).then((r) => setAreas(r.data || [])).catch(() => {});
+      fetchActiveAreas(form.pincodeId).then((r) => setAreas(r.data || [])).catch((err) => console.error("Failed to load areas:", err));
     } else { setAreas([]); }
   }, [form.pincodeId]);
 
@@ -55,8 +55,8 @@ export default function AddressFields({ form, onChange, errors = {} }) {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-2">
-      <SelectField
+    <div className="grid grid-cols-2 gap-1.5">
+      <SearchSelect
         label="Country"
         name="countryId"
         value={form.countryId || ""}
@@ -64,8 +64,9 @@ export default function AddressFields({ form, onChange, errors = {} }) {
         options={countries.map((c) => ({ value: c._id, label: c.name }))}
         error={errors.countryId}
         placeholder="Select country"
+        className="col-span-2 sm:col-span-1"
       />
-      <SelectField
+      <SearchSelect
         label="State"
         name="stateId"
         value={form.stateId || ""}
@@ -73,8 +74,9 @@ export default function AddressFields({ form, onChange, errors = {} }) {
         options={states.map((s) => ({ value: s._id, label: s.name }))}
         error={errors.stateId}
         placeholder="Select state"
+        className="col-span-2 sm:col-span-1"
       />
-      <SelectField
+      <SearchSelect
         label="City"
         name="cityId"
         value={form.cityId || ""}
@@ -82,8 +84,9 @@ export default function AddressFields({ form, onChange, errors = {} }) {
         options={cities.map((c) => ({ value: c._id, label: c.name }))}
         error={errors.cityId}
         placeholder="Select city"
+        className="col-span-2 sm:col-span-1"
       />
-      <SelectField
+      <SearchSelect
         label="Pincode"
         name="pincodeId"
         value={form.pincodeId || ""}
@@ -91,8 +94,9 @@ export default function AddressFields({ form, onChange, errors = {} }) {
         options={pincodes.map((p) => ({ value: p._id, label: p.code }))}
         error={errors.pincodeId}
         placeholder="Select pincode"
+        className="col-span-2 sm:col-span-1"
       />
-      <SelectField
+      <SearchSelect
         label="Area"
         name="areaId"
         value={form.areaId || ""}
@@ -100,13 +104,15 @@ export default function AddressFields({ form, onChange, errors = {} }) {
         options={areas.map((a) => ({ value: a._id, label: a.name }))}
         error={errors.areaId}
         placeholder="Select area"
+        className="col-span-2 sm:col-span-1"
       />
       <InputField
-        label="Street"
+        label="Street / Door No"
         name="street"
         value={form.street || ""}
         onChange={onChange}
-        placeholder="Street / Door No"
+        placeholder="Street address"
+        className="col-span-2 sm:col-span-1"
       />
     </div>
   );

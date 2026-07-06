@@ -7,11 +7,12 @@ export const MANAGER_DELETE = 'manager.delete';
 export const MANAGER_FIND_ACTIVE = 'manager.findActive';
 
 /** TCP message patterns for Staff Service — SalesRep */
-export const SALES_REP_CREATE = 'salesRep.create';
-export const SALES_REP_FIND_ALL = 'salesRep.findAll';
-export const SALES_REP_FIND_ONE = 'salesRep.findOne';
-export const SALES_REP_UPDATE = 'salesRep.update';
-export const SALES_REP_DELETE = 'salesRep.delete';
+export const SALES_REP_CREATE      = 'salesRep.create';
+export const SALES_REP_FIND_ALL    = 'salesRep.findAll';
+export const SALES_REP_FIND_ONE    = 'salesRep.findOne';
+export const SALES_REP_FIND_ACTIVE = 'salesRep.findActive';
+export const SALES_REP_UPDATE      = 'salesRep.update';
+export const SALES_REP_DELETE      = 'salesRep.delete';
 
 /** TCP message patterns for Staff Service — Cross-entity operations */
 export const STAFF_CHECK_USERNAME = 'staff.checkUsername';

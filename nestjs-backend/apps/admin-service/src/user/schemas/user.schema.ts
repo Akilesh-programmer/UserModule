@@ -8,6 +8,9 @@ export class User {
   @Prop({ type: Types.ObjectId, ref: 'UserType', required: true })
   userTypeId!: Types.ObjectId;
 
+  @Prop({ default: '', trim: true })
+  name!: string;
+
   @Prop({ required: true, unique: true, trim: true })
   username!: string;
 

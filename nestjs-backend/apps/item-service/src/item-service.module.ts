@@ -7,6 +7,9 @@ import { TaxModule } from './tax/tax.module';
 import { UnitOfMeasureModule } from './unit-of-measure/unit-of-measure.module';
 import { PackingTypeModule } from './packing-type/packing-type.module';
 import { ItemModule } from './item/item.module';
+import { SchemeModule } from './scheme/scheme.module';
+import { SchemePdfModule } from './scheme-pdf/scheme-pdf.module';
+import { ApplicationPdfModule } from './application-pdf/application-pdf.module';
 import * as path from 'path';
 
 @Module({
@@ -19,7 +22,7 @@ import * as path from 'path';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        uri: config.get<string>('MONGO_URI_ITEMS', 'mongodb://localhost:27017/usermodule_items'),
+        uri: config.get<string>('MONGO_URI_ITEMS', 'mongodb://localhost:27017/salesforce_items'),
       }),
     }),
     CategoryModule,
@@ -28,6 +31,10 @@ import * as path from 'path';
     UnitOfMeasureModule,
     PackingTypeModule,
     ItemModule,
+    SchemeModule,
+    SchemePdfModule,
+    ApplicationPdfModule,
   ],
 })
 export class ItemServiceModule {}
+

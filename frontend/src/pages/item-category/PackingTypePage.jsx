@@ -12,24 +12,24 @@ import { MdAdd } from "react-icons/md";
 
 export default function PackingTypePage() {
   const { items, loading, modalOpen, editTarget, openCreate, openEdit, closeModal, handleSave, deleteTarget, setDeleteTarget, deleteLoading, handleDelete } = useCrudPage({
-    fetchFn: fetchPackingTypes, createFn: createPackingType, updateFn: updatePackingType, deleteFn: deletePackingType, entityName: "Packing type",
+    fetchFn: fetchPackingTypes, createFn: createPackingType, updateFn: updatePackingType, deleteFn: deletePackingType, entityName: "Packing Type",
   });
 
   const columns = [
-    { key: "#", header: "#", cellClassName: "w-12 text-sm text-gray-500", render: (_, i) => i + 1 },
-    { key: "name", header: "Name", cellClassName: "text-sm font-medium text-gray-900", render: (r) => r.name },
-    { key: "unitsPerPack", header: "Units/Pack", cellClassName: "text-sm text-gray-700", render: (r) => r.unitsPerPack },
-    { key: "description", header: "Description", cellClassName: "text-sm text-gray-500 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", render: (r) => r.description || "—" },
-    { key: "status", header: "Status", render: (r) => <Badge active={r.isActive} /> },
-    { key: "actions", header: "Actions", render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
+    { key: "#", header: "#", cellClassName: "w-10 text-sm text-gray-500", sortable: false, render: (_, i) => i + 1 },
+    { key: "name", header: "Packing Type", cellClassName: "text-sm font-semibold text-gray-900", searchValue: (r) => r.name, render: (r) => r.name },
+    { key: "unitsPerPack", header: "Units / Pack", cellClassName: "text-sm font-medium text-gray-700", sortValue: (r) => r.unitsPerPack, render: (r) => r.unitsPerPack },
+    { key: "description", header: "Description", cellClassName: "text-sm text-gray-500 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", searchValue: (r) => r.description || "", render: (r) => r.description || "—" },
+    { key: "status", header: "Status", sortable: false, render: (r) => <Badge active={r.isActive} /> },
+    { key: "actions", header: "Actions", sortable: false, render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
   ];
 
   return (
-    <div>
-      <PageHeader title="Packing Types" subtitle="Manage packing configurations" action={<Button onClick={openCreate}><MdAdd size={16} /> Add Packing Type</Button>} />
-      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No packing types found. Create one to get started." />
-      {modalOpen && <Modal title={editTarget ? "Edit Packing Type" : "Add Packing Type"} onClose={closeModal}><PackingTypeForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
-      {deleteTarget && <ConfirmDialog message={`Are you sure you want to delete "${deleteTarget.name}"?`} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} loading={deleteLoading} />}
+    <div className="page-enter">
+      <PageHeader title="Packing Types" subtitle="Manage packing types" action={<Button onClick={openCreate}><MdAdd size={16} /> Add Packing Type</Button>} />
+      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No packing types found." exportFileName="packing-types" />
+      {modalOpen && <Modal title={editTarget ? "Edit Packing Type" : "Add Packing Type"} onClose={closeModal} wide><PackingTypeForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
+      {deleteTarget && <ConfirmDialog message={`Delete packing type "${deleteTarget.name}"?`} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} loading={deleteLoading} />}
     </div>
   );
 }

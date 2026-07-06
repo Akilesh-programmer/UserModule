@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
 import { Pincode, PincodeDocument } from './schemas/pincode.schema';
 
@@ -11,20 +11,48 @@ export class PincodeService {
   async findAll(query?: { activeOnly?: string; stateId?: string; cityId?: string }) {
     const filter: Record<string, any> = {};
     if (query?.activeOnly === 'true') filter.isActive = true;
-    if (query?.stateId) filter.stateId = query.stateId;
-    if (query?.cityId) filter.cityId = query.cityId;
+    if (query?.stateId) {
+      try {
+        filter.stateId = new Types.ObjectId(query.stateId);
+      } catch {
+        filter.stateId = query.stateId;
+      }
+    }
+    if (query?.cityId) {
+      try {
+        filter.cityId = new Types.ObjectId(query.cityId);
+      } catch {
+        filter.cityId = query.cityId;
+      }
+    }
     return this.model.find(filter).populate('cityId', 'name').populate('stateId', 'name').sort({ code: 1 }).lean().exec();
   }
 
   async findActive(query?: { stateId?: string; cityId?: string }) {
     const filter: Record<string, any> = { isActive: true };
-    if (query?.stateId) filter.stateId = query.stateId;
-    if (query?.cityId) filter.cityId = query.cityId;
+    if (query?.stateId) {
+      try {
+        filter.stateId = new Types.ObjectId(query.stateId);
+      } catch {
+        filter.stateId = query.stateId;
+      }
+    }
+    if (query?.cityId) {
+      try {
+        filter.cityId = new Types.ObjectId(query.cityId);
+      } catch {
+        filter.cityId = query.cityId;
+      }
+    }
     return this.model.find(filter).populate('cityId', 'name').populate('stateId', 'name').sort({ code: 1 }).lean().exec();
   }
 
   async findByCity(cityId: string) {
-    return this.model.find({ cityId, isActive: true }).sort({ code: 1 }).lean().exec();
+    let cid: any = cityId;
+    try {
+      cid = new Types.ObjectId(cityId);
+    } catch {}
+    return this.model.find({ cityId: cid, isActive: true }).sort({ code: 1 }).lean().exec();
   }
 
   async findOne(id: string) {

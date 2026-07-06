@@ -21,13 +21,11 @@ export class PincodeGatewayController {
   }
 
   @Get('active')
-  @RequirePermission('pincode', 'read')
   findActive(@Query() query: any) {
     return firstValueFrom(this.masterClient.send(PINCODE_FIND_ACTIVE, query || {}));
   }
 
   @Get('by-city/:cityId')
-  @RequirePermission('pincode', 'read')
   findByCity(@Param('cityId') cityId: string) {
     return firstValueFrom(this.masterClient.send(PINCODE_FIND_BY_CITY, { cityId }));
   }

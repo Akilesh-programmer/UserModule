@@ -23,6 +23,7 @@ const UserSchema = new mongoose.Schema(
       ref: "UserType",
       required: true,
     },
+    name: { type: String, default: "" },
     username: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
     description: { type: String, default: "" },
@@ -81,7 +82,7 @@ function buildFullPermissions() {
 
 async function seed() {
   const uri =
-    process.env.MONGO_URI_ADMIN || "mongodb://localhost:27017/usermodule_admin";
+    process.env.MONGO_URI_ADMIN || "mongodb://localhost:27017/salesforce_admin";
   console.log(`\n🌱 Connecting to: ${uri}\n`);
 
   await mongoose.connect(uri);
@@ -116,12 +117,13 @@ async function seed() {
     const passwordHash = await bcrypt.hash("Akilesh@123", 12);
     adminUser = await User.create({
       userTypeId: adminType._id,
+      name: "Administrator",
       username: "akilesh",
       passwordHash,
       description: "Primary admin user",
       isActive: true,
     });
-    console.log(`✅ Created Admin user: akilesh (password: Akilesh@123)`);
+    console.log(`✅ Created Admin user: akilesh (password: Akilesh@123)`);;
   } else {
     console.log(`⏭️  Admin user already exists: akilesh`);
   }

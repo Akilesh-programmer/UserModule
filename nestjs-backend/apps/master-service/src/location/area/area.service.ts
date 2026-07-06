@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
 import { Area, AreaDocument } from './schemas/area.schema';
 
@@ -17,22 +17,62 @@ export class AreaService {
   async findAll(query?: { activeOnly?: string; stateId?: string; cityId?: string; pincodeId?: string }) {
     const filter: Record<string, any> = {};
     if (query?.activeOnly === 'true') filter.isActive = true;
-    if (query?.stateId) filter.stateId = query.stateId;
-    if (query?.cityId) filter.cityId = query.cityId;
-    if (query?.pincodeId) filter.pincodeId = query.pincodeId;
+    if (query?.stateId) {
+      try {
+        filter.stateId = new Types.ObjectId(query.stateId);
+      } catch {
+        filter.stateId = query.stateId;
+      }
+    }
+    if (query?.cityId) {
+      try {
+        filter.cityId = new Types.ObjectId(query.cityId);
+      } catch {
+        filter.cityId = query.cityId;
+      }
+    }
+    if (query?.pincodeId) {
+      try {
+        filter.pincodeId = new Types.ObjectId(query.pincodeId);
+      } catch {
+        filter.pincodeId = query.pincodeId;
+      }
+    }
     return this.model.find(filter).populate(POPULATE).sort({ name: 1 }).lean().exec();
   }
 
   async findActive(query?: { stateId?: string; cityId?: string; pincodeId?: string }) {
     const filter: Record<string, any> = { isActive: true };
-    if (query?.stateId) filter.stateId = query.stateId;
-    if (query?.cityId) filter.cityId = query.cityId;
-    if (query?.pincodeId) filter.pincodeId = query.pincodeId;
+    if (query?.stateId) {
+      try {
+        filter.stateId = new Types.ObjectId(query.stateId);
+      } catch {
+        filter.stateId = query.stateId;
+      }
+    }
+    if (query?.cityId) {
+      try {
+        filter.cityId = new Types.ObjectId(query.cityId);
+      } catch {
+        filter.cityId = query.cityId;
+      }
+    }
+    if (query?.pincodeId) {
+      try {
+        filter.pincodeId = new Types.ObjectId(query.pincodeId);
+      } catch {
+        filter.pincodeId = query.pincodeId;
+      }
+    }
     return this.model.find(filter).populate(POPULATE).sort({ name: 1 }).lean().exec();
   }
 
   async findByPincode(pincodeId: string) {
-    return this.model.find({ pincodeId, isActive: true }).sort({ name: 1 }).lean().exec();
+    let pinid: any = pincodeId;
+    try {
+      pinid = new Types.ObjectId(pincodeId);
+    } catch {}
+    return this.model.find({ pincodeId: pinid, isActive: true }).sort({ name: 1 }).lean().exec();
   }
 
   async findOne(id: string) {

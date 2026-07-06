@@ -1,29 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ── Google Fonts (Inter) ── */
+
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-surface-50 text-gray-900;
   }
 
   #root {
     @apply h-screen;
   }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+/* ── Design Tokens ─────────────────────────────── */
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --sidebar-bg: #0f172a;
+  --sidebar-hover: #1e293b;
+  --header-height: 64px;
+  --sidebar-width: 260px;
+  --radius-card: 12px;
+  --radius-modal: 16px;
 }
 
 /* ── Sidebar dark scrollbar ─────────────────────────────── */
 .sidebar-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255 255 255 / 0.15) transparent;
+  scrollbar-color: rgba(255 255 255 / 0.12) transparent;
 }
 
 .sidebar-scroll::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
 
 .sidebar-scroll::-webkit-scrollbar-track {
@@ -31,15 +53,38 @@
 }
 
 .sidebar-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
 }
 
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
 }
 
-/* ── Modal content thin scrollbar (fallback if ever needed) ── */
+/* ── Main content thin scrollbar ─────────────────────────── */
+.content-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0 0 0 / 0.1) transparent;
+}
+
+.content-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 9999px;
+}
+
+.content-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* ── Modal scrollbar ─────────────────────────────── */
 .modal-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgba(0 0 0 / 0.12) transparent;
@@ -60,4 +105,105 @@
 
 .modal-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.25);
+}
+
+/* ── Premium gradient button ─────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Page fade-in animation ─────────────────────── */
+.page-enter {
+  animation: fadeInPage 0.25s ease-out;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Search select dropdown ─────────────────────── */
+.search-select-dropdown {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: dropdownOpen 0.15s ease-out;
+}
+
+@keyframes dropdownOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Data table ─────────────────────────────────── */
+.data-table-row {
+  transition: background-color 0.12s ease;
+}
+
+.data-table-row:hover {
+  background-color: #f8f9ff;
+}
+
+/* ── Form section card ──────────────────────────── */
+.form-section {
+  background: linear-gradient(135deg, #fafbff 0%, #ffffff 100%);
+  border: 1px solid #e8eaf6;
+  border-radius: var(--radius-card);
+  padding: 0.75rem 1rem;
+}
+
+/* ── Sidebar active item glow ─────────────────── */
+.nav-active-glow {
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+/* ── Stats card hover ───────────────────────────── */
+.stats-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Login background ─────────────────────────── */
+.login-bg {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #312e81 100%);
+}
+
+/* ── Header glass effect ─────────────────────── */
+.header-glass {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.06);
 }

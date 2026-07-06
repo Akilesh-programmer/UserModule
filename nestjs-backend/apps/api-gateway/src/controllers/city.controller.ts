@@ -21,13 +21,11 @@ export class CityGatewayController {
   }
 
   @Get('active')
-  @RequirePermission('city', 'read')
   findActive(@Query() query: any) {
     return firstValueFrom(this.masterClient.send(CITY_FIND_ACTIVE, query || {}));
   }
 
   @Get('by-state/:stateId')
-  @RequirePermission('city', 'read')
   findByState(@Param('stateId') stateId: string) {
     return firstValueFrom(this.masterClient.send(CITY_FIND_BY_STATE, { stateId }));
   }

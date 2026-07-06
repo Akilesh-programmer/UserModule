@@ -1,8 +1,8 @@
 {
-  "name": "usermodule-nestjs-backend",
+  "name": "salesforce-nestjs-backend",
   "version": "1.0.0",
   "private": true,
-  "description": "UserModule NestJS Microservices Backend",
+  "description": "SalesForce NestJS Microservices Backend",
   "scripts": {
     "build": "nest build",
     "build:all": "nest build api-gateway && nest build auth-service && nest build admin-service && nest build master-service && nest build item-service",

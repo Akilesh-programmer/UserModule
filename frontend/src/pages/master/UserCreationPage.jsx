@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
@@ -108,7 +108,7 @@ export default function UserCreationPage() {
   };
 
   return (
-    <div>
+    <div className="page-enter">
       <PageHeader
         title="User Creation"
         subtitle="Manage system users"
@@ -123,54 +123,22 @@ export default function UserCreationPage() {
         loading={loading}
         data={users}
         columns={[
-          {
-            key: "#",
-            header: "#",
-            cellClassName: "w-12 text-sm text-gray-500",
-            render: (_, i) => i + 1,
-          },
-          {
-            key: "username",
-            header: "Username",
-            cellClassName: "text-sm font-medium text-gray-900",
-            render: (u) => u.username,
-          },
-          {
-            key: "userType",
-            header: "User Type",
-            cellClassName: "text-sm text-gray-500",
-            render: (u) => u.userTypeId?.name || "—",
-          },
-          {
-            key: "name",
-            header: "Name",
-            cellClassName: "text-sm text-gray-500 hidden sm:table-cell",
-            headerClassName: "hidden sm:table-cell",
-            render: (u) => u.name || "—",
-          },
-          {
-            key: "status",
-            header: "Status",
-            render: (u) => <Badge active={u.isActive} />,
-          },
-          {
-            key: "actions",
-            header: "Actions",
-            render: (u) => (
-              <ActionButtons
-                onEdit={() => openEdit(u)}
-                onDelete={() => setDeleteTarget(u)}
-              />
-            ),
-          },
+          { key: "#", header: "#", cellClassName: "w-10 text-sm text-gray-500", sortable: false, render: (_, i) => i + 1 },
+          { key: "name", header: "Full Name", cellClassName: "text-sm font-semibold text-gray-900", searchValue: (u) => u.name || "", render: (u) => u.name || "—" },
+          { key: "username", header: "Username", cellClassName: "text-sm font-mono text-gray-700", searchValue: (u) => u.username, render: (u) => u.username },
+          { key: "userType", header: "User Type", cellClassName: "text-sm text-gray-500 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", searchValue: (u) => u.userTypeId?.name || "", render: (u) => u.userTypeId?.name || "—" },
+          { key: "status", header: "Status", sortable: false, render: (u) => <Badge active={u.isActive} /> },
+          { key: "actions", header: "Actions", sortable: false, render: (u) => <ActionButtons onEdit={() => openEdit(u)} onDelete={() => setDeleteTarget(u)} /> },
         ]}
         emptyMessage="No users found."
+        exportFileName="users"
       />
 
       {modalOpen && (
         <Modal
           title={editTarget ? "Edit User" : "Add User"}
           onClose={closeModal}
+          wide
         >
           <UserCreationForm
             initialData={editTarget}

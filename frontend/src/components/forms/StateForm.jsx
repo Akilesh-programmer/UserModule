@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import InputField from "../common/InputField";
-import SelectField from "../common/SelectField";
+import SearchSelect from "../common/SearchSelect";
 import Button from "../common/Button";
+import FormSection from "../common/FormSection";
 import { fetchActiveCountries } from "../../api/countryApi";
 
 const STATUS_OPTIONS = [
@@ -50,12 +51,16 @@ export default function StateForm({ initialData, onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <SelectField label="Country" required name="countryId" options={countries.map((c) => ({ value: c._id, label: c.name }))} value={form.countryId} onChange={handleChange} error={errors.countryId} placeholder="Select country" />
-      <InputField label="State Name" required name="name" placeholder="Enter state name" value={form.name} onChange={handleChange} error={errors.name} />
-      <InputField label="State Code" name="code" placeholder="Enter state code (optional)" value={form.code} onChange={handleChange} />
-      <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
-      <div className="flex justify-between pt-4">
+    <form onSubmit={handleSubmit} noValidate>
+      <FormSection title="State Details">
+        <div className="grid grid-cols-2 gap-3">
+          <SearchSelect label="Country" required name="countryId" options={countries.map((c) => ({ value: c._id, label: c.name }))} value={form.countryId} onChange={handleChange} error={errors.countryId} placeholder="Select country" className="col-span-2" />
+          <InputField label="State Name" required name="name" placeholder="Enter state name" value={form.name} onChange={handleChange} error={errors.name} />
+          <InputField label="State Code" name="code" placeholder="State code (optional)" value={form.code} onChange={handleChange} />
+          <SearchSelect label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} />
+        </div>
+      </FormSection>
+      <div className="flex justify-between pt-4 mt-4 border-t border-gray-100">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
         <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>
       </div>

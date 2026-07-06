@@ -26,8 +26,12 @@ export class Dealer {
   @Prop({ type: Types.ObjectId, ref: 'Market', required: true })
   marketId!: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: 'ShopType', default: null })
+  shopTypeId!: Types.ObjectId | null;
+
   @Prop(
     raw({
+      countryId: { type: Types.ObjectId, ref: 'Country', default: null },
       stateId: { type: Types.ObjectId, ref: 'State', default: null },
       cityId: { type: Types.ObjectId, ref: 'City', default: null },
       pincodeId: { type: Types.ObjectId, ref: 'Pincode', default: null },
@@ -36,6 +40,7 @@ export class Dealer {
     }),
   )
   address!: {
+    countryId: Types.ObjectId | null;
     stateId: Types.ObjectId | null;
     cityId: Types.ObjectId | null;
     pincodeId: Types.ObjectId | null;

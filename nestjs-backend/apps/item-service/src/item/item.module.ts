@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Item, ItemSchema } from './schemas/item.schema';
+import { Counter, CounterSchema } from './schemas/counter.schema';
 import { ItemService } from './item.service';
 import { ItemController } from './item.controller';
 import { CategoryModule } from '../category/category.module';
@@ -11,7 +12,10 @@ import { PackingTypeModule } from '../packing-type/packing-type.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Item.name, schema: ItemSchema }]),
+    MongooseModule.forFeature([
+      { name: Item.name, schema: ItemSchema },
+      { name: Counter.name, schema: CounterSchema },
+    ]),
     CategoryModule,
     GroupModule,
     TaxModule,
@@ -20,5 +24,6 @@ import { PackingTypeModule } from '../packing-type/packing-type.module';
   ],
   providers: [ItemService],
   controllers: [ItemController],
+  exports: [ItemService, MongooseModule],
 })
 export class ItemModule {}

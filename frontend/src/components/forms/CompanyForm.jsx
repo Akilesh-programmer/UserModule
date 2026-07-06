@@ -1,6 +1,6 @@
 import { useState } from "react";
 import InputField from "../common/InputField";
-import SelectField from "../common/SelectField";
+import SearchSelect from "../common/SearchSelect";
 import Button from "../common/Button";
 import FormSection from "../common/FormSection";
 import AddressFields from "./fields/AddressFields";
@@ -76,47 +76,39 @@ export default function CompanyForm({ initialData, onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col h-full">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <form onSubmit={handleSubmit} noValidate>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Column 1: Company Info */}
-        <div className="space-y-3">
-          <FormSection title="Company Info">
-            <div className="space-y-2">
-              <InputField label="Company Name" required name="name" value={form.name} onChange={handleChange} error={errors.name} placeholder="Enter company name" />
-              <InputField label="Company Code" name="code" value={form.code} onChange={handleChange} placeholder="e.g. ABC" />
-              <InputField label="Contact Person" name="contactPerson" value={form.contactPerson} onChange={handleChange} placeholder="Contact person name" />
-              <SelectField label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
-            </div>
-          </FormSection>
-        </div>
+        <FormSection title="Company Info">
+          <div className="space-y-2.5">
+            <InputField label="Company Name" required name="name" value={form.name} onChange={handleChange} error={errors.name} placeholder="Enter company name" />
+            <InputField label="Company Code" name="code" value={form.code} onChange={handleChange} placeholder="e.g. ABC" />
+            <InputField label="Contact Person" name="contactPerson" value={form.contactPerson} onChange={handleChange} placeholder="Contact person name" />
+            <SearchSelect label="Status" name="isActive" options={STATUS_OPTIONS} value={form.isActive} onChange={handleChange} placeholder="" />
+          </div>
+        </FormSection>
 
         {/* Column 2: Contact & Documents */}
-        <div className="space-y-3">
-          <FormSection title="Contact & Documents">
-            <div className="space-y-2">
-              <InputField label="Phone" required name="phone" value={form.phone} onChange={handleChange} error={errors.phone} placeholder="Phone number" />
-              <InputField label="Email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email address" />
-              <InputField label="GST No" name="gstNo" value={form.gstNo} onChange={handleChange} placeholder="GST number" style={{ textTransform: "uppercase" }} />
-              <InputField label="PAN No" name="panNo" value={form.panNo} onChange={handleChange} placeholder="PAN number" style={{ textTransform: "uppercase" }} />
-            </div>
-          </FormSection>
-        </div>
+        <FormSection title="Contact & Documents">
+          <div className="space-y-2.5">
+            <InputField label="Phone" required name="phone" value={form.phone} onChange={handleChange} error={errors.phone} placeholder="Phone number" />
+            <InputField label="Email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email address" />
+            <InputField label="GST No" name="gstNo" value={form.gstNo} onChange={handleChange} placeholder="GST number" style={{ textTransform: "uppercase" }} />
+            <InputField label="PAN No" name="panNo" value={form.panNo} onChange={handleChange} placeholder="PAN number" style={{ textTransform: "uppercase" }} />
+          </div>
+        </FormSection>
 
         {/* Column 3: Address */}
-        <div className="space-y-3">
-          <FormSection title="Address">
-            <div className="space-y-2 flex flex-col">
-              <AddressFields form={form} onChange={handleChange} errors={errors} />
-            </div>
-          </FormSection>
-        </div>
+        <FormSection title="Address">
+          <AddressFields form={form} onChange={handleChange} errors={errors} />
+        </FormSection>
       </div>
 
       {errors.form && (
         <p className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600 mt-4">{errors.form}</p>
       )}
 
-      <div className="flex justify-between pt-4 mt-auto">
+      <div className="flex justify-between pt-4 mt-4 border-t border-gray-100">
         <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>Cancel</Button>
         <Button type="submit" loading={saving}>{initialData ? "Update" : "Create"}</Button>
       </div>

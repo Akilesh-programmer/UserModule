@@ -16,18 +16,19 @@ export default function CityPage() {
   });
 
   const columns = [
-    { key: "#", header: "#", cellClassName: "w-12 text-sm text-gray-500", render: (_, i) => i + 1 },
-    { key: "name", header: "City Name", cellClassName: "text-sm font-medium text-gray-900", render: (r) => r.name },
-    { key: "state", header: "State", cellClassName: "text-sm text-gray-500", render: (r) => r.stateId?.name || "—" },
-    { key: "status", header: "Status", render: (r) => <Badge active={r.isActive} /> },
-    { key: "actions", header: "Actions", render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
+    { key: "#", header: "#", cellClassName: "w-10 text-sm text-gray-500", sortable: false, render: (_, i) => i + 1 },
+    { key: "name", header: "City / District", cellClassName: "text-sm font-semibold text-gray-900", searchValue: (r) => r.name, render: (r) => r.name },
+    { key: "state", header: "State", cellClassName: "text-sm text-gray-600 hidden sm:table-cell", headerClassName: "hidden sm:table-cell", searchValue: (r) => r.stateId?.name || "", render: (r) => r.stateId?.name || "—" },
+    { key: "country", header: "Country", cellClassName: "text-sm text-gray-500 hidden md:table-cell", headerClassName: "hidden md:table-cell", searchValue: (r) => r.stateId?.countryId?.name || "", render: (r) => r.stateId?.countryId?.name || "—" },
+    { key: "status", header: "Status", sortable: false, render: (r) => <Badge active={r.isActive} /> },
+    { key: "actions", header: "Actions", sortable: false, render: (r) => <ActionButtons onEdit={() => openEdit(r)} onDelete={() => setDeleteTarget(r)} /> },
   ];
 
   return (
-    <div>
+    <div className="page-enter">
       <PageHeader title="Cities / Districts" subtitle="Manage cities and districts" action={<Button onClick={openCreate}><MdAdd size={16} /> Add City</Button>} />
-      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No cities found." />
-      {modalOpen && <Modal title={editTarget ? "Edit City" : "Add City"} onClose={closeModal}><CityForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
+      <DataTable loading={loading} data={items} columns={columns} emptyMessage="No cities found." exportFileName="cities" />
+      {modalOpen && <Modal title={editTarget ? "Edit City" : "Add City"} onClose={closeModal} wide><CityForm initialData={editTarget} onSave={handleSave} onCancel={closeModal} /></Modal>}
       {deleteTarget && <ConfirmDialog message={`Delete city "${deleteTarget.name}"?`} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} loading={deleteLoading} />}
     </div>
   );
