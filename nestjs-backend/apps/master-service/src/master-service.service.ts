@@ -1,13 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { ManagerService } from './manager/manager.service';
 import { SalesRepService } from './sales-rep/sales-rep.service';
+import { DealerService } from './dealer/dealer.service';
+import { MarketService } from './market/market.service';
 
 @Injectable()
 export class MasterService {
   constructor(
     private readonly managerService: ManagerService,
     private readonly salesRepService: SalesRepService,
+    private readonly dealerService: DealerService,
+    private readonly marketService: MarketService,
   ) {}
+
+  async getMasterStats() {
+    const [salesReps, dealers, shops, markets] = await Promise.all([
+      this.salesRepService.count({ isActive: true }),
+      this.dealerService.count({ isActive: true }),
+      this.dealerService.count({}),
+      this.marketService.count({ isActive: true }),
+    ]);
+    return { salesReps, dealers, shops, markets };
+  }
 
   /** Find user by username across Manager and SalesRep (for auth login) */
   async findByUsername(username: string) {

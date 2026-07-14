@@ -27,7 +27,6 @@ export class SalesRepGatewayController {
   }
 
   @Get('active')
-  @RequirePermission('salesRep', 'read')
   findActive() {
     return firstValueFrom(this.masterClient.send(SALES_REP_FIND_ACTIVE, {}));
   }

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
@@ -28,6 +29,16 @@ import ItemPage from "./pages/item-category/ItemPage";
 import SchemePage from "./pages/item-category/SchemePage";
 import SchemePdfPage from "./pages/item-category/SchemePdfPage";
 import ApplicationPdfPage from "./pages/item-category/ApplicationPdfPage";
+const StockEntryPage = lazy(() => import("./pages/operations/StockEntryPage"));
+const OrderReceiptPage = lazy(() => import("./pages/operations/OrderReceiptPage"));
+const OrderManagementPage = lazy(() => import("./pages/operations/OrderManagementPage"));
+const SecondarySalePage = lazy(() => import("./pages/operations/SecondarySalePage"));
+
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+  </div>
+);
 
 export default function App() {
   return (
@@ -70,6 +81,10 @@ export default function App() {
             <Route path="item-category/scheme" element={<ProtectedRoute module="scheme"><SchemePage /></ProtectedRoute>} />
             <Route path="item-category/scheme-pdf" element={<ProtectedRoute module="schemePdf"><SchemePdfPage /></ProtectedRoute>} />
             <Route path="item-category/application-pdf" element={<ProtectedRoute module="applicationPdf"><ApplicationPdfPage /></ProtectedRoute>} />
+            <Route path="operations/stock-entry" element={<ProtectedRoute module="stockEntry"><Suspense fallback={<PageLoader />}><StockEntryPage /></Suspense></ProtectedRoute>} />
+            <Route path="operations/order-receipt" element={<ProtectedRoute module="order"><Suspense fallback={<PageLoader />}><OrderReceiptPage /></Suspense></ProtectedRoute>} />
+            <Route path="operations/order-management" element={<ProtectedRoute module="order"><Suspense fallback={<PageLoader />}><OrderManagementPage /></Suspense></ProtectedRoute>} />
+            <Route path="operations/secondary-sales" element={<ProtectedRoute module="secondarySale"><Suspense fallback={<PageLoader />}><SecondarySalePage /></Suspense></ProtectedRoute>} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

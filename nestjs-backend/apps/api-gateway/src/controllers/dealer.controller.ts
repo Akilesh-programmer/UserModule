@@ -25,7 +25,6 @@ export class DealerGatewayController {
   }
 
   @Get('active')
-  @RequirePermission('dealer', 'read')
   findActive(@Query() query: any) {
     return firstValueFrom(this.masterClient.send(DEALER_FIND_ACTIVE, query || {}));
   }

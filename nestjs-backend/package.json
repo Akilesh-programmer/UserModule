@@ -5,14 +5,15 @@
   "description": "SalesForce NestJS Microservices Backend",
   "scripts": {
     "build": "nest build",
-    "build:all": "nest build api-gateway && nest build auth-service && nest build admin-service && nest build master-service && nest build item-service",
-    "start:all": "concurrently --kill-others --names gateway,auth,admin,master,item -c cyan,green,yellow,magenta,blue \"npm run start:gateway\" \"npm run start:auth\" \"npm run start:admin\" \"npm run start:master\" \"npm run start:item\"",
+    "build:all": "nest build api-gateway && nest build auth-service && nest build admin-service && nest build master-service && nest build item-service && nest build order-service",
+    "start:all": "concurrently --kill-others --names gateway,auth,admin,master,item,order -c cyan,green,yellow,magenta,blue,red \"npm run start:gateway\" \"npm run start:auth\" \"npm run start:admin\" \"npm run start:master\" \"npm run start:item\" \"npm run start:order\"",
     "start:gateway": "nest start api-gateway --watch",
     "start:auth": "nest start auth-service --watch",
     "start:admin": "nest start admin-service --watch",
     "start:master": "nest start master-service --watch",
     "start:item": "nest start item-service --watch",
-    "start:prod:all": "concurrently --kill-others \"node dist/apps/api-gateway/main\" \"node dist/apps/auth-service/main\" \"node dist/apps/admin-service/main\" \"node dist/apps/master-service/main\" \"node dist/apps/item-service/main\"",
+    "start:order": "nest start order-service --watch",
+    "start:prod:all": "concurrently --kill-others \"node dist/apps/api-gateway/main\" \"node dist/apps/auth-service/main\" \"node dist/apps/admin-service/main\" \"node dist/apps/master-service/main\" \"node dist/apps/item-service/main\" \"node dist/apps/order-service/main\"",
     "seed": "ts-node -r tsconfig-paths/register seed.ts",
     "lint": "eslint \"{src,apps,libs}/**/*.ts\" --fix"
   },

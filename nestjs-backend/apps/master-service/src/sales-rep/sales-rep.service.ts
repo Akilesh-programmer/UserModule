@@ -102,4 +102,8 @@ export class SalesRepService {
     if (excludeId) filter._id = { $ne: excludeId };
     return (await this.salesRepModel.countDocuments(filter).exec()) > 0;
   }
+
+  async count(query?: any) {
+    return this.salesRepModel.countDocuments(query || {}).exec();
+  }
 }

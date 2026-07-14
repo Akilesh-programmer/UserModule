@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_SERVICE, ADMIN_SERVICE, MASTER_SERVICE, ITEM_SERVICE } from '@app/common';
+import { AUTH_SERVICE, ADMIN_SERVICE, MASTER_SERVICE, ITEM_SERVICE, ORDER_SERVICE } from '@app/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { PermissionGuard } from './guards/permission.guard';
 import { AuthGatewayController } from './controllers/auth.controller';
@@ -30,6 +30,10 @@ import { ItemGatewayController } from './controllers/item.controller';
 import { SchemeGatewayController } from './controllers/scheme.controller';
 import { SchemePdfGatewayController } from './controllers/scheme-pdf.controller';
 import { ApplicationPdfGatewayController } from './controllers/application-pdf.controller';
+import { StockGatewayController } from './controllers/stock.controller';
+import { OrderGatewayController } from './controllers/order.controller';
+import { SecondarySaleGatewayController } from './controllers/secondary-sale.controller';
+import { DashboardGatewayController } from './controllers/dashboard.controller';
 import * as path from 'path';
 
 @Module({
@@ -87,6 +91,18 @@ import * as path from 'path';
           },
         }),
       },
+      {
+        name: ORDER_SERVICE,
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: config.get('ORDER_SERVICE_HOST', 'localhost'),
+            port: config.get('ORDER_SERVICE_PORT', 3005),
+          },
+        }),
+      },
     ]),
   ],
   controllers: [
@@ -115,6 +131,10 @@ import * as path from 'path';
     SchemeGatewayController,
     SchemePdfGatewayController,
     ApplicationPdfGatewayController,
+    StockGatewayController,
+    OrderGatewayController,
+    SecondarySaleGatewayController,
+    DashboardGatewayController,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

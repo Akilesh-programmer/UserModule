@@ -61,4 +61,8 @@ export class DealerService {
     if (!doc) throw new RpcException({ statusCode: 404, message: 'Dealer not found' });
     return { message: 'Dealer deleted successfully', image: doc.image };
   }
+
+  async count(query?: any) {
+    return this.model.countDocuments(query || {}).exec();
+  }
 }

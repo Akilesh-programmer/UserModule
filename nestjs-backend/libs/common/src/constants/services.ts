@@ -6,3 +6,4 @@ export const AUTH_SERVICE = "AUTH_SERVICE";
 export const ADMIN_SERVICE = "ADMIN_SERVICE";
 export const MASTER_SERVICE = "MASTER_SERVICE";
 export const ITEM_SERVICE = "ITEM_SERVICE";
+export const ORDER_SERVICE = "ORDER_SERVICE";

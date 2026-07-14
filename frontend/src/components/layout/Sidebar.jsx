@@ -14,8 +14,9 @@ import {
   MdBusiness,
   MdStore,
   MdBolt,
+  MdBusinessCenter,
 } from "react-icons/md";
-import { FiUsers, FiShield, FiUserCheck, FiUserPlus, FiPackage, FiLayers, FiGrid, FiBox, FiMap, FiMapPin, FiTag, FiFileText, FiFile } from "react-icons/fi";
+import { FiUsers, FiShield, FiUserCheck, FiUserPlus, FiPackage, FiLayers, FiGrid, FiBox, FiMap, FiMapPin, FiTag, FiFileText, FiFile, FiShoppingCart, FiClipboard, FiTruck } from "react-icons/fi";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { TbRulerMeasure, TbReceipt2, TbBuildingStore } from "react-icons/tb";
 import { cn } from "../../lib/cn";
@@ -66,6 +67,16 @@ const NAV_ITEMS = [
       { label: "Schemes", icon: <FiTag size={15} />, path: "/item-category/scheme" },
       { label: "Scheme PDF", icon: <FiFileText size={15} />, path: "/item-category/scheme-pdf" },
       { label: "Application PDF", icon: <FiFile size={15} />, path: "/item-category/application-pdf" },
+    ],
+  },
+  {
+    label: "Operations",
+    icon: <MdBusinessCenter size={18} />,
+    children: [
+      { label: "Stock Entry", icon: <FiPackage size={15} />, path: "/operations/stock-entry" },
+      { label: "Order Receipt", icon: <FiShoppingCart size={15} />, path: "/operations/order-receipt" },
+      { label: "Order Management", icon: <FiClipboard size={15} />, path: "/operations/order-management" },
+      { label: "Secondary Sales", icon: <FiTruck size={15} />, path: "/operations/secondary-sales" },
     ],
   },
 ];

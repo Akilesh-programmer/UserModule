@@ -9,3 +9,5 @@ export * from './dealer.patterns';
 export * from './expense-type.patterns';
 export * from './company.patterns';
 export * from './shop-type.patterns';
+export * from './order.patterns';
+

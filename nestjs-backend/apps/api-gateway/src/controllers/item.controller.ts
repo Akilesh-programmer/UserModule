@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { ITEM_SERVICE, ITEM_CREATE, ITEM_FIND_ALL, ITEM_FIND_ONE, ITEM_UPDATE, ITEM_DELETE } from '@app/common';
 import { RequirePermission } from '../decorators/require-permission.decorator';
+import { BypassIfActiveOnly } from '../decorators/bypass-active-only.decorator';
 
 @Controller('api/v1/items')
 export class ItemGatewayController {
@@ -10,6 +11,7 @@ export class ItemGatewayController {
 
   @Get()
   @RequirePermission('item', 'read')
+  @BypassIfActiveOnly()
   findAll(@Query() query: any) { return firstValueFrom(this.itemClient.send(ITEM_FIND_ALL, query || {})); }
 
   @Get(':id')

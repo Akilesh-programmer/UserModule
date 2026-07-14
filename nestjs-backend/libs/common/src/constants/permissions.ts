@@ -23,6 +23,9 @@ export const PERMISSION_MODULES = [
   "scheme",
   "schemePdf",
   "applicationPdf",
+  "stockEntry",
+  "order",
+  "secondarySale",
 ] as const;
 
 export type PermissionModule = (typeof PERMISSION_MODULES)[number];
@@ -65,6 +68,9 @@ export const MODULE_LABELS: Record<PermissionModule, string> = {
   scheme: "Schemes",
   schemePdf: "Scheme PDFs",
   applicationPdf: "Application PDFs",
+  stockEntry: "Stock Entries",
+  order: "Orders",
+  secondarySale: "Secondary Sales",
 };
 
 export function buildEmptyPermissions(): PermissionMap {

@@ -47,4 +47,8 @@ export class MarketService {
     if (!doc) throw new RpcException({ statusCode: 404, message: 'Market not found' });
     return { message: 'Market deleted successfully' };
   }
+
+  async count(query?: any) {
+    return this.model.countDocuments(query || {}).exec();
+  }
 }
